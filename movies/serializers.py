@@ -12,25 +12,33 @@ class MediaSerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        exclude = ["movies"]
+        fields = "__all__"
 
 
 class AgeGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AgeGroup
-        exclude = ["movies"]
+        fields = "__all__"
 
 
 class DistributorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Distributor
-        exclude = ["movies"]
+        fields = "__all__"
 
 
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
-        exclude = ["movies", "stars"]
+        fields = "__all__"
+
+
+class StarSerializer(serializers.ModelSerializer):
+    person = PersonSerializer()
+
+    class Meta:
+        model = Star
+        fields = ["person"]
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -39,7 +47,7 @@ class MovieSerializer(serializers.ModelSerializer):
     age_group = AgeGroupSerializer()
     distributor = DistributorSerializer()
     director = PersonSerializer()
-    stars = PersonSerializer(many=True)
+    stars = StarSerializer(many=True)
 
     class Meta:
         model = Movie
@@ -51,26 +59,38 @@ class MovieSerializer(serializers.ModelSerializer):
             **validated_data.pop("distributor")
         )
         age_group, _ = AgeGroup.objects.get_or_create(**validated_data.pop("age_group"))
-        genres_data = validated_data.pop("genres")
 
-        movie: Movie = Movie.objects.create(
+        genres_data = validated_data.pop("genres")
+        medias_data = validated_data.pop("medias")
+        stars_data = validated_data.pop("stars")
+
+        movie: Movie = Movie.objects.get_or_create(
             **validated_data,
             director=director,
             distributor=distributor,
             age_group=age_group
-        )
+        )[0]
         movie.genres.set(
             [Genre.objects.get_or_create(**genre_data)[0] for genre_data in genres_data]
         )
 
         movie.save()
 
-        for media_data in validated_data.pop("medias"):
+        for media_data in medias_data:
             Media.objects.get_or_create(**media_data, movie=movie)
 
-        for star_data in validated_data.pop("stars"):
+        for star_data in stars_data:
             Star.objects.get_or_create(
-                person=Person.objects.get_or_create(**star_data)[0], movie=movie
+                person=Person.objects.get_or_create(**star_data["person"])[0],
+                movie=movie,
             )
 
         return movie
+
+
+class ListMoviesSerializer(serializers.ModelSerializer):
+    medias = MediaSerializer(many=True)
+
+    class Meta:
+        model = Movie
+        fields = ["id", "title", "medias"]

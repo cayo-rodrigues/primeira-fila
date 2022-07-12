@@ -3,7 +3,7 @@ source = .
 omit =
     venv/*
     primeira_fila/*
-    tests/*
+    */tests/*
     manage.py
 
 [report]

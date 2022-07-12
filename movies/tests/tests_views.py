@@ -1,3 +1,102 @@
+from movies.serializers import ListMoviesSerializer, MovieSerializer
+from movies.tests.util import (
+    DEFAULT_AGE_GROUP_DATA,
+    DEFAULT_DIRECTOR_DATA,
+    DEFAULT_DISTRIBUTOR_DATA,
+    DEFAULT_GENRES_DATA,
+    DEFAULT_MEDIAS_DATA,
+    DEFAULT_MOVIE_DATA,
+    DEFAULT_STARS_DATA,
+)
+from rest_framework import status
 from rest_framework.test import APITestCase
+from users.models import User
 
 # Create your tests here.
+
+
+class MovieViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.movie_data = DEFAULT_MOVIE_DATA
+        cls.media_data = DEFAULT_MEDIAS_DATA
+        cls.genres_data = DEFAULT_GENRES_DATA
+        cls.age_group_data = DEFAULT_AGE_GROUP_DATA
+        cls.distributor_data = DEFAULT_DISTRIBUTOR_DATA
+        cls.director_data = DEFAULT_DIRECTOR_DATA
+        cls.stars_data = DEFAULT_STARS_DATA
+
+        cls.request_data = {
+            **cls.movie_data,
+            "medias": cls.media_data,
+            "genres": cls.genres_data,
+            "age_group": cls.age_group_data,
+            "distributor": cls.distributor_data,
+            "director": cls.director_data,
+            "stars": cls.stars_data,
+        }
+
+        cls.super_credentials = {"username": "super", "password": "123456"}
+        cls.superuser = User.objects.create_superuser(**cls.super_credentials)
+
+        cls.manager_credentials = {"username": "manager", "password": "123456"}
+        cls.manager = User.objects.create_user(**cls.manager_credentials)
+
+        serializer = MovieSerializer(
+            data={**cls.request_data, "title": "Thorta, Amor e Torta"}
+        )
+        if serializer.is_valid():
+            cls.movie = serializer.save()
+
+    def setUp(self) -> None:
+        response = self.client.post("/sessions/token/", self.super_credentials, "json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+
+    def test_create_movie_route_success(self):
+        response = self.client.post("/movies/", self.request_data, "json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        serializer = MovieSerializer(data={**response.json(), "title": "Oto Título"})
+        self.assertTrue(serializer.is_valid())
+
+    def test_create_movie_route_wrong_data(self):
+        wrong_data = {**self.request_data}
+        wrong_data.pop("genres")
+        wrong_data.pop("duration")
+
+        response = self.client.post("/movies/", wrong_data, "json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_only_superuser_can_create_movie(self):
+        response = self.client.post("/sessions/token/", self.manager_credentials, "json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+
+        response = self.client.post("/movies/", self.request_data, "json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_movies_route(self):
+        response = self.client.get("/movies/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertIn("count", response.json())
+        self.assertIn("next", response.json())
+        self.assertIn("previous", response.json())
+
+        movies_list = response.json()["results"]
+        movies_list[0] = {**movies_list[0], "title": "Oto Título"}
+        serializer = ListMoviesSerializer(data=movies_list, many=True)
+
+        self.assertTrue(serializer.is_valid())
+
+    def test_retrieve_movies_route(self):
+        response = self.client.get(f"/movies/{self.movie.id}/")
+        serializer = MovieSerializer(data={**response.json(), "title": "Oto Título"})
+
+        self.assertTrue(serializer.is_valid())
+
+    def test_delete_movies_route(self):
+        response = self.client.delete(f"/movies/{self.movie.id}/")
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
