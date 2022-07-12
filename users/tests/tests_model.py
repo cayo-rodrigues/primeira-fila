@@ -1,7 +1,7 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
 from users.models import User
 
-class TestUserModel(TestCase):
+class TestUserModel(APITestCase):
     @classmethod
     def setUpTestData(self) -> None:
         self.email = "ordinary_user@gmail.com"

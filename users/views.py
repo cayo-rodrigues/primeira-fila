@@ -18,9 +18,8 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer 
     
     def get_object(self):
-        import ipdb
-        ipdb.set_trace()
-        return super().get_object() 
+        obj = User.objects.get(email=self.request.user)
+        return obj 
     
      
          
