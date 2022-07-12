@@ -94,9 +94,25 @@ class MovieViewTest(APITestCase):
         response = self.client.get(f"/movies/{self.movie.id}/")
         serializer = MovieSerializer(data={**response.json(), "title": "Oto Título"})
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(serializer.is_valid())
 
     def test_delete_movies_route(self):
         response = self.client.delete(f"/movies/{self.movie.id}/")
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_update_movies_route(self):
+        response = self.client.patch(
+            f"/movies/{self.movie.id}/",
+            {
+                "director": {"name": "L"},
+                "title": "L >>> N",
+                "genres": [{"name": "Suspense"}, {"name": "Intelectual"}],
+            },
+            "json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        serializer = MovieSerializer(data={**response.json(), "title": "Oto Título"})
+        self.assertTrue(serializer.is_valid())

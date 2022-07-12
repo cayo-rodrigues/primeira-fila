@@ -87,6 +87,42 @@ class MovieSerializer(serializers.ModelSerializer):
 
         return movie
 
+    def update(self, instance: Movie, validated_data: dict):
+        director = validated_data.pop("director", None)
+        distributor = validated_data.pop("distributor", None)
+        age_group = validated_data.pop("age_group", None)
+
+        genres = validated_data.pop("genres", None)
+        medias = validated_data.pop("medias", None)
+        stars = validated_data.pop("stars", None)
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+
+        if director:
+            instance.director = Person.objects.get_or_create(**director)[0]
+        if distributor:
+            instance.distributor = Distributor.objects.get_or_create(**distributor)[0]
+        if age_group:
+            instance.age_group = AgeGroup.objects.get_or_create(**age_group)[0]
+
+        if genres:
+            instance.genres.set(
+                [Genre.objects.get_or_create(**genre)[0] for genre in genres]
+            )
+        if medias:
+            for media in medias:
+                Media.objects.get_or_create(**media, movie=instance)
+        if stars:
+            for star in stars:
+                Star.objects.get_or_create(
+                    person=Person.objects.get_or_create(**star["person"])[0],
+                    movie=instance,
+                )
+
+        instance.save()
+        return instance
+
 
 class ListMoviesSerializer(serializers.ModelSerializer):
     medias = MediaSerializer(many=True)
