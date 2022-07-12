@@ -1,7 +1,8 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from utils.user_manager import CustomUserManager
-import uuid
 
 # Create your models here.
 
@@ -13,11 +14,12 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=120)
     age = models.PositiveSmallIntegerField()
-    is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
-    username = models.CharField(unique=False, null=True, max_length=100)
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    username = None
+    date_joined = None
+
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["first_name", "last_name", "age"]
     objects = CustomUserManager()

@@ -36,11 +36,24 @@ class MovieViewTest(APITestCase):
             "stars": cls.stars_data,
         }
 
-        cls.super_credentials = {"username": "super", "password": "123456"}
+        cls.super_credentials = {
+            "email": "super@super.com",
+            "first_name": "super",
+            "last_name": "super",
+            "age": 22,
+            "password": "abc123456",
+        }
         cls.superuser = User.objects.create_superuser(**cls.super_credentials)
 
-        cls.manager_credentials = {"username": "manager", "password": "123456"}
-        cls.manager = User.objects.create_user(**cls.manager_credentials)
+        cls.manager_credentials = {
+            "email": "manager@manager.com",
+            "first_name": "manager",
+            "last_name": "manager",
+            "age": 99,
+            "password": "abc123456",
+            "is_staff": True,
+        }
+        cls.manager = User.objects.create(**cls.manager_credentials)
 
         serializer = MovieSerializer(
             data={**cls.request_data, "title": "Thorta, Amor e Torta"}
