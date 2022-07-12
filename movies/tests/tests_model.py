@@ -1,5 +1,5 @@
 from django.test import TestCase
-from movies.models import AgeGroup, Distributor, Genre, Media, Movie, Person
+from movies.models import AgeGroup, Distributor, Genre, Media, Movie, Person, Star
 
 # Create your tests here.
 
@@ -53,6 +53,7 @@ class MovieModelTests(TestCase):
         )
         cls.age_group = AgeGroup.objects.create(**cls.age_group_data["age_group"])
         cls.genre = Genre.objects.create(**cls.genres_data["genres"][0])
+        cls.person = Person.objects.create(**cls.stars_data["stars"][0])
 
         cls.movie: Movie = Movie.objects.create(
             **cls.movie_data,
@@ -61,6 +62,9 @@ class MovieModelTests(TestCase):
             age_group=cls.age_group
         )
         cls.movie.genres.add(cls.genre)
+
+        cls.media = Media.objects.create(**cls.media_data["medias"][0], movie=cls.movie)
+        cls.star = Star.objects.create(person=cls.person, movie=cls.movie)
 
     def test_can_create_movie(self):
         self.assertTrue(bool(self.movie))
@@ -76,3 +80,5 @@ class MovieModelTests(TestCase):
         self.assertIs(self.movie.age_group, self.age_group)
 
         self.assertIn(self.genre, self.movie.genres.all())
+        self.assertIn(self.star, self.movie.stars.all())
+        self.assertIn(self.media, self.movie.medias.all())
