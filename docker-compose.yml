@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    env_file: .env
+    ports:
+      - $POSTGRES_HOST_PORT:$POSTGRES_CONTAINER_PORT
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    env_file: .env
+    command:
+      bash -c 'while !</dev/tcp/db/$POSTGRES_CONTAINER_PORT; do sleep 1; done; python manage.py runserver 0.0.0.0:8000'
+    volumes:
+      - .:/code
+    stdin_open: true
+    tty: true
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

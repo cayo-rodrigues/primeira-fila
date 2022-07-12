@@ -1,0 +1,11 @@
+[run]
+source = .
+omit =
+    venv/*
+    primeira_fila/*
+    __tests__/*
+    manage.py
+
+[report]
+show_missing = True
+skip_empty = True
