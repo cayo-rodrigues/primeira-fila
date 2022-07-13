@@ -8,28 +8,28 @@ from rooms.models import Room, RoomCorridor, SeatRows
 class SeatRowsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SeatRows
-        fields = "__all__"
+        fields = ["row", "seat_count"]
 
 
 class RoomCorridorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomCorridor
-        fields = "__all__"
+        exclude = ["id", "room"]
 
 
 class RoomSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
     seat_rows = SeatRowsSerializer(many=True)
-    corridors = RoomCorridorsSerializer(many=True)
+    room_corridors = RoomCorridorsSerializer(many=True)
 
     class Meta:
         model = Room
-        fields = ["id", "name", "seat_rows", "corridors"]
+        fields = ["id", "name", "seat_rows", "room_corridors"]
 
     def create(self, validated_data):
 
         seats = validated_data.pop("seat_rows")
-        corridors_list = validated_data.pop("corridors")
+        corridors_list = validated_data.pop("room_corridors")
 
         room = Room.objects.create(**validated_data)
 

@@ -15,7 +15,7 @@ class SeatRows(models.Model):
     row = models.CharField(max_length=20)
     seat_count = models.PositiveIntegerField()
     room = models.ForeignKey(
-        "rooms.Room", on_delete=models.CASCADE, related_name="seats_room", null=True
+        "rooms.Room", on_delete=models.CASCADE, related_name="seat_rows", null=True
     )
 
 
@@ -25,5 +25,5 @@ class RoomCorridor(models.Model):
     from_row = models.IntegerField()
     to_row = models.IntegerField()
     room = models.ForeignKey(
-        "rooms.Room", on_delete=models.CASCADE, related_name="corridors_room", null=True
+        "rooms.Room", on_delete=models.CASCADE, related_name="room_corridors", null=True
     )
