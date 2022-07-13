@@ -9,28 +9,50 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Movie',
+            name="Movie",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=127, unique=True)),
-                ('duration', models.PositiveIntegerField()),
-                ('synopsis', models.TextField()),
-                ('premiere', models.DateField()),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("title", models.CharField(max_length=127, unique=True)),
+                ("duration", models.PositiveIntegerField()),
+                ("synopsis", models.TextField()),
+                ("premiere", models.DateField()),
             ],
         ),
         migrations.CreateModel(
-            name='Medias',
+            name="Medias",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=127)),
-                ('media_url', models.URLField()),
-                ('is_video', models.BooleanField(default=False)),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='medias', to='movies.movie')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=127)),
+                ("media_url", models.URLField()),
+                ("is_video", models.BooleanField(default=False)),
+                (
+                    "movie",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="medias",
+                        to="movies.movie",
+                    ),
+                ),
             ],
         ),
     ]
