@@ -1,7 +1,4 @@
-from faulthandler import disable
-
 from rest_framework import generics
-from utils.helpers import normalize_text
 from utils.mixins import SerializerByMethodMixin
 from utils.permissions import IsSuperUser, ReadOnly
 
@@ -11,26 +8,27 @@ from .serializers import ListMoviesSerializer, MovieSerializer
 
 class MovieView(SerializerByMethodMixin, generics.ListCreateAPIView):
     queryset = Movie.objects.all()
+    # queryset = Movie.objects.filter(movie_sessions__session_datetime__gte=now())
     permission_classes = [IsSuperUser | ReadOnly]
-    serializers = {"POST": MovieSerializer, "GET": MovieSerializer}
+    serializers = {"POST": MovieSerializer, "GET": ListMoviesSerializer}
 
     def get_queryset(self):
         age_group = self.request.GET.get("age_group")
-        age_group_lt = self.request.GET.get("age_group_lt")
-        age_group_gt = self.request.GET.get("age_group_gt")
+        age_group_lte = self.request.GET.get("age_group_lte")
+        age_group_gte = self.request.GET.get("age_group_gte")
         distributor = self.request.GET.get("distributor")
         genres = self.request.GET.get("genres")
 
         if age_group:
             self.queryset = self.queryset.filter(age_group__minimum_age=age_group)
         else:
-            if age_group_lt:
+            if age_group_lte:
                 self.queryset = self.queryset.filter(
-                    age_group__minimum_age__lt=age_group_lt
+                    age_group__minimum_age__lte=age_group_lte
                 )
-            if age_group_gt:
+            if age_group_gte:
                 self.queryset = self.queryset.filter(
-                    age_group__minimum_age__gt=age_group_gt
+                    age_group__minimum_age__gte=age_group_gte
                 )
 
         if distributor:
