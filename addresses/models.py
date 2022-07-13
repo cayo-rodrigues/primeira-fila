@@ -3,19 +3,19 @@ from django.db import models
 # Create your models here.
 class Address(models.Model):
     street = models.CharField(max_length=100)
-    number = models.CharField(max_length=2)
-    details = models.TextField(max_length=300)
+    number = models.CharField(max_length=10)
+    details = models.TextField()
 
-    cities = models.ForeignKey(
+    city = models.ForeignKey(
         "addresses.City", on_delete=models.CASCADE, related_name="addresses"
     )
-    districts = models.ForeignKey(
+    district = models.ForeignKey(
         "addresses.District", on_delete=models.CASCADE, related_name="addresses"
     )
-    states = models.ForeignKey(
+    state = models.ForeignKey(
         "addresses.State", on_delete=models.CASCADE, related_name="addresses"
     )
-    countries = models.ForeignKey(
+    country = models.ForeignKey(
         "addresses.Country", on_delete=models.CASCADE, related_name="addresses"
     )
 
