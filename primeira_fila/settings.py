@@ -12,14 +12,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    TEST=(str, ""),
+    DOCKER=(bool, False),
 )
 
 environ.Env.read_env(BASE_DIR / ".env")
@@ -33,7 +32,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 
 # Application definition
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "users",
+    "addresses",
     "cinemas",
     "movies",
     "rooms",
@@ -90,7 +90,7 @@ WSGI_APPLICATION = "primeira_fila.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if env("TEST"):
+if not env("DOCKER"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
