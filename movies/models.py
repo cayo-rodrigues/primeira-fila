@@ -65,18 +65,18 @@ class Genre(models.Model):
     name = models.CharField(max_length=127)
 
 
-class AgeGroupChoices(models.TextChoices):
-    L = ("L", "L")
-    TEN = ("10", "10")
-    TWELVE = ("12", "12")
-    FOURTEEN = ("14", "14")
-    SIXTEEN = ("16", "16")
-    EIGHTEEN = ("18", "18")
+class AgeGroupChoices(models.IntegerChoices):
+    L = 0
+    TEN = 10
+    TWELVE = 12
+    FOURTEEN = 14
+    SIXTEEN = 16
+    EIGHTEEN = 18
 
 
 class AgeGroup(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    minimum_age = models.CharField(
-        max_length=127, choices=AgeGroupChoices.choices, default=AgeGroupChoices.L
+    minimum_age = models.IntegerField(
+        choices=AgeGroupChoices.choices, default=AgeGroupChoices.L
     )
     content = models.CharField(max_length=127)
