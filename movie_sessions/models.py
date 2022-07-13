@@ -5,7 +5,7 @@ import uuid
 class MovieSession(models.Model):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    price = models.DecimalField()
+    price = models.DecimalField(max_digits=4, decimal_places=4)
     session_datetime = models.DateTimeField()
     subtitled = models.BooleanField()
     is_3d = models.BooleanField()

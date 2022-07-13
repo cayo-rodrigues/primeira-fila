@@ -7,7 +7,9 @@ from django.db import models
 class Room(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
-    # cinema = models.ForeignKey('cinemas.Cinema', on_delete=models.CASCADE, related_name="cinema")
+    cinema = models.ForeignKey(
+        "cinemas.Cinema", on_delete=models.CASCADE, related_name="cinema", null=True
+    )
 
 
 class SeatRows(models.Model):
