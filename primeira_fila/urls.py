@@ -23,5 +23,6 @@ urlpatterns = [
     path("users/", include("users.urls")),
     path("sessions/token/", TokenObtainPairView.as_view()),
     path("sessions/token/refresh/", TokenRefreshView.as_view()),
-    path("api/", include("rooms.urls")),
+    path("rooms/", include("rooms.urls")),
+    path("cinemas/", include("cinemas.urls")),
 ]
