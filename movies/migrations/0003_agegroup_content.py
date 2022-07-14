@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movies', '0002_agegroup_distributor_genre_person_and_more'),
+        ("movies", "0002_agegroup_distributor_genre_person_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='agegroup',
-            name='content',
-            field=models.CharField(default='', max_length=127),
+            model_name="agegroup",
+            name="content",
+            field=models.CharField(default="", max_length=127),
             preserve_default=False,
         ),
     ]

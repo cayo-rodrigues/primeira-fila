@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "users",
+    "addresses",
     "cinemas",
     "movies",
     "rooms",
@@ -108,7 +108,6 @@ else:
             "HOST": env("POSTGRES_HOST"),
         }
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

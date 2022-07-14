@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from utils.helpers import bulk_get_or_create
 
 from .models import AgeGroup, Distributor, Genre, Media, Movie, Person, Star
 
@@ -70,20 +71,11 @@ class MovieSerializer(serializers.ModelSerializer):
             distributor=distributor,
             age_group=age_group
         )[0]
-        movie.genres.set(
-            [Genre.objects.get_or_create(**genre_data)[0] for genre_data in genres_data]
-        )
-
+        movie.genres.set(bulk_get_or_create(Genre, genres_data))
         movie.save()
 
-        for media_data in medias_data:
-            Media.objects.get_or_create(**media_data, movie=movie)
-
-        for star_data in stars_data:
-            Star.objects.get_or_create(
-                person=Person.objects.get_or_create(**star_data["person"])[0],
-                movie=movie,
-            )
+        bulk_get_or_create(Media, medias_data, movie=movie)
+        bulk_get_or_create(Star, stars_data, [("person", Person)], movie=movie)
 
         return movie
 
@@ -107,18 +99,11 @@ class MovieSerializer(serializers.ModelSerializer):
             instance.age_group = AgeGroup.objects.get_or_create(**age_group)[0]
 
         if genres:
-            instance.genres.set(
-                [Genre.objects.get_or_create(**genre)[0] for genre in genres]
-            )
+            instance.genres.set(bulk_get_or_create(Genre, genres))
         if medias:
-            for media in medias:
-                Media.objects.get_or_create(**media, movie=instance)
+            bulk_get_or_create(Media, medias, movie=instance)
         if stars:
-            for star in stars:
-                Star.objects.get_or_create(
-                    person=Person.objects.get_or_create(**star["person"])[0],
-                    movie=instance,
-                )
+            bulk_get_or_create(Star, stars, [("person", Person)], movie=instance)
 
         instance.save()
         return instance
