@@ -1,19 +1,6 @@
-from django.http import Http404
-from django.shortcuts import render
-from jsonschema import ValidationError
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from cinemas.models import Cinema
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from cinemas.models import Cinema
-from rooms.models import Room
-
-from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404, render
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
 
 from rooms.models import Room
 from rooms.serializers import RoomSerializer
@@ -29,6 +16,10 @@ class CreateListRoomView(generics.ListCreateAPIView):
         cinema = self.queryset.filter(cinema_id=self.kwargs["cine_id"])
 
         return cinema
+
+    def perform_create(self, serializer):
+        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
+        serializer.save(cinema=cinema)
 
 
 class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
