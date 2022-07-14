@@ -1,13 +1,13 @@
-from django.shortcuts import render
-from rest_framework import generics
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
-
+from cinemas.models import Cinema
+from django.shortcuts import get_object_or_404, render
 from movies.models import Movie
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rooms.models import Room
+
 from .models import MovieSession
 from .serializers import MovieSessionSerializer
-from django.shortcuts import get_object_or_404
-from cinemas.models import Cinema
 
 
 class MovieSessionCreateView(generics.CreateAPIView):
@@ -17,6 +17,13 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
+
+    def perform_create(self, serializer):
+        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
+        room = get_object_or_404(Room, pk=self.kwargs["room_id"], cinema=cinema)
+        movie = get_object_or_404(Movie, pk=self.kwargs["movie_id"])
+
+        serializer.save(cinema=cinema, room=room, movie=movie)
 
 
 class MovieSessionCinemaDetailView(generics.ListAPIView):
