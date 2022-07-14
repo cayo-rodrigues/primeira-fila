@@ -2,6 +2,7 @@ from cinemas.models import Cinema
 from rest_framework import serializers, status
 
 from rooms.models import Room, RoomCorridor, SeatRows
+from tickets.models import Seat
 
 
 class SeatRowsSerializer(serializers.ModelSerializer):
@@ -35,6 +36,11 @@ class RoomSerializer(serializers.ModelSerializer):
             seat = SeatRows.objects.create(**value)
             seat.room = room
             seat.save()
+            for i in range(seat.seat_count):
+                name = f"{seat.row}{i+1}"
+                new_seat = {"name": name, "room": room}
+                created_seat = Seat.objects.create(**new_seat)
+                created_seat.save()
 
         for value in corridors_list:
             corridor = RoomCorridor.objects.create(**value)
@@ -52,14 +58,22 @@ class RoomSerializer(serializers.ModelSerializer):
         rows = validated_data.pop("seat_rows", None)
 
         if corridors:
+            instance.room_corridors.set([])
             for value in corridors:
                 room_corridor = RoomCorridor.objects.create(**value)
                 instance.room_corridors.add(room_corridor)
 
         if rows:
+            instance.seat_rows.set([])
             for value in rows:
                 seat_rows = SeatRows.objects.create(**value)
                 instance.seat_rows.add(seat_rows)
+
+                for i in range(seat_rows.seat_count):
+                    name = f"{seat_rows.row}{i+1}"
+                    new_seat = {"name": name, "room": instance}
+                    created_seat = Seat.objects.create(**new_seat)
+                    created_seat.save()
 
         instance.save()
         return instance
