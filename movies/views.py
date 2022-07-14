@@ -21,7 +21,8 @@ class MovieView(
     MovieQueryParamsMixin, SerializerByMethodMixin, generics.ListCreateAPIView
 ):
     queryset = Movie.objects.filter(
-        movie_sessions__session_datetime__gte=now()
+        movie_sessions__session_datetime__gte=now(),
+        movie_sessions__on_sale=True,
     ).distinct()
     permission_classes = [IsSuperUser | ReadOnly]
     serializers = {"POST": MovieSerializer, "GET": ListMoviesSerializer}
@@ -39,7 +40,8 @@ class MovieDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
     queryset = Movie.objects.filter(
-        movie_sessions__session_datetime__gte=now()
+        movie_sessions__session_datetime__gte=now(),
+        movie_sessions__on_sale=True,
     ).distinct()
     serializer_class = ListMoviesSerializer
 
