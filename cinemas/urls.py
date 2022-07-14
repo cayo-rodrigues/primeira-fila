@@ -1,13 +1,15 @@
 from django.urls import path
-from movie_sessions import views
-from rooms.views import CreateRoomView
+from .views import CreateCinemaView, CinemaDetailView
+from rooms.views import CreateRoomView, UpdateRetrieveRoomView
 
-from .views import CinemaDetailView, CreateCinemaView
+from movie_sessions import views
+
 
 urlpatterns = [
     path("", CreateCinemaView.as_view()),
     path("<cine_id>/", CinemaDetailView.as_view()),
     path("<cine_id>/rooms/", CreateRoomView.as_view()),
+    path("<cine_id>/rooms/<room_id>/", UpdateRetrieveRoomView.as_view()),
     path(
         "<cine_id>/rooms/<room_id>/movie/<movie_id>/movie-sessions/",
         views.MovieSessionCreateView.as_view(),

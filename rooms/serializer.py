@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from cinemas.models import Cinema
+from rest_framework import status
 
 from rooms.models import Room, RoomCorridor, SeatRows
 
@@ -26,10 +28,23 @@ class RoomSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
+        cine_id = (
+            self.context.get("request").parser_context.get("kwargs").get("cine_id")
+        )
+
+        try:
+            cinema = Cinema.objects.filter(pk=cine_id)[0]
+        except:
+            raise serializers.ValidationError(
+                detail={"detail": "Cinema not found"}, code=404
+            )
+
         seats = validated_data.pop("seat_rows")
         corridors_list = validated_data.pop("room_corridors")
 
         room = Room.objects.create(**validated_data)
+
+        room.cinema = cinema
 
         for value in seats:
             seat = SeatRows.objects.create(**value)
@@ -40,5 +55,7 @@ class RoomSerializer(serializers.ModelSerializer):
             corridor = RoomCorridor.objects.create(**value)
             corridor.room = room
             corridor.save()
+
+        room.save()
 
         return room
