@@ -72,6 +72,7 @@ class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
+    lookup_url_kwarg = "session_id"
 
     def get_queryset(self):
         cinema_id = self.kwargs["cine_id"]
@@ -81,7 +82,6 @@ class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
         get_object_or_404(Cinema, id=cinema_id)
         get_object_or_404(Movie, id=movie_id)
         get_object_or_404(MovieSession, id=movie_session_id)
-
-        movie_session = MovieSession.objects.filter(movie_id=movie_id)
+        movie_session = MovieSession.objects.filter(id=movie_session_id)
 
         return movie_session
