@@ -4,8 +4,7 @@ from django.db.models import Model
 def bulk_get_or_create(
     model: Model,
     values: list[dict],
-    nested_key: list[str] = None,
-    nested_model: list[Model] = None,
+    nested_values: list[tuple[str, Model]] = None,
     **kwargs
 ) -> list:
     existing_values = []
@@ -14,14 +13,15 @@ def bulk_get_or_create(
     for value in values:
         value.update(**kwargs)
 
-        if nested_key and nested_model:
-            value.update(
-                **{
-                    nested_key: nested_model.objects.get_or_create(**value[nested_key])[
-                        0
-                    ],
-                }
-            )
+        if nested_values:
+            for nested_key, nested_model in nested_values:
+                value.update(
+                    **{
+                        nested_key: nested_model.objects.get_or_create(
+                            **value[nested_key]
+                        )[0],
+                    }
+                )
 
         values_found = model.objects.filter(**value)
         if values_found:

@@ -75,7 +75,7 @@ class MovieSerializer(serializers.ModelSerializer):
         movie.save()
 
         bulk_get_or_create(Media, medias_data, movie=movie)
-        bulk_get_or_create(Star, stars_data, "person", Person, movie=movie)
+        bulk_get_or_create(Star, stars_data, [("person", Person)], movie=movie)
 
         return movie
 
@@ -103,7 +103,7 @@ class MovieSerializer(serializers.ModelSerializer):
         if medias:
             bulk_get_or_create(Media, medias, movie=instance)
         if stars:
-            bulk_get_or_create(Star, stars, "person", Person, movie=instance)
+            bulk_get_or_create(Star, stars, [("person", Person)], movie=instance)
 
         instance.save()
         return instance
