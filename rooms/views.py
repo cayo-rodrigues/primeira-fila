@@ -1,4 +1,3 @@
-
 from django.http import Http404
 from django.shortcuts import render
 from jsonschema import ValidationError
@@ -17,55 +16,29 @@ from rest_framework.views import APIView
 
 
 from rooms.models import Room
-from rooms.serializer import RoomSerializer
+from rooms.serializers import RoomSerializer
 
 # Create your views here.
 
 
-class CreateRoomView(generics.ListCreateAPIView):
+class CreateListRoomView(generics.ListCreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset().filter(cinema_id=kwargs["cine_id"])
-        try:
-            Cinema.objects.get(pk=kwargs["cine_id"])
-        except:
-            raise Http404()
-        serializer = RoomSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        cinema = self.queryset.filter(cinema_id=self.kwargs["cine_id"])
 
-    def perform_create(self, serializer):
-        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
-        serializer.save(cinema=cinema)
+        return cinema
 
 
-
-class UpdateRetrieveRoomView(generics.RetrieveUpdateDestroyAPIView):
+class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        queryset = self.get_queryset().filter(
-            cinema_id=kwargs["cine_id"], id=kwargs["room_id"]
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(
+            queryset, pk=self.kwargs["room_id"], cinema_id=self.kwargs["cine_id"]
         )
-        try:
-            Cinema.objects.get(pk=kwargs["cine_id"])
-        except:
-            raise Http404()
-        serializer = RoomSerializer(queryset, many=True)
-        return Response(serializer.data[0])
 
-    def destroy(self, request, *args, **kwargs):
-
-        try:
-            single_room = self.get_queryset().filter(
-                cinema_id=kwargs["cine_id"], id=kwargs["room_id"]
-            )[0]
-            Cinema.objects.get(pk=kwargs["cine_id"])
-        except:
-            raise Http404()
-
-        self.perform_destroy(single_room)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return obj
