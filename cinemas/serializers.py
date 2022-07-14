@@ -1,18 +1,18 @@
-from rest_framework import serializers
-from cinemas.models import Cinema
 from addresses.models import Address, City, Country, District, State
 from addresses.serializers import (
     AddressSerializer,
     CitySerializer,
+    CountrySerializer,
     DistrictSerializer,
     StateSerializer,
-    CountrySerializer,
 )
+from rest_framework import serializers
+from users.models import User
+
+from cinemas.models import Cinema
 
 # from addresses.serializers import
 # import ipdb
-
-from users.models import User
 
 
 class CreateCinemaSerializer(serializers.ModelSerializer):
@@ -73,16 +73,11 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
 
 
 class ListCinemaSerializer(serializers.ModelSerializer):
-    # id = serializers.IntegerField(write_only=True)
+    total_rooms = serializers.SerializerMethodField()
 
     class Meta:
         model = Cinema
         fields = "__all__"
-        read_only_fields = [
-            "description",
-            "id",
-            "price",
-            "quantity",
-            "is_active",
-            "seller_id",
-        ]
+
+    def get_total_rooms(self, obj: Cinema):
+        return obj.rooms.count()

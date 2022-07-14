@@ -21,8 +21,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("movies/", include("movies.urls")),
     path("users/", include("users.urls")),
-    path("cinema/", include("movie_sessions.urls")),
+    path("cinemas/", include("cinemas.urls")),
     path("sessions/token/", TokenObtainPairView.as_view()),
     path("sessions/token/refresh/", TokenRefreshView.as_view()),
-    path("cinemas/", include("cinemas.urls")),
 ]

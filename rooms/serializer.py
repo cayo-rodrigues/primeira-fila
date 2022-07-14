@@ -1,5 +1,3 @@
-from unicodedata import name
-from attr import fields
 from rest_framework import serializers
 from cinemas.models import Cinema
 from rest_framework import status

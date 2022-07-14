@@ -1,3 +1,4 @@
+
 from django.http import Http404
 from django.shortcuts import render
 from jsonschema import ValidationError
@@ -8,6 +9,14 @@ from rest_framework import generics
 from cinemas.models import Cinema
 from rooms.models import Room
 
+from cinemas.models import Cinema
+from django.shortcuts import get_object_or_404, render
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+from rooms.models import Room
 from rooms.serializer import RoomSerializer
 
 # Create your views here.
@@ -25,6 +34,11 @@ class CreateRoomView(generics.ListCreateAPIView):
             raise Http404()
         serializer = RoomSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
+        serializer.save(cinema=cinema)
+
 
 
 class UpdateRetrieveRoomView(generics.RetrieveUpdateDestroyAPIView):
