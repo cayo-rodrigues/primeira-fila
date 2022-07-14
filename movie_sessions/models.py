@@ -1,11 +1,12 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class MovieSession(models.Model):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    price = models.DecimalField()
+    price = models.DecimalField(decimal_places=2, max_digits=10)
     session_datetime = models.DateTimeField()
     subtitled = models.BooleanField()
     is_3d = models.BooleanField()
