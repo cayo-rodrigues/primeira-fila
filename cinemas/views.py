@@ -5,13 +5,12 @@ from .models import Cinema
 from addresses.models import Address
 from .serializers import ListCinemaSerializer, CreateCinemaSerializer
 from .mixins import SerializeByMethodMixin
-from utils.permissions import IsSuperUser, ReadOnly
+from utils.permissions import IsSuperUser, OnlySelfManagerPermission
 
 # import ipdb
 
 
 class CreateCinemaView(SerializeByMethodMixin, generics.ListCreateAPIView):
-    # permission_classes = [IsAuthenticatedOrReadOnly, OnlySellerCreatePermission]
 
     queryset = Cinema.objects.all()
     serializer_map = {"GET": ListCinemaSerializer, "POST": CreateCinemaSerializer}
@@ -20,10 +19,8 @@ class CreateCinemaView(SerializeByMethodMixin, generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class CinemaDetailView(SerializeByMethodMixin, generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [CustomCinemaPermission]
-
+class CinemaDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cinema.objects.all()
     serializer_class = CreateCinemaSerializer
     lookup_url_kwarg = "cine_id"
-    # permission_classes = [IsSuperUser | ReadOnly]
+    permission_classes = [OnlySelfManagerPermission]

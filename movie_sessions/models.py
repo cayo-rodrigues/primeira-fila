@@ -26,3 +26,21 @@ class MovieSession(models.Model):
     movie = models.ForeignKey(
         "movies.Movie", on_delete=models.CASCADE, related_name="movie_sessions"
     )
+
+class SessionSeat(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    is_avaliable = models.BooleanField(default=True)
+
+    seat = models.ForeignKey(
+        "tickets.Seat", on_delete=models.CASCADE, related_name="session_seats"
+    )
+
+    ticket = models.ForeignKey(
+        "tickets.Ticket", on_delete=models.CASCADE, related_name="session_seats", null=True
+    )
+
+    movie_session = models.ForeignKey(
+        "movie_sessions.MovieSession",
+        on_delete=models.CASCADE,
+        related_name="session_seats",
+    )

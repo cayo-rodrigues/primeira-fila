@@ -39,7 +39,7 @@ class CustomUserManager(BaseUserManager):
         self, email, first_name, last_name, age, password=None, **extra_fields
     ):
         user = self.create(
-            email, first_name, last_name, age, password, False, **extra_fields
+            email, first_name, last_name, age, password, True, **extra_fields
         )
         user.is_superuser = True
 
