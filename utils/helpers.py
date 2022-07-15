@@ -60,3 +60,9 @@ def normalize_text(
         text = text.split(split_by)
 
     return text
+
+
+def normalize_input(values: list[dict], key: str):
+    return [
+        {key: normalize_text(value[key], is_lower=True), **value} for value in values
+    ]

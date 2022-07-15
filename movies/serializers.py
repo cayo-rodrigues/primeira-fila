@@ -1,7 +1,7 @@
 from cinemas.serializers import ListCinemaSerializer
 from movie_sessions.models import MovieSession
 from rest_framework import serializers
-from utils.helpers import bulk_get_or_create
+from utils.helpers import bulk_get_or_create, normalize_text
 
 from .models import AgeGroup, Distributor, Genre, Media, Movie, Person, Star
 
@@ -66,15 +66,33 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data: dict) -> Movie:
-        director, _ = Person.objects.get_or_create(**validated_data.pop("director"))
+        director, _ = Person.objects.get_or_create(
+            name=normalize_text(validated_data.pop("director")["name"])
+        )
         distributor, _ = Distributor.objects.get_or_create(
-            **validated_data.pop("distributor")
+            name=normalize_text(validated_data.pop("distributor")["name"])
         )
         age_group, _ = AgeGroup.objects.get_or_create(**validated_data.pop("age_group"))
 
         genres_data = validated_data.pop("genres")
         medias_data = validated_data.pop("medias")
         stars_data = validated_data.pop("stars")
+
+        genres_data = [
+            {
+                "name": normalize_text(genre_data["name"], is_lower=True)
+                for genre_data in genres_data
+            }
+        ]
+
+        stars_data = [
+            {
+                "person": {
+                    "name": normalize_text(star_data["person"]["name"], is_lower=True)
+                    for star_data in stars_data
+                }
+            }
+        ]
 
         movie: Movie = Movie.objects.get_or_create(
             **validated_data,
