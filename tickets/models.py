@@ -13,12 +13,3 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         "movie_sessions.MovieSession", on_delete=models.CASCADE, related_name="tickets"
     )
-
-
-class Seat(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.CharField(max_length=5)
-
-    room = models.ForeignKey(
-        "rooms.Room", on_delete=models.CASCADE, related_name="seats"
-    )

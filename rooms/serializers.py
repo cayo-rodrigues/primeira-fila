@@ -1,8 +1,8 @@
 from cinemas.models import Cinema
 from rest_framework import serializers, status
-from tickets.models import Seat
 
-from rooms.models import Room, RoomCorridor, SeatRows
+
+from rooms.models import Room, RoomCorridor, Seat, SeatRows
 
 
 class SeatRowsSerializer(serializers.ModelSerializer):
