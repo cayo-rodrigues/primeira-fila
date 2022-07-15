@@ -1,9 +1,7 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from movie_sessions.models import MovieSession
 from rest_framework import generics
-from utils.mixins import SerializerByMethodMixin
-from utils.permissions import IsSuperUser, ReadOnly
 
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer

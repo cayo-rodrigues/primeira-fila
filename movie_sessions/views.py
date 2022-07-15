@@ -1,9 +1,8 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from movies.models import Movie
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rooms.models import Room
 
 from .models import MovieSession
@@ -11,8 +10,6 @@ from .serializers import MovieSessionSerializer
 
 
 class MovieSessionCreateView(generics.CreateAPIView):
-
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
@@ -27,8 +24,6 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
 
 class MovieSessionCinemaDetailView(generics.ListAPIView):
-
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
@@ -45,8 +40,6 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
 
 
 class MovieSessionMovieDetailView(generics.ListAPIView):
-
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
@@ -66,8 +59,6 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
 
 
 class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
-
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()

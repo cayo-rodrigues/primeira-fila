@@ -1,19 +1,15 @@
-from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.authentication import TokenAuthentication
+from utils.mixins import SerializerByMethodMixin
+from utils.permissions import OnlySelfManagerPermission
+
 from .models import Cinema
-from addresses.models import Address
-from .serializers import ListCinemaSerializer, CreateCinemaSerializer
-from .mixins import SerializeByMethodMixin
-from utils.permissions import IsSuperUser, OnlySelfManagerPermission
-
-# import ipdb
+from .serializers import CreateCinemaSerializer, ListCinemaSerializer
 
 
-class CreateCinemaView(SerializeByMethodMixin, generics.ListCreateAPIView):
+class CreateCinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
 
     queryset = Cinema.objects.all()
-    serializer_map = {"GET": ListCinemaSerializer, "POST": CreateCinemaSerializer}
+    serializers = {"GET": ListCinemaSerializer, "POST": CreateCinemaSerializer}
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
