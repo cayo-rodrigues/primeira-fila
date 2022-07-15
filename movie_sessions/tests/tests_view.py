@@ -137,11 +137,7 @@ class TestUserModel(APITestCase):
         )
         data = {"on_sale": True}
         response = self.client.patch(
-<<<<<<< HEAD
             f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}/',
-=======
-            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}',
->>>>>>> feature/test-movie-sessions
             data,
             format="json",
         )
@@ -154,10 +150,6 @@ class TestUserModel(APITestCase):
             format="json",
         )
         response = self.client.delete(
-<<<<<<< HEAD
             f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}/'
-=======
-            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}'
->>>>>>> feature/test-movie-sessions
         )
         self.assertEqual(response.status_code, 204)
