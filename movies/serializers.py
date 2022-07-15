@@ -1,4 +1,5 @@
-from movie_sessions.serializers import MovieSessionSerializer
+from cinemas.serializers import ListCinemaSerializer
+from movie_sessions.models import MovieSession
 from rest_framework import serializers
 from utils.helpers import bulk_get_or_create
 
@@ -43,6 +44,14 @@ class StarSerializer(serializers.ModelSerializer):
         fields = ["person"]
 
 
+class GeneralMovieSessionsSerializer(serializers.ModelSerializer):
+    cinema = ListCinemaSerializer()
+
+    class Meta:
+        model = MovieSession
+        fields = ["id", "session_datetime", "cinema"]
+
+
 class MovieSerializer(serializers.ModelSerializer):
     medias = MediaSerializer(many=True)
     genres = GenreSerializer(many=True)
@@ -50,7 +59,7 @@ class MovieSerializer(serializers.ModelSerializer):
     distributor = DistributorSerializer()
     director = PersonSerializer()
     stars = StarSerializer(many=True)
-    movie_sessions = MovieSessionSerializer(many=True, read_only=True)
+    movie_sessions = GeneralMovieSessionsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
@@ -113,7 +122,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
 class ListMoviesSerializer(serializers.ModelSerializer):
     medias = MediaSerializer(many=True)
-    movie_sessions = MovieSessionSerializer(many=True)
+    movie_sessions = GeneralMovieSessionsSerializer(many=True)
 
     class Meta:
         model = Movie
