@@ -3,7 +3,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 
 from rooms.models import Room
-from rooms.serializers import RoomSerializer
+from rooms.serializers import RoomSerializer, UpdateRoomSerializer
+from utils.mixins import SerializerByMethodMixin
 
 # Create your views here.
 
@@ -22,9 +23,16 @@ class CreateListRoomView(generics.ListCreateAPIView):
         serializer.save(cinema=cinema)
 
 
-class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
+class UpdateRetrieveDeleteRoomView(
+    SerializerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
+):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
+    serializers = {
+        "PATCH": UpdateRoomSerializer,
+        "GET": RoomSerializer,
+        "DELETE": RoomSerializer,
+    }
 
     def get_object(self):
         queryset = self.get_queryset()
