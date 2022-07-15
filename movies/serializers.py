@@ -1,3 +1,4 @@
+from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
 from utils.helpers import bulk_get_or_create
 
@@ -49,6 +50,7 @@ class MovieSerializer(serializers.ModelSerializer):
     distributor = DistributorSerializer()
     director = PersonSerializer()
     stars = StarSerializer(many=True)
+    movie_sessions = MovieSessionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
@@ -111,7 +113,8 @@ class MovieSerializer(serializers.ModelSerializer):
 
 class ListMoviesSerializer(serializers.ModelSerializer):
     medias = MediaSerializer(many=True)
+    movie_sessions = MovieSessionSerializer(many=True)
 
     class Meta:
         model = Movie
-        fields = ["id", "title", "medias"]
+        fields = ["id", "title", "medias", "movie_sessions"]
