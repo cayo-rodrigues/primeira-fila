@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('addresses', '0002_rename_countrie_country'),
+        ("addresses", "0002_rename_countrie_country"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='address',
-            old_name='cities',
-            new_name='city',
+            model_name="address",
+            old_name="cities",
+            new_name="city",
         ),
         migrations.RenameField(
-            model_name='address',
-            old_name='countries',
-            new_name='country',
+            model_name="address",
+            old_name="countries",
+            new_name="country",
         ),
         migrations.RenameField(
-            model_name='address',
-            old_name='districts',
-            new_name='district',
+            model_name="address",
+            old_name="districts",
+            new_name="district",
         ),
         migrations.RenameField(
-            model_name='address',
-            old_name='states',
-            new_name='state',
+            model_name="address",
+            old_name="states",
+            new_name="state",
         ),
     ]

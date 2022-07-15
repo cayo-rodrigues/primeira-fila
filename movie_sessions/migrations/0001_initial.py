@@ -10,24 +10,53 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('rooms', '0001_initial'),
-        ('cinemas', '0002_alter_cinema_owner'),
-        ('movies', '0007_alter_agegroup_minimum_age'),
+        ("rooms", "0001_initial"),
+        ("cinemas", "0002_alter_cinema_owner"),
+        ("movies", "0007_alter_agegroup_minimum_age"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MovieSession',
+            name="MovieSession",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('session_datetime', models.DateTimeField()),
-                ('subtitled', models.BooleanField()),
-                ('is_3d', models.BooleanField()),
-                ('on_sale', models.BooleanField()),
-                ('cinema', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_sessions', to='cinemas.cinema')),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_sessions', to='movies.movie')),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_sessions', to='rooms.room')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("session_datetime", models.DateTimeField()),
+                ("subtitled", models.BooleanField()),
+                ("is_3d", models.BooleanField()),
+                ("on_sale", models.BooleanField()),
+                (
+                    "cinema",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="movie_sessions",
+                        to="cinemas.cinema",
+                    ),
+                ),
+                (
+                    "movie",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="movie_sessions",
+                        to="movies.movie",
+                    ),
+                ),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="movie_sessions",
+                        to="rooms.room",
+                    ),
+                ),
             ],
         ),
     ]
