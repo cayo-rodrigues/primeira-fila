@@ -8,3 +8,4 @@ class MovieSessionSerializer(serializers.ModelSerializer):
         model = MovieSession
         fields = "__all__"
         read_only_fields = ["id", "cinema", "room", "movie"]
+        depth = 1

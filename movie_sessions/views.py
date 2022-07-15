@@ -5,6 +5,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rooms.models import Room
+from utils.permissions import OwnerPermission
 
 from .models import MovieSession
 from .serializers import MovieSessionSerializer
@@ -28,8 +29,8 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
 class MovieSessionCinemaDetailView(generics.ListAPIView):
 
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -46,8 +47,8 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
 
 class MovieSessionMovieDetailView(generics.ListAPIView):
 
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -68,7 +69,7 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
 class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [OwnerPermission]
 
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -76,11 +77,11 @@ class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         cinema_id = self.kwargs["cine_id"]
-        movie_id = self.kwargs["movie_id"]
+        # movie_id = self.kwargs["movie_id"]
         movie_session_id = self.kwargs["session_id"]
 
         get_object_or_404(Cinema, id=cinema_id)
-        get_object_or_404(Movie, id=movie_id)
+        # get_object_or_404(Movie, id=movie_id)
         get_object_or_404(MovieSession, id=movie_session_id)
         movie_session = MovieSession.objects.filter(id=movie_session_id)
 
