@@ -1,8 +1,8 @@
 from cinemas.models import Cinema
 from rest_framework import serializers, status
+from tickets.models import Seat
 
 from rooms.models import Room, RoomCorridor, SeatRows
-from tickets.models import Seat
 
 
 class SeatRowsSerializer(serializers.ModelSerializer):
@@ -36,20 +36,23 @@ class RoomSerializer(serializers.ModelSerializer):
 
         room = Room.objects.create(**validated_data)
 
+        seat_rows = []
+        seat_instances = []
         for value in seats:
-            seat = SeatRows.objects.create(**value)
-            seat.room = room
-            seat.save()
+            seat = SeatRows(**value, room=room)
+            seat_rows.append(seat)
+
             for i in range(seat.seat_count):
                 name = f"{seat.row}{i+1}"
                 new_seat = {"name": name, "room": room}
-                created_seat = Seat.objects.create(**new_seat)
-                created_seat.save()
+                seat_instances.append(Seat(**new_seat))
 
-        for value in corridors_list:
-            corridor = RoomCorridor.objects.create(**value)
-            corridor.room = room
-            corridor.save()
+        SeatRows.objects.bulk_create(seat_rows)
+        Seat.objects.bulk_create(seat_instances)
+
+        RoomCorridor.objects.bulk_create(
+            [RoomCorridor(**value, room=room) for value in corridors_list]
+        )
 
         room.save()
 
@@ -100,6 +103,7 @@ class UpdateRoomSerializer(serializers.ModelSerializer):
             except:
                 pass
 
+            new_corridors = []
             for value in corridors:
                 try:
                     old_corridor = RoomCorridor.objects.get(pk=value["id"])
@@ -112,8 +116,9 @@ class UpdateRoomSerializer(serializers.ModelSerializer):
                     old_corridor.to_row = value["to_row"]
                     old_corridor.save()
                 else:
-                    room_corridor = RoomCorridor.objects.create(**value)
-                    instance.room_corridors.add(room_corridor)
+                    new_corridors.append(RoomCorridor(**value))
+
+            instance.room_corridors.set(RoomCorridor.objects.bulk_create(new_corridors))
 
         if rows:
             try:
@@ -127,6 +132,8 @@ class UpdateRoomSerializer(serializers.ModelSerializer):
             except:
                 pass
 
+            new_rows = []
+            new_seats = []
             for value in rows:
                 try:
                     old_row = SeatRows.objects.get(pk=value["id"])
@@ -140,14 +147,16 @@ class UpdateRoomSerializer(serializers.ModelSerializer):
                     old_row.seat_count = value["seat_count"]
                     old_row.save()
                 else:
-                    seat_rows = SeatRows.objects.create(**value)
-                    instance.seat_rows.add(seat_rows)
+                    seat_rows = SeatRows(**value)
+                    new_rows.append(seat_rows)
 
                     for i in range(seat_rows.seat_count):
                         name = f"{seat_rows.row}{i+1}"
                         new_seat = {"name": name, "room": instance}
-                        created_seat = Seat.objects.create(**new_seat)
-                        created_seat.save()
+                        new_seats.append(Seat(**new_seat))
+
+            instance.seat_rows.set(SeatRows.objects.bulk_create(new_rows))
+            Seat.objects.bulk_create(new_seats)
 
         instance.save()
         return instance
