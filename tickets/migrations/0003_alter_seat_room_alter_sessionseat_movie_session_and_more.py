@@ -7,35 +7,55 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movie_sessions', '0002_alter_moviesession_price'),
-        ('rooms', '0002_room_cinema'),
-        ('tickets', '0002_seat_ticket_remove_tickets_movie_session_and_more'),
+        ("movie_sessions", "0002_alter_moviesession_price"),
+        ("rooms", "0002_room_cinema"),
+        ("tickets", "0002_seat_ticket_remove_tickets_movie_session_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='seat',
-            name='room',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='seats', to='rooms.room'),
+            model_name="seat",
+            name="room",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="seats",
+                to="rooms.room",
+            ),
         ),
         migrations.AlterField(
-            model_name='sessionseat',
-            name='movie_session',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='session_seats', to='movie_sessions.moviesession'),
+            model_name="sessionseat",
+            name="movie_session",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="session_seats",
+                to="movie_sessions.moviesession",
+            ),
         ),
         migrations.AlterField(
-            model_name='sessionseat',
-            name='seat',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='session_seats', to='tickets.sessionseat'),
+            model_name="sessionseat",
+            name="seat",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="session_seats",
+                to="tickets.sessionseat",
+            ),
         ),
         migrations.AlterField(
-            model_name='sessionseat',
-            name='ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='session_seats', to='tickets.ticket'),
+            model_name="sessionseat",
+            name="ticket",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="session_seats",
+                to="tickets.ticket",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='movie_session',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='movie_sessions.moviesession'),
+            model_name="ticket",
+            name="movie_session",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tickets",
+                to="movie_sessions.moviesession",
+            ),
         ),
     ]

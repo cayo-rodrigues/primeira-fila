@@ -9,66 +9,118 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movie_sessions', '0002_alter_moviesession_price'),
+        ("movie_sessions", "0002_alter_moviesession_price"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('rooms', '0002_room_cinema'),
-        ('tickets', '0001_initial'),
+        ("rooms", "0002_room_cinema"),
+        ("tickets", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Seat',
+            name="Seat",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=5)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='seat', to='rooms.room')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=5)),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="seat",
+                        to="rooms.room",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('movie_session', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='registered_tickets', to='movie_sessions.moviesession')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "movie_session",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="registered_tickets",
+                        to="movie_sessions.moviesession",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tickets",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='tickets',
-            name='movie_session',
+            model_name="tickets",
+            name="movie_session",
         ),
         migrations.RemoveField(
-            model_name='tickets',
-            name='seat',
+            model_name="tickets",
+            name="seat",
         ),
         migrations.RemoveField(
-            model_name='tickets',
-            name='user',
+            model_name="tickets",
+            name="user",
         ),
         migrations.AlterField(
-            model_name='sessionseat',
-            name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
+            model_name="sessionseat",
+            name="id",
+            field=models.UUIDField(
+                default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
-            model_name='sessionseat',
-            name='movie_session',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sessions_seats', to='movie_sessions.moviesession'),
+            model_name="sessionseat",
+            name="movie_session",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sessions_seats",
+                to="movie_sessions.moviesession",
+            ),
         ),
         migrations.AlterField(
-            model_name='sessionseat',
-            name='seat',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sessions_seats', to='tickets.sessionseat'),
+            model_name="sessionseat",
+            name="seat",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sessions_seats",
+                to="tickets.sessionseat",
+            ),
         ),
         migrations.DeleteModel(
-            name='Seats',
+            name="Seats",
         ),
         migrations.DeleteModel(
-            name='Tickets',
+            name="Tickets",
         ),
         migrations.AddField(
-            model_name='sessionseat',
-            name='ticket',
-            field=models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, related_name='sessions_seats', to='tickets.ticket'),
+            model_name="sessionseat",
+            name="ticket",
+            field=models.ForeignKey(
+                default="",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sessions_seats",
+                to="tickets.ticket",
+            ),
             preserve_default=False,
         ),
     ]

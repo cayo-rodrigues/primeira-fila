@@ -1,9 +1,12 @@
+from dis import dis
+from email.headerregistry import Address
 from django.test import TestCase
 from movie_sessions.models import MovieSession
 from cinemas.models import Cinema
-from rooms.models import Room
+from rooms.models import Room, RoomCorridor, SeatRows
 from movies.models import Movie, Person, Distributor, Star, Genre, AgeGroup, Media
 from users.models import User
+from addresses.models import Address, District, City, Country, State
 
 
 class MovieSessionModelTest(TestCase):
@@ -48,7 +51,7 @@ class MovieSessionModelTest(TestCase):
             duration=119,
             synopsis="O filme apresenta Thor em uma jornada diferente de tudo que ele já enfrenta...",
             premiere="2022-07-11",
-            genres=[genre1, genre2, genre3],
+            genres = [genre1, genre2, genre3],
             age_group=age_group1,
             distributor=distributor1,
             director=cls.director,
@@ -60,58 +63,53 @@ class MovieSessionModelTest(TestCase):
             is_video=True,
             movie=cls.movie,
         )
-                
-        cls.media2 = Media.objects.create(
-            name="Poster Thor 1",
-            media_url="https://wwww.imagem.com",
-            is_video=False,
-            movie=cls.movie,
-        ),
+
+        cls.media2 = (
+            Media.objects.create(
+                name="Poster Thor 1",
+                media_url="https://wwww.imagem.com",
+                is_video=False,
+                movie=cls.movie,
+            ),
+        )
 
         cls.star1 = Star.objects.create(person=cls.director, movie=cls.movie)
 
         cls.star2 = Star.objects.create(person=person1, movie=cls.movie)
 
-        cls.cinema = Cinema.objects.create(
-            name="Cine Asno",
-            address={
-                "street": "Rua A",
-                "number": "34",
-                "details": "Perto da coxinharia do thiago",
-                "city": {"name": "Jubileu do sul"},
-                "state": {"name": "MG"},
-                "country": {"name": "Brazil"},
-                "district": {"name": "Guadalupe"},
-            },
-            rooms=[
-                {
-                    "name": "SALA X",
-                    "seat_rows": [8, 9, 10, 10, 10, 8, 9, 9, 10],
-                    "corridors": [
-                        {"column": 1, "from_row": 4, "to_row": 4},
-                        {"column": 4, "from_row": 2, "to_row": 4},
-                        {"column": 8, "from_row": 2, "to_row": 4},
-                    ],
-                }
-            ],
+        district = District.objects.create(name="Guadalupe")
+        city = City.objects.create(name="Jubileu do Sul")
+        state = State.objects.create(name="MG")
+        country = Country.objects.create(name="Brazil")
+
+        address = Address.objects.create(
+            street="Rua A",
+            number="34",
+            details="Perto da coxinharia do thiago",
+            district=district,
+            city=city,
+            state=state,
+            country=country,
         )
+
+        seat_row1 = SeatRows.objects.create(row="A", seat_count=10)
+        seat_row2 = SeatRows.objects.create(row="B", seat_count=8)
+        seat_row3 = SeatRows.objects.create(row="C", seat_count=8)
+
+        room_corridor1 = RoomCorridor.objects.create(column=1, from_row=2, to_row=7)
+        room_corridor2 = RoomCorridor.objects.create(column=8, from_row=2, to_row=7)
 
         cls.room = Room.objects.create(
             name="SALA ADA",
-            seat_rows=[
-                {"row": "A", "seat_count": 10},
-                {"row": "B", "seat_count": 8},
-                {"row": "C", "seat_count": 8},
-                {"row": "D", "seat_count": 8},
-                {"row": "E", "seat_count": 8},
-                {"row": "F", "seat_count": 8},
-                {"row": "G", "seat_count": 8},
-            ],
-            room_corridors=[
-                {"column": 1, "from_row": 2, "to_row": 7},
-                {"column": 8, "from_row": 2, "to_row": 7},
-            ],
+            seat_rows=[seat_row1, seat_row2, seat_row3],
+            room_corridors=[room_corridor1, room_corridor2],
             cinema=cls.cinema,
+        )
+
+        cls.cinema = Cinema.objects.create(
+            name="Cine Asno",
+            address=address,
+            rooms=[cls.room],
         )
 
         cls.movie_session = MovieSession.objects.create(
