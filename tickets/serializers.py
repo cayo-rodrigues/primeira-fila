@@ -1,8 +1,10 @@
+from movie_sessions.models import SessionSeat
 from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
+from rooms.models import Seat
 from users.serializers import UserSerializer
 
-from .models import Seat, SessionSeat, Ticket
+from .models import Ticket
 
 
 class SeatSerializer(serializers.ModelSerializer):

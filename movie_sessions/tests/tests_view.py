@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 from users.models import User
 
-
 class TestUserModel(APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -21,30 +20,50 @@ class TestUserModel(APITestCase):
             "password": "abc123456",
         }
         cls.movie_data = {
-            "title": "Thor: Amor e Trovão",
+            "title": "Thor, Amor e Trovão",
             "duration": 119,
-            "synopsis": "O filme apresenta Thor em uma jornada diferente de tudo que ele já enfrenta...",
+            "synopsis": "Nunca imaginei que no final eu me Thornaria um pato",
             "premiere": "2022-07-11",
             "medias": [
                 {
-                    "name": "Trailer Thor 1",
-                    "media_url": "https://wwww.video.com",
-                    "is_video": True,
+                    "name": "Poster Telescópio 1",
+                    "media_url": "https://ultimosegundo.ig.com.br/ciencia/2022-07-11/primeira-foto-do-james-webb-mostra-galaxias-pouco-apos-o-big-bang.html",
+                    "is_video": False
+                }
+            ],
+            "genres": [
+                {
+                    "name": "Trovão"
                 },
                 {
-                    "name": "Poster Thor 1",
-                    "media_url": "https://wwww.imagem.com",
-                    "is_video": False,
+                    "name": "Trovoada"
                 },
+                {
+                    "name": "Martelo"
+                }
             ],
-            "genres": [{"name": "Ação"}, {"name": "Drama"}, {"name": "Trovão"}],
-            "age_group": {"minimum_age": 14, "content": "Uso de drogas, Thorcicolo"},
-            "distributor": {"name": "Wall Thisney"},
-            "director": {"name": "Thiago"},
+            "age_group": {
+                "minimum_age": 18,
+                "content": "Brutalidade, Steve Magau"
+            },
+            "distributor": {
+                "name": "Wall Thisney"
+            },
+            "director": {
+                "name": "Thiago"
+            },
             "stars": [
-                {"person": {"name": "Thiago Montserrat"}},
-                {"person": {"name": "Steve Magau"}},
-            ],
+                {
+                    "person": {
+                        "name": "Thiago Montserrat"
+                    }
+                },
+                {
+                    "person": {
+                        "name": "Steve Magau"
+                    }
+                }
+            ]
         }
         cls.cinema_data = {
             "name": "Cine Asno",
@@ -101,9 +120,11 @@ class TestUserModel(APITestCase):
             {"email": "super@super.com", "password": "abc123456"},
             "json",
         )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
         self.movie = self.client.post("/movies/", self.movie_data, format="json")
-
         self.user = User.objects.create(**self.user_data)
         response_manager = self.client.post(
             "/sessions/token/",
@@ -127,13 +148,33 @@ class TestUserModel(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_can_list_a_movie_session(self):
-        ...
+        session = self.client.post(
+            f'/cinemas/{self.cinema.data["id"]}/rooms/{self.room.data["id"]}/movie/{self.movie.data["id"]}/movie-sessions/',
+            self.movie_session_data,
+            format="json",
+        )
+        response = self.client.get(f'/cinemas/{self.cinema.data["id"]}/movie-sessions/{session.data["id"]}/')
+        self.assertEqual(response.status_code, 200)
+        
         
     def test_can_list_all_movie_sessions_from_a_cinema(self):
-        ...    
+        self.client.post(
+            f'/cinemas/{self.cinema.data["id"]}/rooms/{self.room.data["id"]}/movie/{self.movie.data["id"]}/movie-sessions/',
+            self.movie_session_data,
+            format="json",
+        )
+        response = self.client.get(f'/cinemas/{self.cinema.data["id"]}/movie-sessions/') 
+        self.assertEqual(response.status_code, 200)  
+
 
     def test_can_list_all_movie_sessions_from_a_movie(self):
-        ...
+        self.client.post(
+            f'/cinemas/{self.cinema.data["id"]}/rooms/{self.room.data["id"]}/movie/{self.movie.data["id"]}/movie-sessions/',
+            self.movie_session_data,
+            format="json",
+        )
+        response = self.client.get(f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/')
+        self.assertEqual(response.status_code, 200)
 
 
     def test_can_update_a_movie_session(self):
@@ -143,12 +184,12 @@ class TestUserModel(APITestCase):
             format="json",
         )
         data = {"on_sale": True}
-        response = self.client.patch(
-            f'/cinemas/{self.cinema.data["id"]}/movie-sessions/{movie_session.data["id"]}/',
+        response = self.client.patch(f'/cinemas/{self.cinema.data["id"]}/movie-sessions/{movie_session.data["id"]}/',
             data,
             format="json",
         )
         self.assertEqual(response.status_code, 200)
+
 
     def test_can_delete_a_movie_session(self):
         movie_session = self.client.post(
