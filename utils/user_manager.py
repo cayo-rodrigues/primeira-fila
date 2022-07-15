@@ -11,7 +11,7 @@ class CustomUserManager(BaseUserManager):
         age,
         password=None,
         is_staff=False,
-        **extra_fields,
+        **extra_fields
     ):
         now = timezone.now()
 
@@ -28,7 +28,7 @@ class CustomUserManager(BaseUserManager):
             last_login=now,
             created_at=now,
             updated_at=now,
-            **extra_fields,
+            **extra_fields
         )
         user.set_password(password)
 
@@ -36,16 +36,10 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(
-        self,
-        email,
-        first_name,
-        last_name,
-        age,
-        password=None,
-        **extra_fields,
+        self, email, first_name, last_name, age, password=None, **extra_fields
     ):
-        user = self.create_user(
-            email, first_name, last_name, age, password, **extra_fields
+        user = self.create(
+            email, first_name, last_name, age, password, True, **extra_fields
         )
         user.is_superuser = True
 
