@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from cinemas.models import Cinema
 
 
 class IsSuperUser(permissions.BasePermission):
@@ -11,8 +12,17 @@ class ReadOnly(permissions.BasePermission):
         return request.method in permissions.SAFE_METHODS
 
 
-# class OnlySelfManagerPermission(permissions.BasePermission):
-#     def has_object_permission(self, request, view, obj):
-#         if request.method == "PATCH":
-#             return request.user.is == request.user.id
-#         return True
+class OnlySelfManagerPermission(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj: Cinema):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.owner == request.user
+
+
+# class IsOwnerOrReadOnly(permissions.BasePermission):
+#     def has_object_permission(self, request, view, obj: ParkingLot):
+#         if request.method in permissions.SAFE_METHODS:
+#             return True
+
+#         return obj.owner == request.user
