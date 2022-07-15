@@ -5,9 +5,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rooms.models import Room
-from tickets.models import Seat
 
-from .models import MovieSession, SessionSeat
+from .models import MovieSession
 from .serializers import MovieSessionSerializer
 
 

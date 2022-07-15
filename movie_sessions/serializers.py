@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tickets.models import Seat
+
 
 from .models import MovieSession, SessionSeat
 
