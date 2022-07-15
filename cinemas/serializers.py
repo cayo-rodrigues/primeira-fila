@@ -6,26 +6,21 @@ from addresses.serializers import (
     DistrictSerializer,
     StateSerializer,
 )
+from users.serializers import UserSerializer
 from rest_framework import serializers
 from users.models import User
-
 from cinemas.models import Cinema
 
-# from addresses.serializers import
-# import ipdb
+import ipdb
 
 
 class CreateCinemaSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Cinema
         fields = "__all__"
-        read_only_fields = ["id", "owner"]
-        # extra_kwargs = {
-        #     "is_active": {"default": True},
-        #     "quantity": {"min_value": 0},
-        # }
 
     def create(self, validated_data: dict):
         print("teste")
@@ -50,23 +45,40 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
         return Cinema.objects.create(**validated_data, address=objAddress)
 
     def update(self, instance: Cinema, validated_data: dict):
+
         address = validated_data.pop("address", None)
-        city = validated_data.pop("city", None)
-        district = validated_data.pop("district", None)
-        state = validated_data.pop("state", None)
-        country = validated_data.pop("country", None)
+
+        if address:
+            city = address.pop("city", None)
+            district = address.pop("district", None)
+            state = address.pop("state", None)
+            country = address.pop("country", None)
+
+            street = address.pop("street", None)
+            number = address.pop("number", None)
+            details = address.pop("details", None)
+            # ipdb.set_trace()
+
+            if city:
+                instance.address.city = City.objects.get_or_create(**city)[0]
+            if district:
+                instance.address.district = District.objects.get_or_create(**district)[
+                    0
+                ]
+            if state:
+                instance.address.state = State.objects.get_or_create(**state)[0]
+            if country:
+                instance.address.country = Country.objects.get_or_create(**country)[0]
+
+            if street:
+                instance.address.street = street
+            if number:
+                instance.address.number = number
+            if details:
+                instance.address.details = details
 
         for key, value in validated_data.items():
             setattr(instance, key, value)
-
-        if city:
-            instance.city = City.objects.get_or_create(**city)[0]
-        if district:
-            instance.district = District.objects.get_or_create(**district)[0]
-        if state:
-            instance.state = State.objects.get_or_create(**state)[0]
-        if country:
-            instance.country = Country.objects.get_or_create(**country)[0]
 
         instance.save()
         return instance
@@ -74,6 +86,7 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
 
 class ListCinemaSerializer(serializers.ModelSerializer):
     total_rooms = serializers.SerializerMethodField()
+    address = AddressSerializer()
 
     class Meta:
         model = Cinema
