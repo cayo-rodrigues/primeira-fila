@@ -6,13 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('movies', '0004_alter_agegroup_minimum_age'),
+        ("movies", "0004_alter_agegroup_minimum_age"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='agegroup',
-            name='minimum_age',
-            field=models.CharField(choices=[(0, 'L'), (10, '10'), (12, '12'), (14, '14'), (16, '16'), (18, '18')], default=0, max_length=127),
+            model_name="agegroup",
+            name="minimum_age",
+            field=models.CharField(
+                choices=[
+                    (0, "L"),
+                    (10, "10"),
+                    (12, "12"),
+                    (14, "14"),
+                    (16, "16"),
+                    (18, "18"),
+                ],
+                default=0,
+                max_length=127,
+            ),
         ),
     ]

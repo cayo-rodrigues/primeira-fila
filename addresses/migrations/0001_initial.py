@@ -8,49 +8,116 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='City',
+            name="City",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='Countrie',
+            name="Countrie",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='District',
+            name="District",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='State',
+            name="State",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='Address',
+            name="Address",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('street', models.CharField(max_length=100)),
-                ('number', models.CharField(max_length=2)),
-                ('details', models.TextField(max_length=300)),
-                ('cities', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='addresses.city')),
-                ('countries', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='addresses.countrie')),
-                ('districts', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='addresses.district')),
-                ('states', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='addresses', to='addresses.state')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("street", models.CharField(max_length=100)),
+                ("number", models.CharField(max_length=2)),
+                ("details", models.TextField(max_length=300)),
+                (
+                    "cities",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="addresses",
+                        to="addresses.city",
+                    ),
+                ),
+                (
+                    "countries",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="addresses",
+                        to="addresses.countrie",
+                    ),
+                ),
+                (
+                    "districts",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="addresses",
+                        to="addresses.district",
+                    ),
+                ),
+                (
+                    "states",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="addresses",
+                        to="addresses.state",
+                    ),
+                ),
             ],
         ),
     ]

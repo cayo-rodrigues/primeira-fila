@@ -10,18 +10,40 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('addresses', '0002_rename_countrie_country'),
+        ("addresses", "0002_rename_countrie_country"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Cinema',
+            name="Cinema",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('address', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='cinemas', to='addresses.address')),
-                ('owner', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='cinemas', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                (
+                    "address",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cinemas",
+                        to="addresses.address",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cinemas",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
