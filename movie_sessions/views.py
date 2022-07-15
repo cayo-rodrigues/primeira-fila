@@ -6,10 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rooms.models import Room
 
-from .models import MovieSession
+from .models import MovieSession, SessionSeat
 from .serializers import MovieSessionSerializer
 
-from tickets.models import SessionSeat, Seat
+from tickets.models import Seat
 
 
 class MovieSessionCreateView(generics.CreateAPIView):
