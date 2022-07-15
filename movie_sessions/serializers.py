@@ -18,7 +18,7 @@ class MovieSessionSerializer(serializers.ModelSerializer):
                 SessionSeat(
                     is_avaliable=True,
                     movie_session=movie_session,
-                    seat=Seat.objects.get(name=seat.name),
+                    seat=seat,
                 )
                 for seat in validated_data["room"].seats.all()
             ]
