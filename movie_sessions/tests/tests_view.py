@@ -1,8 +1,6 @@
-from rest_framework.test import APITestCase
 from movie_sessions.models import MovieSession
-from users.models import User
 from rest_framework.test import APITestCase
-
+from users.models import User
 
 class TestUserModel(APITestCase):
     @classmethod
@@ -106,6 +104,7 @@ class TestUserModel(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
         )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
         self.movie = self.client.post("/movies/", self.movie_data, format="json")
 
         self.user = User.objects.create(**self.user_data)
@@ -138,7 +137,7 @@ class TestUserModel(APITestCase):
         )
         data = {"on_sale": True}
         response = self.client.patch(
-            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}',
+            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}/',
             data,
             format="json",
         )
@@ -151,6 +150,6 @@ class TestUserModel(APITestCase):
             format="json",
         )
         response = self.client.delete(
-            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}'
+            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}/'
         )
         self.assertEqual(response.status_code, 204)
