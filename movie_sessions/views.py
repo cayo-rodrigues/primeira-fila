@@ -1,5 +1,5 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from movies.models import Movie
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -29,16 +29,13 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
 class MovieSessionCinemaDetailView(generics.ListAPIView):
 
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
-
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
 
     def get_queryset(self):
         cinema_id = self.kwargs["cine_id"]
 
-        cinema = get_object_or_404(Cinema, id=cinema_id)
+        get_object_or_404(Cinema, id=cinema_id)
 
         movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id)
 
@@ -46,9 +43,6 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
 
 
 class MovieSessionMovieDetailView(generics.ListAPIView):
-
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -61,7 +55,7 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
         get_object_or_404(Cinema, id=cinema_id)
         get_object_or_404(Movie, id=movie_id)
 
-        movie_sessions = MovieSession.objects.filter(movie_id=movie_id)
+        movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id).filter(movie_id=movie_id)
 
         return movie_sessions
 
@@ -77,11 +71,9 @@ class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         cinema_id = self.kwargs["cine_id"]
-        # movie_id = self.kwargs["movie_id"]
         movie_session_id = self.kwargs["session_id"]
 
         get_object_or_404(Cinema, id=cinema_id)
-        # get_object_or_404(Movie, id=movie_id)
         get_object_or_404(MovieSession, id=movie_session_id)
         movie_session = MovieSession.objects.filter(id=movie_session_id)
 
