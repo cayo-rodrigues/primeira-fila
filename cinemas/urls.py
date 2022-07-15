@@ -4,7 +4,7 @@ from movie_sessions import views
 from movies.views import MovieByCinemaView
 from rooms import views as room_views
 
-from tickets.views import TicketView
+from tickets.views import TicketView, TicketSessionMovieDetailsView, TicketSessionMovieOneDetailsView
 
 from .views import CinemaDetailView, CreateCinemaView
 
@@ -26,6 +26,14 @@ urlpatterns = [
     path(
         "<cine_id>/movie-sessions/<session_id>/tickets/",
         TicketView.as_view(),
+    ),
+    path(
+        "<cine_id>/movie-sessions/<session_id>/tickets/",
+        TicketSessionMovieDetailsView.as_view(),
+    ),
+    path(
+        "<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/",
+        TicketSessionMovieOneDetailsView.as_view(),
     ),
     path("<cine_id>/movies/", MovieByCinemaView.as_view()),
     path(
