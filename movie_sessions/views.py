@@ -5,11 +5,10 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rooms.models import Room
+from tickets.models import Seat
 
 from .models import MovieSession, SessionSeat
 from .serializers import MovieSessionSerializer
-
-from tickets.models import Seat
 
 
 class MovieSessionCreateView(generics.CreateAPIView):
@@ -24,17 +23,6 @@ class MovieSessionCreateView(generics.CreateAPIView):
         cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
         room = get_object_or_404(Room, pk=self.kwargs["room_id"], cinema=cinema)
         movie = get_object_or_404(Movie, pk=self.kwargs["movie_id"])
-
-
-        for value in room.seats: 
-
-            seat = Seat.objects.get(name=value.name) 
-
-            SessionSeat.objects.create(
-                is_avaliable=True,
-                movie_session=serializer.data,
-                seat=seat,
-            )    
 
         serializer.save(cinema=cinema, room=room, movie=movie)
 
