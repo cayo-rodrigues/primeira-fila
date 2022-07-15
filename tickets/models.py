@@ -24,7 +24,7 @@ class SessionSeat(models.Model):
     )
 
     ticket = models.ForeignKey(
-        "tickets.Ticket", on_delete=models.CASCADE, related_name="session_seats"
+        "tickets.Ticket", on_delete=models.CASCADE, related_name="session_seats", null=True
     )
 
     movie_session = models.ForeignKey(

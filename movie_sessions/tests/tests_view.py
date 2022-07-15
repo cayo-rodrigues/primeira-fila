@@ -2,7 +2,6 @@ from movie_sessions.models import MovieSession
 from rest_framework.test import APITestCase
 from users.models import User
 
-
 class TestUserModel(APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -102,6 +101,9 @@ class TestUserModel(APITestCase):
             {"email": "super@super.com", "password": "abc123456"},
             "json",
         )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
         self.movie = self.client.post("/movies/", self.movie_data, format="json")
 
@@ -135,7 +137,11 @@ class TestUserModel(APITestCase):
         )
         data = {"on_sale": True}
         response = self.client.patch(
+<<<<<<< HEAD
             f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}/',
+=======
+            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}',
+>>>>>>> feature/test-movie-sessions
             data,
             format="json",
         )
@@ -148,6 +154,10 @@ class TestUserModel(APITestCase):
             format="json",
         )
         response = self.client.delete(
+<<<<<<< HEAD
             f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}/'
+=======
+            f'/cinemas/{self.cinema.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/{movie_session.data["id"]}'
+>>>>>>> feature/test-movie-sessions
         )
         self.assertEqual(response.status_code, 204)
