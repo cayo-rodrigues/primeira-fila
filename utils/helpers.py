@@ -54,9 +54,9 @@ def normalize_text(
     elif is_lower:
         text = text.lower()
 
-    if join_by:
-        text = join_by.join(text.split(split_by))
     if split_by:
         text = text.split(split_by)
+    if join_by:
+        text = join_by.join(text if split_by else text.split(split_by))
 
     return text
