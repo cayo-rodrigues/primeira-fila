@@ -37,9 +37,18 @@ class Movie(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.title = normalize_text(self.title, is_title=True)
 
+        genres = []
+
         for genre in self.genres.all():
             genre.name = normalize_text(genre.name, is_lower=True)
-            genre.save()
+            existing_genre = Genre.objects.filter(name=genre.name).first()
+            if existing_genre:
+                genres.append(existing_genre)
+            else:
+                genre.save()
+                genres.append(genre)
+
+        self.genres.set(genres)
 
         return super().save(*args, **kwargs)
 
