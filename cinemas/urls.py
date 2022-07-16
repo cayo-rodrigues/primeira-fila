@@ -45,7 +45,7 @@ urlpatterns = [
         views.MovieSessionMovieDetailView.as_view(),
     ),
     path(
-        "<cine_id>/movies/<movie_id>/movie-sessions/<session_id>/",
+        "<cine_id>/movie-sessions/<session_id>/",
         views.MovieSessionDetail.as_view(),
     ),
 ]
