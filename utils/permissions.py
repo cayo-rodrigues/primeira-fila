@@ -12,6 +12,13 @@ class ReadOnly(permissions.BasePermission):
         return request.method in permissions.SAFE_METHODS
 
 
+class OwnerPermission(permissions.BasePermission):
+    def has_object_permission(self, request, view, object):  
+        if request.method in permissions.SAFE_METHODS:
+            return True  
+        return request.user == object.cinema.owner
+    
+    
 class OnlySelfManagerPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj: Cinema):
         if request.method in permissions.SAFE_METHODS:

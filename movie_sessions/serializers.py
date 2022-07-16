@@ -9,6 +9,7 @@ class MovieSessionSerializer(serializers.ModelSerializer):
         model = MovieSession
         fields = "__all__"
         read_only_fields = ["id", "cinema", "room", "movie"]
+        depth = 1
 
     def create(self, validated_data: dict):
         movie_session = MovieSession.objects.create(**validated_data)
