@@ -4,7 +4,6 @@ from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
 from rooms.models import Seat
 from users.serializers import UserSerializer
-import ipdb
 
 from .models import Ticket
 
@@ -42,13 +41,13 @@ class TicketSerializer(serializers.ModelSerializer):
         for session_seat_data in seats:
             chosen_seat: SessionSeat = get_object_or_404(
                 SessionSeat,
-                seat = get_object_or_404(
+                seat=get_object_or_404(
                     Seat,
-                    name = session_seat_data["seat"]["name"],
-                    room = validated_data["movie_session"].room,
+                    name=session_seat_data["seat"]["name"],
+                    room=validated_data["movie_session"].room,
                 ),
-                is_avaliable = True,
-                movie_session = validated_data["movie_session"]
+                is_avaliable=True,
+                movie_session=validated_data["movie_session"],
             )
             chosen_seat.is_avaliable = False
             chosen_seat.save()
@@ -58,10 +57,3 @@ class TicketSerializer(serializers.ModelSerializer):
         ticket.save()
 
         return ticket
-
-    # def update(self, instance: Ticket, validated_data):
-    #     session_seats : SessionSeat = validated_data.pop("session_seat", None)
-    #     if session_seats.seat:
-    #         session_seats.is_avaliable = True
-
-                
