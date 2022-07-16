@@ -1,5 +1,7 @@
-from django.db import models
 import uuid
+
+from django.db import models
+
 
 # Create your models here.
 class Cinema(models.Model):
@@ -13,9 +15,3 @@ class Cinema(models.Model):
         on_delete=models.CASCADE,
         related_name="cinemas",
     )
-    # rooms = models.ForeignKey(
-    #     "rooms.Room", on_delete=models.CASCADE, related_name="rooms"
-    # )
-    # movies_cinemas = models.ForeignKey(
-    #     "movies.Movie", on_delete=models.CASCADE, related_name="movies"
-    # )
