@@ -54,15 +54,34 @@ def normalize_text(
     elif is_lower:
         text = text.lower()
 
-    if join_by:
-        text = join_by.join(text.split(split_by))
     if split_by:
         text = text.split(split_by)
+    if join_by:
+        text = join_by.join(text if split_by else text.split(split_by))
 
     return text
 
 
-def normalize_input(values: list[dict], key: str):
-    return [
-        {key: normalize_text(value[key], is_lower=True), **value} for value in values
-    ]
+def normalize_input(values: list[dict], key: str, nested_key: str = None, **kwargs):
+    result = []
+    for value in values:
+        if nested_key:
+            result.append(
+                {
+                    key: {
+                        nested_key: normalize_text(value[key][nested_key], **kwargs),
+                    }
+                }
+            )
+        else:
+            result.append({key: normalize_text(value[key], **kwargs)})
+
+    return result
+
+    # return [
+    #     {
+    #         **value,
+    #         key: normalize_text(value[key], **kwargs),
+    #     }
+    #     for value in values
+    # ]
