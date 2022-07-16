@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from movies.models import Movie
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rooms.models import Room
 from utils.permissions import OwnerPermission
 
@@ -12,8 +11,6 @@ from .serializers import MovieSessionSerializer
 
 
 class MovieSessionCreateView(generics.CreateAPIView):
-
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = MovieSession.objects.all()
@@ -28,7 +25,6 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
 
 class MovieSessionCinemaDetailView(generics.ListAPIView):
-
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
 
@@ -43,7 +39,6 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
 
 
 class MovieSessionMovieDetailView(generics.ListAPIView):
-
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
 
@@ -61,10 +56,7 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
 
 
 class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
-
-    authentication_classes = [JWTAuthentication]
     permission_classes = [OwnerPermission]
-
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
     lookup_url_kwarg = "session_id"

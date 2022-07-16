@@ -1,5 +1,5 @@
-from rest_framework import permissions
 from cinemas.models import Cinema
+from rest_framework import permissions
 
 
 class IsSuperUser(permissions.BasePermission):
@@ -25,6 +25,3 @@ class OnlySelfManagerPermission(permissions.BasePermission):
             return True
 
         return obj.owner == request.user
-
-
-
