@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from users.models import User
+from users.models import AccountConfirmation, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,3 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["created_at", "updated_at"]
         extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        user = User.objects.create(**validated_data)
+        AccountConfirmation.objects.create(account=user)
+        return user
