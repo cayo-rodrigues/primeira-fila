@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from django.db import models
+from utils.helpers import normalize_text
 
 # Create your models here.
 
@@ -33,6 +34,15 @@ class Movie(models.Model):
     )
     genres = models.ManyToManyField("movies.Genre", related_name="movies")
 
+    def save(self, *args, **kwargs) -> None:
+        self.title = normalize_text(self.title, is_title=True)
+
+        for genre in self.genres.all():
+            genre.name = normalize_text(genre.name, is_lower=True)
+            genre.save()
+
+        return super().save(*args, **kwargs)
+
 
 class Media(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -47,6 +57,10 @@ class Person(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.CharField(max_length=127)
 
+    def save(self, *args, **kwargs) -> None:
+        self.name = normalize_text(self.name, is_lower=True)
+        return super().save(*args, **kwargs)
+
 
 class Star(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -58,6 +72,10 @@ class Star(models.Model):
 class Distributor(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.CharField(max_length=127)
+
+    def save(self, *args, **kwargs) -> None:
+        self.name = normalize_text(self.name, is_lower=True)
+        return super().save(*args, **kwargs)
 
 
 class Genre(models.Model):
@@ -80,3 +98,7 @@ class AgeGroup(models.Model):
         choices=AgeGroupChoices.choices, default=AgeGroupChoices.L
     )
     content = models.CharField(max_length=127)
+
+    def save(self, *args, **kwargs) -> None:
+        self.content = normalize_text(self.content, is_lower=True)
+        return super().save(*args, **kwargs)
