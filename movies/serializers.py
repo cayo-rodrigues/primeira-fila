@@ -80,7 +80,7 @@ class MovieSerializer(serializers.ModelSerializer):
             distributor=dist,
             age_group=age_group,
         )[0]
-        movie.genres.set(bulk_get_or_create(Genre, genres_data))
+        movie.set_normalized_genres(genres_data)
         movie.save()
 
         bulk_get_or_create(Media, medias_data, movie=movie)
@@ -107,12 +107,12 @@ class MovieSerializer(serializers.ModelSerializer):
         if age_group:
             instance.age_group = AgeGroup.objects.get_or_create(**age_group)[0]
 
-        if genres:
-            instance.genres.set(bulk_get_or_create(Genre, genres))
         if medias:
             bulk_get_or_create(Media, medias, movie=instance)
         if stars:
             bulk_get_or_create(Star, stars, [("person", Person)], movie=instance)
+        if genres:
+            instance.set_normalized_genres(genres)
 
         instance.save()
         return instance

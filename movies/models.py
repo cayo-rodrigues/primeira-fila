@@ -34,22 +34,21 @@ class Movie(models.Model):
     )
     genres = models.ManyToManyField("movies.Genre", related_name="movies")
 
-    def save(self, *args, **kwargs) -> None:
-        self.title = normalize_text(self.title, is_title=True)
-
+    def set_normalized_genres(self, genres_data: list[dict]):
         genres = []
 
-        for genre in self.genres.all():
-            genre.name = normalize_text(genre.name, is_lower=True)
-            existing_genre = Genre.objects.filter(name=genre.name).first()
+        for genre in genres_data:
+            genre["name"] = normalize_text(genre["name"], is_lower=True)
+            existing_genre = Genre.objects.filter(name=genre["name"]).first()
             if existing_genre:
                 genres.append(existing_genre)
             else:
-                genre.save()
-                genres.append(genre)
+                genres.append(Genre.objects.create(**genre))
 
         self.genres.set(genres)
 
+    def save(self, *args, **kwargs) -> None:
+        self.title = normalize_text(self.title, is_title=True)
         return super().save(*args, **kwargs)
 
 
