@@ -1,13 +1,9 @@
-from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.authentication import TokenAuthentication
-from .models import Cinema
-from addresses.models import Address
-from .serializers import ListCinemaSerializer, CreateCinemaSerializer
-from .mixins import SerializeByMethodMixin
-from utils.permissions import IsSuperUser, OnlySelfManagerPermission
+from utils.permissions import OnlySelfManagerPermission
 
-# import ipdb
+from .mixins import SerializeByMethodMixin
+from .models import Cinema
+from .serializers import CreateCinemaSerializer, ListCinemaSerializer
 
 
 class CreateCinemaView(SerializeByMethodMixin, generics.ListCreateAPIView):

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from addresses.models import Address, City, Country, State, District
+
+from addresses.models import Address, City, Country, District, State
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -7,10 +8,6 @@ class CitySerializer(serializers.ModelSerializer):
         model = City
         fields = "__all__"
         read_only_fields = ["id"]
-        # extra_kwargs = {
-        #     "is_active": {"default": True},
-        #     "quantity": {"min_value": 0},
-        # }
 
 
 class DistrictSerializer(serializers.ModelSerializer):
@@ -18,10 +15,6 @@ class DistrictSerializer(serializers.ModelSerializer):
         model = District
         fields = "__all__"
         read_only_fields = ["id"]
-        # extra_kwargs = {
-        #     "is_active": {"default": True},
-        #     "quantity": {"min_value": 0},
-        # }
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -29,10 +22,6 @@ class StateSerializer(serializers.ModelSerializer):
         model = State
         fields = "__all__"
         read_only_fields = ["id"]
-        # extra_kwargs = {
-        #     "is_active": {"default": True},
-        #     "quantity": {"min_value": 0},
-        # }
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -40,10 +29,6 @@ class CountrySerializer(serializers.ModelSerializer):
         model = Country
         fields = "__all__"
         read_only_fields = ["id"]
-        # extra_kwargs = {
-        #     "is_active": {"default": True},
-        #     "quantity": {"min_value": 0},
-        # }
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -56,7 +41,3 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = "__all__"
         read_only_fields = ["id"]
-        # extra_kwargs = {
-        #     "is_active": {"default": True},
-        #     "quantity": {"min_value": 0},
-        # }

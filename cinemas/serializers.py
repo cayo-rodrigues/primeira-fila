@@ -1,17 +1,9 @@
 from addresses.models import Address, City, Country, District, State
-from addresses.serializers import (
-    AddressSerializer,
-    CitySerializer,
-    CountrySerializer,
-    DistrictSerializer,
-    StateSerializer,
-)
-from users.serializers import UserSerializer
+from addresses.serializers import AddressSerializer
 from rest_framework import serializers
-from users.models import User
-from cinemas.models import Cinema
+from users.serializers import UserSerializer
 
-import ipdb
+from cinemas.models import Cinema
 
 
 class CreateCinemaSerializer(serializers.ModelSerializer):
@@ -23,7 +15,6 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data: dict):
-        print("teste")
         address = validated_data.pop("address")
         city = address.pop("city")
         district = address.pop("district")
@@ -57,14 +48,11 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
             street = address.pop("street", None)
             number = address.pop("number", None)
             details = address.pop("details", None)
-            # ipdb.set_trace()
 
             if city:
                 instance.address.city = City.objects.get_or_create(**city)[0]
             if district:
-                instance.address.district = District.objects.get_or_create(**district)[
-                    0
-                ]
+                instance.address.district = District.objects.get_or_create(**district)[0]
             if state:
                 instance.address.state = State.objects.get_or_create(**state)[0]
             if country:
