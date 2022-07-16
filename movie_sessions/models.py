@@ -1,11 +1,11 @@
 import uuid
 
 from django.db import models
+
 from .validators import ProductValidators
 
 
 class MovieSession(models.Model):
-
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     price = models.DecimalField(
         decimal_places=2,

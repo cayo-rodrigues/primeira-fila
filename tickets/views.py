@@ -1,12 +1,11 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404, render
-import movie_sessions
 from movie_sessions.models import MovieSession, SessionSeat
-from rest_framework import generics
 from utils.mixins import SerializerByMethodMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from utils.permissions import IsSuperUser, OnlySelfManagerPermission, ReadOnly
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
 
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
