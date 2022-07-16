@@ -1,3 +1,5 @@
+from django.conf.global_settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
 from rest_framework import serializers
 
 from users.models import AccountConfirmation, User
@@ -22,5 +24,18 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create(**validated_data)
-        AccountConfirmation.objects.create(account=user)
+        confirmation = AccountConfirmation.objects.create(account=user)
+
+        send_mail(
+            subject="Confirmação de conta no site Primeira Fila",
+            message=f"Olá, {user.first_name}! Muito obrigado por usar o Primeira Fila\n"
+            "Clique no seguinte link para ativar sua conta:\n\n"
+            f"http://0.0.0.0:8000/users/accounts/{confirmation.id}/\n\n"
+            "Agora é só voltar para o site e você já vai poder terminar de comprar seu ingresso!\n\n"
+            "Atenciosamente, equipe Primeira Fila :)",
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+
         return user
