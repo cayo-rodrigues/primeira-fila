@@ -4,8 +4,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from utils.user_manager import CustomUserManager
 
-from utils.user_manager import CustomUserManager
-
 # Create your models here.
 
 
@@ -25,3 +23,8 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "age"]
     objects = CustomUserManager()
+
+
+class AccountConfirmation(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    account = models.OneToOneField(User, on_delete=models.CASCADE)

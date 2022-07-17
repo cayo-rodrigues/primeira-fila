@@ -57,3 +57,29 @@ class TicketSerializer(serializers.ModelSerializer):
         ticket.save()
 
         return ticket
+
+
+    def update(self, instance: Ticket, validated_data):
+        seats = validated_data.pop("session_seats")
+        chosen_seats = []
+
+        for session_seat_data in seats:
+            session_seat_data.is_avaliable = True
+            chosen_seat: SessionSeat = get_object_or_404(
+            SessionSeat,
+            seat = get_object_or_404(
+                Seat,
+                name = session_seat_data["seat"]["name"],
+                room = validated_data["movie_session"].room,
+            ),
+            is_avaliable = True,
+            movie_session = validated_data["movie_session"]
+            )
+            chosen_seat.is_avaliable = False
+            chosen_seat.save()
+            chosen_seats.append(chosen_seat)
+
+        instance.session_seats.set(chosen_seats)
+        instance.save()
+        return instance
+
