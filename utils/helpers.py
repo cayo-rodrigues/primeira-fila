@@ -1,4 +1,7 @@
 from django.db.models import Model
+from django.forms import ValidationError
+from django.http import Http404
+from rest_framework.exceptions import APIException
 
 
 def bulk_get_or_create(
@@ -58,3 +61,21 @@ def normalize_text(
         text = join_by.join(text.split(split_by))
 
     return text
+
+
+def custom_get_object_or_404(
+    klass: Model, error_klass: APIException = Http404, *args, **kwargs
+):
+    try:
+        return klass.objects.get(*args, **kwargs)
+    except (klass.DoesNotExist, ValidationError):
+        raise error_klass
+
+
+def custom_get_list_or_404(
+    queryset, error_klass: APIException = Http404, *args, **kwargs
+):
+    try:
+        return queryset.filter(*args, **kwargs)
+    except ValidationError:
+        raise error_klass
