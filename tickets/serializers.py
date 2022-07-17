@@ -4,7 +4,6 @@ from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
 from rooms.models import Seat
 from users.serializers import UserSerializer
-import ipdb
 
 from .models import Ticket
 
@@ -60,10 +59,7 @@ class TicketSerializer(serializers.ModelSerializer):
         return ticket
 
     def update(self, instance: Ticket, validated_data):
-        # ipdb.set_trace()
         seats = validated_data.pop("session_seats")
-        # seats.is_avaliable = True
-        # seats.is_avaliable = True
         chosen_seats = []
 
         for session_seat_data in seats:
@@ -85,36 +81,4 @@ class TicketSerializer(serializers.ModelSerializer):
         instance.session_seats.set(chosen_seats)
         instance.save()
         return instance
-
-
-
-        #     chosen_seat: SessionSeat = get_object_or_404(
-        #         SessionSeat,
-        #         seat = get_object_or_404(
-        #             Seat,
-        #             name = session_seat_data["seat"]["name"],
-        #             room = validated_data["movie_session"].room,
-        #         ),
-        #         is_avaliable = True,
-        #         movie_session = validated_data["movie_session"]
-        #     )
-        #     chosen_seat.is_avaliable = False
-        #     chosen_seat.save()
-        #     chosen_seats.append(chosen_seat)
-
-        # ticket.session_seats.set(chosen_seats)
-        # ticket.save()
-
-        # return ticket
-
-
-
-
-        # session_seats = validated_data.pop("session_seats", None)
-        # ipdb.set_trace()
-        # if session_seats.is_avaliable:
-        #     for value in validated_data.is_avaliable:
-        #         up = get_object_or_404(instance, value)
-        #         Ticket.objects.get_or_create(up)
-        #     up.save()
-        #     return up
+        

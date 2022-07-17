@@ -1,13 +1,9 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404, render
-import movie_sessions
-from movie_sessions.models import MovieSession, SessionSeat
+from django.shortcuts import get_object_or_404
+from movie_sessions.models import MovieSession
 from rest_framework import generics
-from utils.mixins import SerializerByMethodMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from utils.permissions import IsSuperUser, OnlySelfManagerPermission, ReadOnly
-import ipdb
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 
@@ -80,13 +76,10 @@ class TicketSessionMovieOneDetailsView(generics.ListAPIView):
 
 
 class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    # ipdb.set_trace()
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Ticket.objects.all()
-    # ipdb.set_trace()
     serializer_class = TicketSerializer
-    # ipdb.set_trace()
     lookup_url_kwarg = "ticket_id"
 
 
@@ -97,16 +90,3 @@ class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
         )
         ticket = get_object_or_404(Ticket, id=self.kwargs.get("ticket_id"))
         serializer.save(movie_session=session, user=self.request.user)
-
-    # def get_queryset(self):
-    #     cinema_id = self.kwargs["cine_id"]
-    #     movie_session_id = self.kwargs["session_id"]
-    #     ticket_id = self.kwargs["ticket_id"]
-
-        # get_object_or_404(MovieSession, id=movie_session_id)
-        # get_object_or_404(Cinema, id=cinema_id)
-        # get_object_or_404(Ticket, id=ticket_id)
-        # ticket = Ticket.objects.filter(
-        #     id=ticket_id
-        # )
-        # return ticket
