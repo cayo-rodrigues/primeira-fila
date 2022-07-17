@@ -26,12 +26,13 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         confirmation = AccountConfirmation.objects.create(account=user)
 
+        current_host = self.context["request"].get_host()
+
         send_mail(
             subject="Confirmação de conta no site Primeira Fila",
-            message=f"Olá, {user.first_name}! Muito obrigado por usar o Primeira Fila\n"
+            message=f"Olá, {user.first_name}! Muito obrigado por usar o Primeira Fila.\n"
             "Clique no seguinte link para ativar sua conta:\n\n"
-            f"http://0.0.0.0:8000/users/accounts/{confirmation.id}/\n\n"
-            "Agora é só voltar para o site e você já vai poder terminar de comprar seu ingresso!\n\n"
+            f"{current_host}/users/accounts/{confirmation.id}/\n\n"
             "Atenciosamente, equipe Primeira Fila :)",
             from_email=EMAIL_HOST_USER,
             recipient_list=[user.email],
