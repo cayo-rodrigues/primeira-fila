@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tickets.models import Seat
+
 
 from .models import MovieSession, SessionSeat
 
@@ -9,6 +9,7 @@ class MovieSessionSerializer(serializers.ModelSerializer):
         model = MovieSession
         fields = "__all__"
         read_only_fields = ["id", "cinema", "room", "movie"]
+        depth = 1
 
 
     def create(self, validated_data: dict):

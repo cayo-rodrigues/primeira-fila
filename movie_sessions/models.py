@@ -5,7 +5,6 @@ from .validators import PriceValidators
 
 
 class MovieSession(models.Model):
-
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     price = models.DecimalField(
         validators=[PriceValidators.validate_positive],
@@ -33,7 +32,7 @@ class SessionSeat(models.Model):
     is_avaliable = models.BooleanField(default=True)
 
     seat = models.ForeignKey(
-        "tickets.Seat", on_delete=models.CASCADE, related_name="session_seats"
+        "rooms.Seat", on_delete=models.CASCADE, related_name="session_seats"
     )
 
     ticket = models.ForeignKey(
