@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from movie_sessions.models import MovieSession
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 
@@ -69,3 +68,20 @@ class TicketSessionMovieOneDetailsView(generics.ListAPIView):
         ticket = Ticket.objects.filter(id=ticket_id)
 
         return ticket
+
+
+class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    lookup_url_kwarg = "ticket_id"
+
+
+    def perform_update(self, serializer):
+        cine = get_object_or_404(Cinema, id=self.kwargs.get("cine_id"))
+        session = get_object_or_404(
+            MovieSession, id=self.kwargs.get("session_id"), room__cinema=cine
+        )
+        ticket = get_object_or_404(Ticket, id=self.kwargs.get("ticket_id"))
+        serializer.save(movie_session=session, user=self.request.user)
+
