@@ -1,4 +1,4 @@
-from dis import dis
+
 from email.headerregistry import Address
 from django.test import TestCase
 from movie_sessions.models import MovieSession
@@ -7,7 +7,10 @@ from rooms.models import Room, RoomCorridor, SeatRows
 from movies.models import Movie, Person, Distributor, Star, Genre, AgeGroup, Media
 from users.models import User
 from addresses.models import Address, District, City, Country, State
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 
+import ipdb
 
 class MovieSessionModelTest(TestCase):
     @classmethod
@@ -50,12 +53,16 @@ class MovieSessionModelTest(TestCase):
             title="Thor: Amor e Trovão",
             duration=119,
             synopsis="O filme apresenta Thor em uma jornada diferente de tudo que ele já enfrenta...",
-            premiere="2022-07-11",
-            genres = [genre1, genre2, genre3],
+            premiere=timezone.now(),
             age_group=age_group1,
             distributor=distributor1,
             director=cls.director,
         )
+
+        genres = [genre1, genre2, genre3]
+
+        for value in genres:
+            cls.movie.genres.add(value)
 
         cls.media1 = Media.objects.create(
             name="Trailer Thor 1",
@@ -99,22 +106,29 @@ class MovieSessionModelTest(TestCase):
         room_corridor1 = RoomCorridor.objects.create(column=1, from_row=2, to_row=7)
         room_corridor2 = RoomCorridor.objects.create(column=8, from_row=2, to_row=7)
 
+        cls.cinema = Cinema.objects.create(
+            name="Cine Asno",
+            owner=cls.user,
+            address=address,
+        )
+
         cls.room = Room.objects.create(
             name="SALA ADA",
-            seat_rows=[seat_row1, seat_row2, seat_row3],
-            room_corridors=[room_corridor1, room_corridor2],
             cinema=cls.cinema,
         )
 
-        cls.cinema = Cinema.objects.create(
-            name="Cine Asno",
-            address=address,
-            rooms=[cls.room],
-        )
+        seat_rows = [seat_row1, seat_row2, seat_row3]
+        for value in seat_rows:
+            cls.room.seat_rows.add(value)
+
+        room_corridors=[room_corridor1, room_corridor2]
+        for value in room_corridors:
+            cls.room.room_corridors.add(value)    
+
 
         cls.movie_session = MovieSession.objects.create(
             price=21.50,
-            session_datetime="2002-07-11 11:30",
+            session_datetime=timezone.now(),
             subtitled=True,
             is_3d=True,
             on_sale=False,
@@ -127,3 +141,22 @@ class MovieSessionModelTest(TestCase):
         movie_session = self.movie_session
         max_digits = movie_session._meta.get_field("price").max_digits
         self.assertEquals(max_digits, 10)
+
+    def test_price_cannot_be_a_negative_value(self):
+        with self.assertRaises(ValidationError):
+            movie_session = MovieSession.objects.create(
+                price=-21.50,
+                session_datetime=timezone.now(),
+                subtitled=True,
+                is_3d=True,
+                on_sale=False,
+                cinema=self.cinema,
+                room=self.room,
+                movie=self.movie,
+            )
+
+            movie_session.full_clean()
+
+
+
+

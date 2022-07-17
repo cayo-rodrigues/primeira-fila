@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 decimal_places=2,
                 max_digits=10,
                 validators=[
-                    movie_sessions.validators.ProductValidators.validate_positive
+                    movie_sessions.validators.PriceValidators.validate_positive
                 ],
             ),
         ),
