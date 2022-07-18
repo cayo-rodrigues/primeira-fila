@@ -6,4 +6,3 @@ htmlcov
 .coverage
 .vscode
 venv
-migrations
