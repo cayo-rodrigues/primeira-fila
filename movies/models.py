@@ -1,6 +1,8 @@
 from uuid import uuid4
 
 from django.db import models
+from django.utils.timezone import now
+from image_optimizer.fields import OptimizedImageField
 from utils.helpers import normalize_text
 
 # Create your models here.
@@ -52,13 +54,20 @@ class Movie(models.Model):
         return super().save(*args, **kwargs)
 
 
-class Media(models.Model):
+class Video(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.CharField(max_length=127)
-    media_url = models.URLField()
-    is_video = models.BooleanField(default=False)
+    title = models.CharField(max_length=127)
+    url = models.URLField()
 
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="medias")
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="videos")
+
+
+class Image(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    title = models.CharField(max_length=127)
+    file = OptimizedImageField(upload_to=f"movies/images/")
+
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="images")
 
 
 class Person(models.Model):

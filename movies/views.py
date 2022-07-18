@@ -1,12 +1,15 @@
+import ujson as json
 from cinemas.models import Cinema
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from rest_framework import generics
+from utils.exceptions import MovieNotFoundError
+from utils.helpers import safe_get_object_or_404
 from utils.mixins import MovieQueryParamsMixin, SerializerByMethodMixin
 from utils.permissions import IsSuperUser, ReadOnly
 
-from .models import Movie
-from .serializers import ListMoviesSerializer, MovieSerializer
+from .models import Image, Movie
+from .serializers import ImageSerializer, ListMoviesSerializer, MovieSerializer
 
 
 class ListAllMoviesView(MovieQueryParamsMixin, generics.ListAPIView):
@@ -29,6 +32,18 @@ class MovieView(
 
     def get_queryset(self):
         return self.use_query_params()
+
+
+class MovieImageUploadView(generics.CreateAPIView):
+    queryset = Image.objects.all()
+    permission_classes = [IsSuperUser]
+    serializer_class = ImageSerializer
+
+    def perform_create(self, serializer):
+        movie = safe_get_object_or_404(
+            Movie, MovieNotFoundError, pk=self.kwargs["movie_id"]
+        )
+        serializer.save(movie=movie)
 
 
 class MovieDetailView(generics.RetrieveUpdateDestroyAPIView):
