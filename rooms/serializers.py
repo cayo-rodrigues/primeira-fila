@@ -4,16 +4,12 @@ from rooms.models import Room, RoomCorridor, Seat, SeatRows
 
 
 class SeatRowsSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(read_only=True)
-
     class Meta:
         model = SeatRows
         exclude = ["room"]
 
 
 class RoomCorridorsSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(read_only=True)
-
     class Meta:
         model = RoomCorridor
         exclude = ["room"]
@@ -55,31 +51,6 @@ class RoomSerializer(serializers.ModelSerializer):
         room.save()
 
         return room
-
-
-class UpdateSeatRowsSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField()
-
-    class Meta:
-        model = SeatRows
-        exclude = ["room"]
-
-
-class UpdateRoomCorridorsSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField()
-
-    class Meta:
-        model = RoomCorridor
-        exclude = ["room"]
-
-
-class UpdateRoomSerializer(serializers.ModelSerializer):
-    seat_rows = UpdateSeatRowsSerializer(many=True)
-    room_corridors = UpdateRoomCorridorsSerializer(many=True)
-
-    class Meta:
-        model = Room
-        fields = ["id", "name", "seat_rows", "room_corridors"]
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
