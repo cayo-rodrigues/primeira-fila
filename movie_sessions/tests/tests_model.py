@@ -9,6 +9,7 @@ from users.models import User
 from addresses.models import Address, District, City, Country, State
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 
 import ipdb
 
@@ -35,33 +36,33 @@ class MovieSessionModelTest(TestCase):
 
         cls.director = Person.objects.create(name="Thiago")
 
-        person1 = Person.objects.create(name="Steve Magau")
+        cls.person1 = Person.objects.create(name="Steve Magau")
 
-        genre1 = Genre.objects.create(name="Ação")
+        cls.genre1 = Genre.objects.create(name="Ação")
 
-        genre2 = Genre.objects.create(name="Drama")
+        cls.genre2 = Genre.objects.create(name="Drama")
 
-        genre3 = Genre.objects.create(name="Trovão")
+        cls.genre3 = Genre.objects.create(name="Trovão")
 
-        age_group1 = AgeGroup.objects.create(
+        cls.age_group1 = AgeGroup.objects.create(
             minimum_age=14, content="Uso de drogas, Thorcicolo"
         )
 
-        distributor1 = Distributor.objects.create(name="Wall Thisney")
+        cls.distributor1 = Distributor.objects.create(name="Wall Thisney")
 
         cls.movie = Movie.objects.create(
             title="Thor: Amor e Trovão",
             duration=119,
             synopsis="O filme apresenta Thor em uma jornada diferente de tudo que ele já enfrenta...",
             premiere=timezone.now(),
-            age_group=age_group1,
-            distributor=distributor1,
+            age_group=cls.age_group1,
+            distributor=cls.distributor1,
             director=cls.director,
         )
 
-        genres = [genre1, genre2, genre3]
+        cls.genres = [cls.genre1, cls.genre2, cls.genre3]
 
-        for value in genres:
+        for value in cls.genres:
             cls.movie.genres.add(value)
 
         cls.media1 = Media.objects.create(
@@ -82,14 +83,14 @@ class MovieSessionModelTest(TestCase):
 
         cls.star1 = Star.objects.create(person=cls.director, movie=cls.movie)
 
-        cls.star2 = Star.objects.create(person=person1, movie=cls.movie)
+        cls.star2 = Star.objects.create(person=cls.person1, movie=cls.movie)
 
         district = District.objects.create(name="Guadalupe")
         city = City.objects.create(name="Jubileu do Sul")
         state = State.objects.create(name="MG")
         country = Country.objects.create(name="Brazil")
 
-        address = Address.objects.create(
+        cls.address = Address.objects.create(
             street="Rua A",
             number="34",
             details="Perto da coxinharia do thiago",
@@ -109,7 +110,7 @@ class MovieSessionModelTest(TestCase):
         cls.cinema = Cinema.objects.create(
             name="Cine Asno",
             owner=cls.user,
-            address=address,
+            address=cls.address,
         )
 
         cls.room = Room.objects.create(
@@ -156,6 +157,56 @@ class MovieSessionModelTest(TestCase):
             )
 
             movie_session.full_clean()
+
+    def test_cannot_create_a_movie_session_without_a_cinema(self):
+        with self.assertRaises(IntegrityError):
+
+            movie_session = MovieSession.objects.create(
+                price=-21.50,
+                session_datetime=timezone.now(),
+                subtitled=True,
+                is_3d=True,
+                on_sale=False,
+                room=self.room,
+                movie=self.movie,
+            )
+
+            movie_session.save()
+
+    def test_movie_session_can_belong_to_only_one_cinema(self):
+
+        district = District.objects.create(name="Bairro nobre")
+        city = City.objects.create(name="Atena do Norte")
+        state = State.objects.create(name="MG")
+        country = Country.objects.create(name="Brazil")
+
+        address = Address.objects.create(
+            street="Rua B",
+            number="34",
+            details="Perto da rua A",
+            district=district,
+            city=city,
+            state=state,
+            country=country,
+        )
+
+        cinema = Cinema.objects.create(
+            name="Cine Asno 2",
+            owner=self.user,
+            address=address,
+        )
+
+
+        self.movie_session.cinema = cinema
+
+        self.movie_session.save()
+
+        self.assertEqual(self.movie_session.cinema, cinema)
+        self.assertNotEqual(self.movie_session.cinema, self.cinema)
+    
+
+
+
 
 
 
