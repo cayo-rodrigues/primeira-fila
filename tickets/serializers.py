@@ -4,7 +4,7 @@ from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
 from rooms.models import Seat
 from users.serializers import UserSerializer
-
+import ipdb
 from .models import Ticket
 
 
@@ -24,6 +24,7 @@ class SessionSeatSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    total = serializers.SerializerMethodField(read_only=True)
     user = UserSerializer(read_only=True)
     movie_session = MovieSessionSerializer(read_only=True)
     session_seats = SessionSeatSerializer(many=True)
@@ -57,6 +58,11 @@ class TicketSerializer(serializers.ModelSerializer):
         ticket.save()
 
         return ticket
+
+    def get_total(self, ticket: Ticket):
+        total = ticket.movie_session.price * ticket.session_seats.count()
+        return total
+        
 
     def update(self, instance: Ticket, validated_data):
         sessions_seats = validated_data.pop("session_seats")
