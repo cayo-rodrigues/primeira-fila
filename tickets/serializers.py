@@ -1,8 +1,11 @@
+from django.shortcuts import get_object_or_404
+from movie_sessions.models import SessionSeat
 from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
+from rooms.models import Seat
 from users.serializers import UserSerializer
 
-from .models import Seat, SessionSeat, Ticket
+from .models import Ticket
 
 
 class SeatSerializer(serializers.ModelSerializer):
@@ -33,15 +36,50 @@ class TicketSerializer(serializers.ModelSerializer):
         seats = validated_data.pop("session_seats")
         ticket = Ticket.objects.create(**validated_data)
 
+        chosen_seats = []
+
         for session_seat_data in seats:
-            SessionSeat.objects.create(
-                seat=Seat.objects.create(
+            chosen_seat: SessionSeat = get_object_or_404(
+                SessionSeat,
+                seat=get_object_or_404(
+                    Seat,
                     name=session_seat_data["seat"]["name"],
                     room=validated_data["movie_session"].room,
                 ),
-                is_avaliable=False,
+                is_avaliable=True,
                 movie_session=validated_data["movie_session"],
-                ticket=ticket,
             )
+            chosen_seat.is_avaliable = False
+            chosen_seat.save()
+            chosen_seats.append(chosen_seat)
+
+        ticket.session_seats.set(chosen_seats)
+        ticket.save()
 
         return ticket
+
+
+    def update(self, instance: Ticket, validated_data):
+        seats = validated_data.pop("session_seats")
+        chosen_seats = []
+
+        for session_seat_data in seats:
+            session_seat_data.is_avaliable = True
+            chosen_seat: SessionSeat = get_object_or_404(
+            SessionSeat,
+            seat = get_object_or_404(
+                Seat,
+                name = session_seat_data["seat"]["name"],
+                room = validated_data["movie_session"].room,
+            ),
+            is_avaliable = True,
+            movie_session = validated_data["movie_session"]
+            )
+            chosen_seat.is_avaliable = False
+            chosen_seat.save()
+            chosen_seats.append(chosen_seat)
+
+        instance.session_seats.set(chosen_seats)
+        instance.save()
+        return instance
+

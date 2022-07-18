@@ -30,3 +30,11 @@ class RoomCorridor(models.Model):
     room = models.ForeignKey(
         "rooms.Room", on_delete=models.CASCADE, related_name="room_corridors", null=True
     )
+
+
+class Seat(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    name = models.CharField(max_length=5)
+    room = models.ForeignKey(
+        "rooms.Room", on_delete=models.CASCADE, related_name="seats"
+    )

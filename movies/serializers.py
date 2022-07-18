@@ -1,3 +1,5 @@
+from cinemas.serializers import ListCinemaSerializer
+from movie_sessions.models import MovieSession
 from rest_framework import serializers
 from utils.helpers import bulk_get_or_create
 
@@ -42,6 +44,14 @@ class StarSerializer(serializers.ModelSerializer):
         fields = ["person"]
 
 
+class GeneralMovieSessionsSerializer(serializers.ModelSerializer):
+    cinema = ListCinemaSerializer()
+
+    class Meta:
+        model = MovieSession
+        fields = ["id", "session_datetime", "cinema"]
+
+
 class MovieSerializer(serializers.ModelSerializer):
     medias = MediaSerializer(many=True)
     genres = GenreSerializer(many=True)
@@ -49,6 +59,7 @@ class MovieSerializer(serializers.ModelSerializer):
     distributor = DistributorSerializer()
     director = PersonSerializer()
     stars = StarSerializer(many=True)
+    movie_sessions = GeneralMovieSessionsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
@@ -56,9 +67,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> Movie:
         director, _ = Person.objects.get_or_create(**validated_data.pop("director"))
-        distributor, _ = Distributor.objects.get_or_create(
-            **validated_data.pop("distributor")
-        )
+        dist, _ = Distributor.objects.get_or_create(**validated_data.pop("distributor"))
         age_group, _ = AgeGroup.objects.get_or_create(**validated_data.pop("age_group"))
 
         genres_data = validated_data.pop("genres")
@@ -68,10 +77,10 @@ class MovieSerializer(serializers.ModelSerializer):
         movie: Movie = Movie.objects.get_or_create(
             **validated_data,
             director=director,
-            distributor=distributor,
-            age_group=age_group
+            distributor=dist,
+            age_group=age_group,
         )[0]
-        movie.genres.set(bulk_get_or_create(Genre, genres_data))
+        movie.set_normalized_genres(genres_data)
         movie.save()
 
         bulk_get_or_create(Media, medias_data, movie=movie)
@@ -98,12 +107,12 @@ class MovieSerializer(serializers.ModelSerializer):
         if age_group:
             instance.age_group = AgeGroup.objects.get_or_create(**age_group)[0]
 
-        if genres:
-            instance.genres.set(bulk_get_or_create(Genre, genres))
         if medias:
             bulk_get_or_create(Media, medias, movie=instance)
         if stars:
             bulk_get_or_create(Star, stars, [("person", Person)], movie=instance)
+        if genres:
+            instance.set_normalized_genres(genres)
 
         instance.save()
         return instance
@@ -111,7 +120,8 @@ class MovieSerializer(serializers.ModelSerializer):
 
 class ListMoviesSerializer(serializers.ModelSerializer):
     medias = MediaSerializer(many=True)
+    movie_sessions = GeneralMovieSessionsSerializer(many=True)
 
     class Meta:
         model = Movie
-        fields = ["id", "title", "medias"]
+        fields = ["id", "title", "medias", "movie_sessions"]
