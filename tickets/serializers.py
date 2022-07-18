@@ -4,7 +4,6 @@ from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
 from rooms.models import Seat
 from users.serializers import UserSerializer
-
 from .models import Ticket
 
 
@@ -60,26 +59,31 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance: Ticket, validated_data):
-        seats = validated_data.pop("session_seats")
+        sessions_seats = validated_data.pop("session_seats")
+        dado = instance.session_seats.all()
+        
+        for value in dado:
+            value.is_avaliable = True
+            value.save()
         chosen_seats = []
 
-        for session_seat_data in seats:
-            session_seat_data.is_available = True
-            chosen_seat: SessionSeat = get_object_or_404(
-            SessionSeat,
-            seat = get_object_or_404(
-                Seat,
-                name = session_seat_data["seat"]["name"],
-                room = validated_data["movie_session"].room,
-            ),
-            is_available = True,
-            movie_session = validated_data["movie_session"]
-            )
-            chosen_seat.is_available = False
-            chosen_seat.save()
-            chosen_seats.append(chosen_seat)
-
-        instance.session_seats.set(chosen_seats)
-        instance.save()
-        return instance
+        if len(sessions_seats) == instance.session_seats.count():
+            for session_seat_data in sessions_seats:
+                session_seat_data.is_avaliable = True
+                chosen_seat: SessionSeat = get_object_or_404(
+                SessionSeat,
+                seat = get_object_or_404(
+                    Seat,
+                    name = session_seat_data["seat"]["name"],
+                    room = validated_data["movie_session"].room,
+                ),
+                is_avaliable = True,
+                movie_session = validated_data["movie_session"]
+                )
+                chosen_seat.is_avaliable = False
+                chosen_seat.save()
+                chosen_seats.append(chosen_seat)
+            instance.session_seats.set(chosen_seats)
+            instance.save()
+            return instance
 
