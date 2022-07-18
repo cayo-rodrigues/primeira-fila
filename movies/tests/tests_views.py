@@ -11,6 +11,7 @@ from movies.tests.util import (
 from rest_framework import status
 from rest_framework.test import APITestCase
 from users.models import User
+import ipdb
 
 # Create your tests here.
 
@@ -104,6 +105,7 @@ class MovieViewTest(APITestCase):
         self.assertIn("previous", response.json())
 
         movies_list = response.json()["results"]
+        ipdb.set_trace()
         movies_list[0] = {**movies_list[0], "title": "Oto Título"}
         serializer = ListMoviesSerializer(data=movies_list, many=True)
 
