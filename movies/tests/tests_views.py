@@ -49,9 +49,6 @@ class MovieViewTest(APITestCase):
         cls.manager.is_active = True
         cls.manager.save()
 
-        cls.manager.is_active = True
-        cls.manager.save()
-
         serializer = MovieSerializer(
             data={**cls.request_data, "title": "Thorta, Amor e Torta"}
         )
