@@ -29,7 +29,7 @@ class MovieSession(models.Model):
 
 class SessionSeat(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    is_avaliable = models.BooleanField(default=True)
+    is_available = models.BooleanField(default=True)
 
     seat = models.ForeignKey(
         "rooms.Seat", on_delete=models.CASCADE, related_name="session_seats"
