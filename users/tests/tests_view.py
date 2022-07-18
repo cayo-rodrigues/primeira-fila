@@ -135,8 +135,6 @@ class TestUserLoginView(APITestCase):
         cls.user.is_active = True
         cls.user.save()
 
-        cls.user.is_active = True
-        cls.user.save()
 
     def test_login_sucess(self):
         res = self.client.post("/sessions/token/", data=self.login_data, format="json")
