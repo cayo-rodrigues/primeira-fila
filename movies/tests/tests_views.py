@@ -46,6 +46,8 @@ class MovieViewTest(APITestCase):
             "is_staff": True,
         }
         cls.manager = User.objects.create(**cls.manager_credentials)
+        cls.manager.is_active = True
+        cls.manager.save()
 
         serializer = MovieSerializer(
             data={**cls.request_data, "title": "Thorta, Amor e Torta"}
@@ -81,8 +83,8 @@ class MovieViewTest(APITestCase):
         response = self.client.post("/movies/", self.request_data, "json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_list_movies_route(self):
-        response = self.client.get("/movies/")
+    def test_list_all_movies_route(self):
+        response = self.client.get("/movies/all/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertIn("count", response.json())

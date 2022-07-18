@@ -1,9 +1,8 @@
-from cinemas.serializers import CreateCinemaSerializer, ListCinemaSerializer
-from cinemas.tests.util import DEFAULT_CINEMA_DATA, DEFAULT_ADDRESS_FULL_DATA
+from cinemas.serializers import CreateCinemaSerializer
+from cinemas.tests.util import DEFAULT_ADDRESS_FULL_DATA, DEFAULT_CINEMA_DATA
 from rest_framework import status
 from rest_framework.test import APITestCase
 from users.models import User
-import ipdb
 
 # Create your tests here.
 
@@ -29,6 +28,8 @@ class CinemaViewTest(APITestCase):
         }
 
         cls.manager = User.objects.create(**cls.manager_credentials)
+        cls.manager.is_active = True
+        cls.manager.save()
 
         cls.user_credentials = {
             "email": "aaa@mail.com",
@@ -39,6 +40,8 @@ class CinemaViewTest(APITestCase):
         }
 
         cls.user = User.objects.create(**cls.user_credentials)
+        cls.user.is_active = True
+        cls.user.save()
 
         cls.product = {
             "description": "Descrição do produto",
@@ -48,21 +51,15 @@ class CinemaViewTest(APITestCase):
         }
 
     def setUp(self) -> None:
-        response = self.client.post(
-            "/sessions/token/", self.manager_credentials, "json"
-        )
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        response = self.client.post("/sessions/token/", self.manager_credentials, "json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
 
     def test_create_cinema_route_success(self):
         response = self.client.post("/cinemas/", self.request_data, "json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        serializer = CreateCinemaSerializer(
-            data={**response.json(), "name": "Cinemark"}
-        )
+        serializer = CreateCinemaSerializer(data={**response.json(), "name": "Cinemark"})
         self.assertTrue(serializer.is_valid())
 
     def test_create_cinema_route_wrong_data(self):
@@ -80,7 +77,6 @@ class CinemaViewTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="")
 
         response_get = self.client.get("/cinemas/")
-        # ipdb.set_trace()
         self.assertEqual(response_get.status_code, status.HTTP_200_OK)
 
     def test_retrieve_cinema_route(self):

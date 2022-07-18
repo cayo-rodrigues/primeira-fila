@@ -1,6 +1,5 @@
 from django.test import TestCase
-
-from rooms.models import Room, RoomCorridors, SeatRows
+from rooms.models import Room, RoomCorridor, SeatRows
 
 
 class RoomModelTest(TestCase):
@@ -16,7 +15,7 @@ class RoomModelTest(TestCase):
 
         cls.seat_rows = SeatRows.objects.create(row="A", seat_count=5, room=cls.room)
 
-        cls.corridors = RoomCorridors.objects.create(
+        cls.corridors = RoomCorridor.objects.create(
             column=cls.column, from_row=cls.from_row, to_row=cls.to_row, room=cls.room
         )
 
@@ -48,12 +47,12 @@ class RoomModelTest(TestCase):
         self.assertEquals(seat_rows.room, room)
 
     def test_corridors_exist(self):
-        corridors = RoomCorridors.objects.get(id=self.corridors_id)
+        corridors = RoomCorridor.objects.get(id=self.corridors_id)
 
         self.assertIsNotNone(corridors)
 
     def test_corridors_fields(self):
-        corridors = RoomCorridors.objects.get(id=self.corridors_id)
+        corridors = RoomCorridor.objects.get(id=self.corridors_id)
         room = Room.objects.get(id=self.room_id)
 
         self.assertEquals(corridors.column, self.column)
