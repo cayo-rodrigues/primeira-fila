@@ -5,6 +5,8 @@ from .models import MovieSession, SessionSeat
 
 
 class MovieSessionSerializer(serializers.ModelSerializer):
+    available_seats_count = serializers.SerializerMethodField(read_only=True)
+    
     class Meta:
         model = MovieSession
         fields = "__all__"
@@ -18,7 +20,7 @@ class MovieSessionSerializer(serializers.ModelSerializer):
         SessionSeat.objects.bulk_create(
             [
                 SessionSeat(
-                    is_avaliable=True,
+                    is_available=True,
                     movie_session=movie_session,
                     seat=seat,
                 )
@@ -27,3 +29,9 @@ class MovieSessionSerializer(serializers.ModelSerializer):
         )
 
         return movie_session
+    
+    
+    def get_available_seats_count(self, movie_session:MovieSession):
+        seats = movie_session.session_seats.all()
+        available_seats = seats.filter(is_available=True)
+        return len(available_seats)
