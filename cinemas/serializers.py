@@ -53,7 +53,9 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
             if city:
                 instance.address.city = City.objects.get_or_create(**city)[0]
             if district:
-                instance.address.district = District.objects.get_or_create(**district)[0]
+                instance.address.district = District.objects.get_or_create(**district)[
+                    0
+                ]
             if state:
                 instance.address.state = State.objects.get_or_create(**state)[0]
             if country:

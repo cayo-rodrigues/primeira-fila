@@ -9,32 +9,49 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('tickets', '0001_initial'),
-        ('rooms', '0001_initial'),
-        ('movie_sessions', '0001_initial'),
-        ('movies', '0001_initial'),
-        ('cinemas', '0001_initial'),
+        ("tickets", "0001_initial"),
+        ("rooms", "0001_initial"),
+        ("movie_sessions", "0001_initial"),
+        ("movies", "0001_initial"),
+        ("cinemas", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sessionseat',
-            name='ticket',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='session_seats', to='tickets.ticket'),
+            model_name="sessionseat",
+            name="ticket",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="session_seats",
+                to="tickets.ticket",
+            ),
         ),
         migrations.AddField(
-            model_name='moviesession',
-            name='cinema',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_sessions', to='cinemas.cinema'),
+            model_name="moviesession",
+            name="cinema",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="movie_sessions",
+                to="cinemas.cinema",
+            ),
         ),
         migrations.AddField(
-            model_name='moviesession',
-            name='movie',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_sessions', to='movies.movie'),
+            model_name="moviesession",
+            name="movie",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="movie_sessions",
+                to="movies.movie",
+            ),
         ),
         migrations.AddField(
-            model_name='moviesession',
-            name='room',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movie_sessions', to='rooms.room'),
+            model_name="moviesession",
+            name="room",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="movie_sessions",
+                to="rooms.room",
+            ),
         ),
     ]

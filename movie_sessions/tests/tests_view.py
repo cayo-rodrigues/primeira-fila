@@ -96,8 +96,12 @@ class TestUserModel(APITestCase):
             {"email": "super@super.com", "password": "abc123456"},
             "json",
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
         self.movie = self.client.post("/movies/", self.movie_data, format="json")
 
         self.user = User.objects.create(**self.user_data)

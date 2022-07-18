@@ -6,9 +6,19 @@ from rest_framework.permissions import IsAuthenticated
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
+
 # Create your views here.
 
-
+@extend_schema(
+    operation_id="ticket_post_get",
+    request=TicketSerializer,
+    responses=TicketSerializer,
+    description = 'Route for list/create a ticket', 
+    summary='List/create ticket',
+    tags=['create/list tickets']
+)
 class TicketView(generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
@@ -21,6 +31,14 @@ class TicketView(generics.ListCreateAPIView):
         serializer.save(movie_session=session, user=self.request.user)
 
 
+@extend_schema(
+    operation_id="ticket_retrieve",
+    request=TicketSerializer,
+    responses=TicketSerializer,
+    description = 'Route for list one ticket', 
+    summary='Retrieve ticket',
+    tags=['Retrieve ticket of a user']
+)
 class TicketDetailsView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
@@ -76,7 +94,6 @@ class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TicketSerializer
     lookup_url_kwarg = "ticket_id"
 
-
     def perform_update(self, serializer):
         cine = get_object_or_404(Cinema, id=self.kwargs.get("cine_id"))
         session = get_object_or_404(
@@ -84,4 +101,3 @@ class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
         )
         ticket = get_object_or_404(Ticket, id=self.kwargs.get("ticket_id"))
         serializer.save(movie_session=session, user=self.request.user)
-

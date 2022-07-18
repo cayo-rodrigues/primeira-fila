@@ -1,4 +1,3 @@
-
 from email.headerregistry import Address
 from django.test import TestCase
 from movie_sessions.models import MovieSession
@@ -12,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 import ipdb
+
 
 class MovieSessionModelTest(TestCase):
     @classmethod
@@ -122,10 +122,9 @@ class MovieSessionModelTest(TestCase):
         for value in seat_rows:
             cls.room.seat_rows.add(value)
 
-        room_corridors=[room_corridor1, room_corridor2]
+        room_corridors = [room_corridor1, room_corridor2]
         for value in room_corridors:
-            cls.room.room_corridors.add(value)    
-
+            cls.room.room_corridors.add(value)
 
         cls.movie_session = MovieSession.objects.create(
             price=21.50,
@@ -196,18 +195,9 @@ class MovieSessionModelTest(TestCase):
             address=address,
         )
 
-
         self.movie_session.cinema = cinema
 
         self.movie_session.save()
 
         self.assertEqual(self.movie_session.cinema, cinema)
         self.assertNotEqual(self.movie_session.cinema, self.cinema)
-    
-
-
-
-
-
-
-

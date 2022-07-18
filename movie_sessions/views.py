@@ -50,7 +50,9 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
         get_object_or_404(Cinema, id=cinema_id)
         get_object_or_404(Movie, id=movie_id)
 
-        movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id).filter(movie_id=movie_id)
+        movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id).filter(
+            movie_id=movie_id
+        )
 
         return movie_sessions
 
