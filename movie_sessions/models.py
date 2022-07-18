@@ -1,13 +1,13 @@
 import uuid
 
 from django.db import models
-from .validators import PriceValidators
+from .validators import PriceValidators, DateValidators
 
 
 class MovieSession(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     price = models.DecimalField(
-        validators=[PriceValidators.validate_positive],
+        validators=[PriceValidators.validate_positive, DateValidators.session_day_cannot_be_before_today],
         max_digits=10,
         decimal_places=2,
     )
