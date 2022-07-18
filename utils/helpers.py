@@ -63,7 +63,7 @@ def normalize_text(
     return text
 
 
-def custom_get_object_or_404(
+def safe_get_object_or_404(
     klass: Model, error_klass: APIException = Http404, *args, **kwargs
 ):
     try:
@@ -72,9 +72,7 @@ def custom_get_object_or_404(
         raise error_klass
 
 
-def custom_get_list_or_404(
-    queryset, error_klass: APIException = Http404, *args, **kwargs
-):
+def safe_get_list_or_404(queryset, error_klass: APIException = Http404, *args, **kwargs):
     try:
         return queryset.filter(*args, **kwargs)
     except ValidationError:

@@ -2,7 +2,7 @@ from cinemas.models import Cinema
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from utils.exceptions import CinemaNotFoundError
-from utils.helpers import custom_get_list_or_404, custom_get_object_or_404
+from utils.helpers import safe_get_list_or_404, safe_get_object_or_404
 
 from rooms.models import Room
 from rooms.serializers import RoomSerializer
@@ -15,13 +15,13 @@ class CreateListRoomView(generics.ListCreateAPIView):
     serializer_class = RoomSerializer
 
     def get_queryset(self):
-        return custom_get_list_or_404(
+        return safe_get_list_or_404(
             self.queryset, CinemaNotFoundError, cinema_id=self.kwargs["cine_id"]
         )
         # return self.queryset.filter(cinema_id=self.kwargs["cine_id"])
 
     def perform_create(self, serializer):
-        cinema = custom_get_object_or_404(
+        cinema = safe_get_object_or_404(
             Cinema, CinemaNotFoundError, pk=self.kwargs["cine_id"]
         )
         # cinema = get_object_or_404(pk=self.kwargs['cine_id'])
