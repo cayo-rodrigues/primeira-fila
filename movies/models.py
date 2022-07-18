@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.timezone import now
 from image_optimizer.fields import OptimizedImageField
 from utils.helpers import normalize_text
+from utils.validators import UploadValidators
 
 # Create your models here.
 
@@ -65,7 +66,10 @@ class Video(models.Model):
 class Image(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     title = models.CharField(max_length=127)
-    file = OptimizedImageField(upload_to=f"movies/images/")
+    file = OptimizedImageField(
+        upload_to=f"movies/images/",
+        validators=[UploadValidators.validate_file_size],
+    )
 
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="images")
 
