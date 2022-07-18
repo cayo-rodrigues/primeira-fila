@@ -31,8 +31,6 @@ class CinemaViewTest(APITestCase):
         cls.manager.is_active = True
         cls.manager.save()
 
-        cls.manager.is_active = True
-        cls.manager.save()
 
         cls.user_credentials = {
             "email": "aaa@mail.com",
@@ -46,8 +44,6 @@ class CinemaViewTest(APITestCase):
         cls.user.is_active = True
         cls.user.save()
 
-        cls.user.is_active = True
-        cls.user.save()
 
         cls.product = {
             "description": "Descrição do produto",
