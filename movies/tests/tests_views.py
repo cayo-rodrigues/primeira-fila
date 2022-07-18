@@ -49,6 +49,9 @@ class MovieViewTest(APITestCase):
         cls.manager.is_active = True
         cls.manager.save()
 
+        cls.manager.is_active = True
+        cls.manager.save()
+
         serializer = MovieSerializer(
             data={**cls.request_data, "title": "Thorta, Amor e Torta"}
         )
@@ -57,7 +60,9 @@ class MovieViewTest(APITestCase):
 
     def setUp(self) -> None:
         response = self.client.post("/sessions/token/", self.super_credentials, "json")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
 
     def test_create_movie_route_success(self):
         response = self.client.post("/movies/", self.request_data, "json")
@@ -77,8 +82,12 @@ class MovieViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_only_superuser_can_create_movie(self):
-        response = self.client.post("/sessions/token/", self.manager_credentials, "json")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        response = self.client.post(
+            "/sessions/token/", self.manager_credentials, "json"
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
 
         response = self.client.post("/movies/", self.request_data, "json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

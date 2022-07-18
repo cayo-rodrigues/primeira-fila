@@ -31,6 +31,9 @@ class CinemaViewTest(APITestCase):
         cls.manager.is_active = True
         cls.manager.save()
 
+        cls.manager.is_active = True
+        cls.manager.save()
+
         cls.user_credentials = {
             "email": "aaa@mail.com",
             "first_name": "A",
@@ -40,6 +43,9 @@ class CinemaViewTest(APITestCase):
         }
 
         cls.user = User.objects.create(**cls.user_credentials)
+        cls.user.is_active = True
+        cls.user.save()
+
         cls.user.is_active = True
         cls.user.save()
 
