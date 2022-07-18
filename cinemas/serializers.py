@@ -31,8 +31,9 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
             country=objCountry,
             state=objState,
             district=objDistrict,
-            city=objCity
+            city=objCity,
         )
+
         return Cinema.objects.create(**validated_data, address=objAddress)
 
     def update(self, instance: Cinema, validated_data: dict):

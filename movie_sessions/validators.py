@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-class ProductValidators:
+class PriceValidators:
     def validate_positive(value):
         if value < 0:
             raise ValidationError(

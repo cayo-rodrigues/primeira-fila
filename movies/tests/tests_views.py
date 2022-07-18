@@ -1,13 +1,5 @@
 from movies.serializers import ListMoviesSerializer, MovieSerializer
-from movies.tests.util import (
-    DEFAULT_AGE_GROUP_DATA,
-    DEFAULT_DIRECTOR_DATA,
-    DEFAULT_DISTRIBUTOR_DATA,
-    DEFAULT_GENRES_DATA,
-    DEFAULT_MEDIAS_DATA,
-    DEFAULT_MOVIE_DATA,
-    DEFAULT_STARS_DATA,
-)
+from movies.tests import util
 from rest_framework import status
 from rest_framework.test import APITestCase
 from users.models import User
@@ -18,13 +10,13 @@ from users.models import User
 class MovieViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        cls.movie_data = DEFAULT_MOVIE_DATA
-        cls.media_data = DEFAULT_MEDIAS_DATA
-        cls.genres_data = DEFAULT_GENRES_DATA
-        cls.age_group_data = DEFAULT_AGE_GROUP_DATA
-        cls.distributor_data = DEFAULT_DISTRIBUTOR_DATA
-        cls.director_data = DEFAULT_DIRECTOR_DATA
-        cls.stars_data = DEFAULT_STARS_DATA
+        cls.movie_data = util.DEFAULT_MOVIE_DATA
+        cls.media_data = util.DEFAULT_MEDIAS_DATA
+        cls.genres_data = util.DEFAULT_GENRES_DATA
+        cls.age_group_data = util.DEFAULT_AGE_GROUP_DATA
+        cls.distributor_data = util.DEFAULT_DISTRIBUTOR_DATA
+        cls.director_data = util.DEFAULT_DIRECTOR_DATA
+        cls.stars_data = util.DEFAULT_STARS_DATA
 
         cls.request_data = {
             **cls.movie_data,
@@ -54,6 +46,8 @@ class MovieViewTest(APITestCase):
             "is_staff": True,
         }
         cls.manager = User.objects.create(**cls.manager_credentials)
+        cls.manager.is_active = True
+        cls.manager.save()
 
         serializer = MovieSerializer(
             data={**cls.request_data, "title": "Thorta, Amor e Torta"}
@@ -63,9 +57,7 @@ class MovieViewTest(APITestCase):
 
     def setUp(self) -> None:
         response = self.client.post("/sessions/token/", self.super_credentials, "json")
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
 
     def test_create_movie_route_success(self):
         response = self.client.post("/movies/", self.request_data, "json")
@@ -85,18 +77,14 @@ class MovieViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_only_superuser_can_create_movie(self):
-        response = self.client.post(
-            "/sessions/token/", self.manager_credentials, "json"
-        )
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        response = self.client.post("/sessions/token/", self.manager_credentials, "json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
 
         response = self.client.post("/movies/", self.request_data, "json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_list_movies_route(self):
-        response = self.client.get("/movies/")
+    def test_list_all_movies_route(self):
+        response = self.client.get("/movies/all/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertIn("count", response.json())

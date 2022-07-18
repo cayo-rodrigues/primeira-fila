@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='moviesession',
             name='price',
-            field=models.DecimalField(decimal_places=2, max_digits=10, validators=[movie_sessions.validators.ProductValidators.validate_positive, movie_sessions.validators.DateValidators.session_day_cannot_be_before_today]),
+            field=models.DecimalField(decimal_places=2, max_digits=10, validators=[movie_sessions.validators.PriceValidators.validate_positive, movie_sessions.validators.DateValidators.session_day_cannot_be_before_today]),
         ),
     ]

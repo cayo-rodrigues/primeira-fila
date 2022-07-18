@@ -2,8 +2,12 @@ from django.urls import path
 from movie_sessions import views
 from movies.views import MovieByCinemaView
 from rooms import views as room_views
-
-from tickets.views import TicketView, TicketUpdateView, TicketSessionMovieDetailsView, TicketSessionMovieOneDetailsView
+from tickets.views import (
+    TicketSessionMovieDetailsView,
+    TicketSessionMovieOneDetailsView,
+    TicketUpdateView,
+    TicketView,
+)
 
 from .views import CinemaDetailView, CreateCinemaView
 

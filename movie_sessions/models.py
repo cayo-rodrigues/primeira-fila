@@ -1,16 +1,15 @@
 import uuid
 
 from django.db import models
-
-from .validators import ProductValidators, DateValidators
+from .validators import PriceValidators, DateValidators
 
 
 class MovieSession(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     price = models.DecimalField(
-        decimal_places=2,
+        validators=[PriceValidators.validate_positive, DateValidators.session_day_cannot_be_before_today],
         max_digits=10,
-        validators=[ProductValidators.validate_positive, DateValidators.session_day_cannot_be_before_today],
+        decimal_places=2,
     )
     session_datetime = models.DateTimeField()
     subtitled = models.BooleanField()
@@ -30,7 +29,7 @@ class MovieSession(models.Model):
 
 class SessionSeat(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    is_avaliable = models.BooleanField(default=True)
+    is_available = models.BooleanField(default=True)
 
     seat = models.ForeignKey(
         "rooms.Seat", on_delete=models.CASCADE, related_name="session_seats"
