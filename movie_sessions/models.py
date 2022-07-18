@@ -9,12 +9,15 @@ class MovieSession(models.Model):
     price = models.DecimalField(
         validators=[
             PriceValidators.validate_positive,
-            DateValidators.session_day_cannot_be_before_today,
         ],
         max_digits=10,
         decimal_places=2,
     )
-    session_datetime = models.DateTimeField()
+    session_datetime = models.DateTimeField(
+        validators=[
+            DateValidators.session_day_cannot_be_before_today,
+        ]
+    )
     subtitled = models.BooleanField()
     is_3d = models.BooleanField()
     on_sale = models.BooleanField()
