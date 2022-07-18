@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -24,4 +25,6 @@ urlpatterns = [
     path("cinemas/", include("cinemas.urls")),
     path("sessions/token/", TokenObtainPairView.as_view()),
     path("sessions/token/refresh/", TokenRefreshView.as_view()),
+    path("docs/", SpectacularSwaggerView.as_view(url_name="schema")),
+    path("docs/schema/", SpectacularAPIView.as_view(), name="schema"),
 ]
