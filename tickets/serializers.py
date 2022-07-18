@@ -45,10 +45,10 @@ class TicketSerializer(serializers.ModelSerializer):
                     name=session_seat_data["seat"]["name"],
                     room=validated_data["movie_session"].room,
                 ),
-                is_avaliable=True,
+                is_available=True,
                 movie_session=validated_data["movie_session"],
             )
-            chosen_seat.is_avaliable = False
+            chosen_seat.is_available = False
             chosen_seat.save()
             chosen_seats.append(chosen_seat)
 
@@ -68,7 +68,6 @@ class TicketSerializer(serializers.ModelSerializer):
         chosen_seats = []
 
         if len(sessions_seats) == instance.session_seats.count():
-
             for session_seat_data in sessions_seats:
                 session_seat_data.is_avaliable = True
                 chosen_seat: SessionSeat = get_object_or_404(
