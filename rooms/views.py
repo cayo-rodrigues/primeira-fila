@@ -1,10 +1,10 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from utils.exceptions import CinemaNotFoundError, RoomNotFoundError
+from utils.helpers import safe_get_list_or_404, safe_get_object_or_404
 
 from rooms.models import Room
-from rooms.serializers import RoomSerializer, UpdateRoomSerializer
-from utils.mixins import SerializerByMethodMixin
+from rooms.serializers import RoomSerializer
 
 # Create your views here.
 
@@ -14,30 +14,27 @@ class CreateListRoomView(generics.ListCreateAPIView):
     serializer_class = RoomSerializer
 
     def get_queryset(self):
-        cinema = self.queryset.filter(cinema_id=self.kwargs["cine_id"])
-
-        return cinema
+        return safe_get_list_or_404(
+            self.queryset, CinemaNotFoundError, cinema_id=self.kwargs["cine_id"]
+        )
 
     def perform_create(self, serializer):
-        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
+        cinema = safe_get_object_or_404(
+            Cinema, CinemaNotFoundError, pk=self.kwargs["cine_id"]
+        )
         serializer.save(cinema=cinema)
 
 
-class UpdateRetrieveDeleteRoomView(
-    SerializerByMethodMixin, generics.RetrieveUpdateDestroyAPIView
-):
+class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    serializers = {
-        "PATCH": UpdateRoomSerializer,
-        "GET": RoomSerializer,
-        "DELETE": RoomSerializer,
-    }
 
     def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset, pk=self.kwargs["room_id"], cinema_id=self.kwargs["cine_id"]
+        obj = safe_get_object_or_404(
+            Room,
+            RoomNotFoundError,
+            pk=self.kwargs["room_id"],
+            cinema_id=self.kwargs["cine_id"],
         )
 
         return obj
