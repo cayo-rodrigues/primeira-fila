@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from users.models import User
 
+
 class TestUserModel(APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
@@ -123,7 +124,9 @@ class TestUserModel(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
         self.movie = self.client.post("/movies/", self.movie_data, format="json")
         self.user = User.objects.create(**self.user_data)
         response_manager = self.client.post(

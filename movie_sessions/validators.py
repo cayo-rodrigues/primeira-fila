@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
 
-class ProductValidators:
+class PriceValidators:
     def validate_positive(value):
         if value < 0:
             raise ValidationError(
