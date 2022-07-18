@@ -23,7 +23,6 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data: dict):
-        print("teste")
         address = validated_data.pop("address")
         city = address.pop("city")
         district = address.pop("district")
@@ -40,8 +39,9 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
             country=objCountry,
             state=objState,
             district=objDistrict,
-            city=objCity
+            city=objCity,
         )
+
         return Cinema.objects.create(**validated_data, address=objAddress)
 
     def update(self, instance: Cinema, validated_data: dict):
