@@ -21,7 +21,7 @@ class MovieSessionCreateView(generics.CreateAPIView):
         room = get_object_or_404(Room, pk=self.kwargs["room_id"], cinema=cinema)
         movie = get_object_or_404(Movie, pk=self.kwargs["movie_id"])
 
-        serializer.save(cinema=cinema, room=room, movie=movie)
+        return serializer.save(cinema=cinema, room=room, movie=movie)
 
 
 class MovieSessionCinemaDetailView(generics.ListAPIView):
