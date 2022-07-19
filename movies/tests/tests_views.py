@@ -11,7 +11,7 @@ class MovieViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.movie_data = util.DEFAULT_MOVIE_DATA
-        cls.media_data = util.DEFAULT_MEDIAS_DATA
+        cls.videos_data = util.DEFAULT_VIDEOS_DATA
         cls.genres_data = util.DEFAULT_GENRES_DATA
         cls.age_group_data = util.DEFAULT_AGE_GROUP_DATA
         cls.distributor_data = util.DEFAULT_DISTRIBUTOR_DATA
@@ -20,7 +20,7 @@ class MovieViewTest(APITestCase):
 
         cls.request_data = {
             **cls.movie_data,
-            "medias": cls.media_data,
+            "videos": cls.videos_data,
             "genres": cls.genres_data,
             "age_group": cls.age_group_data,
             "distributor": cls.distributor_data,
@@ -57,9 +57,7 @@ class MovieViewTest(APITestCase):
 
     def setUp(self) -> None:
         response = self.client.post("/sessions/token/", self.super_credentials, "json")
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
 
     def test_create_movie_route_success(self):
         response = self.client.post("/movies/", self.request_data, "json")
@@ -79,12 +77,8 @@ class MovieViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_only_superuser_can_create_movie(self):
-        response = self.client.post(
-            "/sessions/token/", self.manager_credentials, "json"
-        )
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        response = self.client.post("/sessions/token/", self.manager_credentials, "json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
 
         response = self.client.post("/movies/", self.request_data, "json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

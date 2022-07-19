@@ -25,3 +25,8 @@ class MovieSessionNotFoundError(APIException):
 class TicketNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "Ticket not found"
+
+
+class ImageNotFoundError(APIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = "Image not found"
