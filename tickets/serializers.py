@@ -1,10 +1,15 @@
 from django.shortcuts import get_object_or_404
+
 from movie_sessions.models import SessionSeat
+
 from movie_sessions.serializers import MovieSessionSerializer
+
 from rest_framework import serializers
+
 from rooms.models import Seat
+
 from users.serializers import UserSerializer
-import ipdb
+
 from .models import Ticket
 
 
@@ -35,12 +40,8 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict):
         seats = validated_data.pop("session_seats")
-        # ipdb.set_trace()
         ticket = Ticket.objects.create(**validated_data)
-        # ipdb.set_trace()
-        
         chosen_seats = []
-
         for session_seat_data in seats:
             chosen_seat: SessionSeat = get_object_or_404(
                 SessionSeat,
@@ -52,18 +53,11 @@ class TicketSerializer(serializers.ModelSerializer):
                 is_available= True,
                 movie_session=validated_data["movie_session"],
             )
-            # ipdb.set_trace()
-
             chosen_seat.is_available = False
             chosen_seat.save()
-            # ipdb.set_trace()
-
             chosen_seats.append(chosen_seat)
-            # ipdb.set_trace()
-            
         ticket.session_seats.set(chosen_seats)
         ticket.save()
-
         return ticket
 
     def get_total(self, ticket: Ticket):
