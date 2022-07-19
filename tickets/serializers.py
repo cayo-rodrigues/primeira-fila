@@ -35,8 +35,10 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict):
         seats = validated_data.pop("session_seats")
+        # ipdb.set_trace()
         ticket = Ticket.objects.create(**validated_data)
-
+        # ipdb.set_trace()
+        
         chosen_seats = []
 
         for session_seat_data in seats:
@@ -50,10 +52,15 @@ class TicketSerializer(serializers.ModelSerializer):
                 is_available=True,
                 movie_session=validated_data["movie_session"],
             )
-            chosen_seat.is_available = False
-            chosen_seat.save()
-            chosen_seats.append(chosen_seat)
+            # ipdb.set_trace()
 
+            chosen_seat.is_available = False
+            # chosen_seat.save()
+            # ipdb.set_trace()
+
+            chosen_seats.append(chosen_seat)
+            # ipdb.set_trace()
+            
         ticket.session_seats.set(chosen_seats)
         ticket.save()
 
