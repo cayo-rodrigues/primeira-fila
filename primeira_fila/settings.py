@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -20,9 +19,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(
-    DOCKER=(bool, False),
-)
+env = environ.Env(DOCKER=(bool, False), DATABASE_URL=(str, ""))
 
 environ.Env.read_env(BASE_DIR / ".env")
 
@@ -113,7 +110,7 @@ else:
         }
     }
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = env("DATABASE_URL")
 
 if DATABASE_URL:
     db_from_env = dj_database_url.config(
@@ -157,9 +154,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
-# IMAGES_URL = "images/"
-# IMAGES_ROOT = os.path.join(BASE_DIR, "images")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -174,13 +168,8 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_THROTTLE_CLASSES": [
-        "utils.throttles.MovieImgUploadRateThrottle",
-        "utils.throttles.CinemaImgUploadRateThrottle",
-    ],
     "DEFAULT_THROTTLE_RATES": {
-        "movie_img_upload": "10/day",
-        "cinema_img_upload": "2/day",
+        "img_upload": "10/day",
     },
 }
 

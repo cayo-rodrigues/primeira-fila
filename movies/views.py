@@ -1,6 +1,3 @@
-# import os
-# from django.conf import settings
-
 from cinemas.models import Cinema
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
@@ -90,8 +87,3 @@ class MovieImageDetailView(generics.RetrieveUpdateDestroyAPIView):
         return safe_get_object_or_404(
             Image, ImageNotFoundError, movie=movie, pk=self.kwargs["image_id"]
         )
-
-    def perform_destroy(self, instance: Image):
-        # if settings.DEBUG:
-        #     os.remove(instance.file.path)
-        instance.delete()

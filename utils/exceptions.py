@@ -29,4 +29,4 @@ class TicketNotFoundError(APIException):
 
 class ImageNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
-    default_detail = "Ticket not found"
+    default_detail = "Image not found"
