@@ -49,13 +49,13 @@ class TicketSerializer(serializers.ModelSerializer):
                     name=session_seat_data["seat"]["name"],
                     room=validated_data["movie_session"].room,
                 ),
-                is_available=True,
+                is_available= True,
                 movie_session=validated_data["movie_session"],
             )
             # ipdb.set_trace()
 
             chosen_seat.is_available = False
-            # chosen_seat.save()
+            chosen_seat.save()
             # ipdb.set_trace()
 
             chosen_seats.append(chosen_seat)
