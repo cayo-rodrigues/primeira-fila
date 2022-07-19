@@ -1,4 +1,5 @@
-import os
+# import os
+# from django.conf import settings
 
 from cinemas.models import Cinema
 from django.shortcuts import get_object_or_404
@@ -81,5 +82,6 @@ class MovieImageDetailView(generics.RetrieveUpdateDestroyAPIView):
         )
 
     def perform_destroy(self, instance: Image):
-        os.remove(instance.file.path)
+        # if settings.DEBUG:
+        #     os.remove(instance.file.path)
         instance.delete()
