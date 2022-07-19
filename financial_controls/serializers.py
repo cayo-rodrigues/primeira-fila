@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from tickets.models import Ticket
-from users.models import User
+from movie_sessions.models import SessionSeat
 from financial_controls.models import UserFinancialControl, CinemaFinancialControl
 
 
@@ -16,11 +16,14 @@ class UserFinancialControlSerializer(serializers.ModelSerializer):
         return UserFinancialControl.objects.create(**validated_data)
 
     
-    def get_expenses(self):
-        value = 0
-        tickets = Ticket.objects.filter(user=self.user)
+    def get_expenses(self, financial_control:UserFinancialControl):
+        user = financial_control.user
+        tickets = Ticket.objects.filter(user=user)
+        value = 0      
         for ticket in tickets:
-            value += ticket.total
+            actual_movie_session_price = ticket.movie_session.price
+            user_session_seats = SessionSeat.objects.filter(ticket_id=ticket.id)
+            value += len(user_session_seats)*actual_movie_session_price
             
         return value    
         
