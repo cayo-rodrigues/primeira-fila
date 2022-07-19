@@ -33,7 +33,7 @@
 
 ## [ Voltar para o topo ](#tabela-de-conteúdos)
 
-# 1 Descriação do projeto
+# 1 Descrição do projeto
 
 ### Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema deverá ter uma forma de controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.
 
