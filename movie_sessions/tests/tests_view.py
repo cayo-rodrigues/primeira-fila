@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from users.models import User
 
 
-class TestUserModel(APITestCase):
+class MovieSessionViewsTest(APITestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user_data = {
@@ -25,12 +25,11 @@ class TestUserModel(APITestCase):
             "duration": 119,
             "synopsis": "Nunca imaginei que no final eu me Thornaria um pato",
             "premiere": "2022-07-11",
-            "medias": [
+            "videos": [
                 {
-                    "name": "Poster Telescópio 1",
-                    "media_url": "https://ultimosegundo.ig.com.br/ciencia/2022-07-11/primeira-foto-do-james-webb-mostra-galaxias-pouco-apos-o-big-bang.html",
-                    "is_video": False,
-                }
+                    "title": "Trailer Thor 1",
+                    "url": "https://www.youtube.com/watch?v=sklZyTp_wwY",
+                },
             ],
             "genres": [{"name": "Trovão"}, {"name": "Trovoada"}, {"name": "Martelo"}],
             "age_group": {"minimum_age": 18, "content": "Brutalidade, Steve Magau"},
@@ -82,7 +81,7 @@ class TestUserModel(APITestCase):
         }
         cls.movie_session_data = {
             "price": 21.50,
-            "session_datetime": "2002-07-11 11:30",
+            "session_datetime": "3022-07-11 11:30",
             "subtitled": True,
             "is_3d": True,
             "on_sale": False,

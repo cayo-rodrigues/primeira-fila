@@ -1,17 +1,16 @@
-
 from email.headerregistry import Address
-from django.test import TestCase
-from movie_sessions.models import MovieSession
+
+from addresses.models import Address, City, Country, District, State
 from cinemas.models import Cinema
-from rooms.models import Room, RoomCorridor, SeatRows
-from movies.models import Movie, Person, Distributor, Star, Genre, AgeGroup, Media
-from users.models import User
-from addresses.models import Address, District, City, Country, State
-from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.test import TestCase
+from django.utils import timezone
+from movie_sessions.models import MovieSession
+from movies.models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
+from rooms.models import Room, RoomCorridor, SeatRows
+from users.models import User
 
-import ipdb
 
 class MovieSessionModelTest(TestCase):
     @classmethod
@@ -65,18 +64,16 @@ class MovieSessionModelTest(TestCase):
         for value in cls.genres:
             cls.movie.genres.add(value)
 
-        cls.media1 = Media.objects.create(
-            name="Trailer Thor 1",
-            media_url="https://wwww.video.com",
-            is_video=True,
+        cls.media1 = Video.objects.create(
+            title="Trailer Thor 1",
+            url="https://wwww.video.com",
             movie=cls.movie,
         )
 
         cls.media2 = (
-            Media.objects.create(
-                name="Poster Thor 1",
-                media_url="https://wwww.imagem.com",
-                is_video=False,
+            Image.objects.create(
+                title="Poster Thor 1",
+                file="https://wwww.imagem.com",
                 movie=cls.movie,
             ),
         )
@@ -122,10 +119,9 @@ class MovieSessionModelTest(TestCase):
         for value in seat_rows:
             cls.room.seat_rows.add(value)
 
-        room_corridors=[room_corridor1, room_corridor2]
+        room_corridors = [room_corridor1, room_corridor2]
         for value in room_corridors:
-            cls.room.room_corridors.add(value)    
-
+            cls.room.room_corridors.add(value)
 
         cls.movie_session = MovieSession.objects.create(
             price=21.50,
@@ -196,18 +192,9 @@ class MovieSessionModelTest(TestCase):
             address=address,
         )
 
-
         self.movie_session.cinema = cinema
 
         self.movie_session.save()
 
         self.assertEqual(self.movie_session.cinema, cinema)
         self.assertNotEqual(self.movie_session.cinema, self.cinema)
-    
-
-
-
-
-
-
-
