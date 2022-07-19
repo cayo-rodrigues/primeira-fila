@@ -52,7 +52,7 @@ class TicketSerializer(serializers.ModelSerializer):
             chosen_seat.save()
             chosen_seats.append(chosen_seat)
         ticket.session_seats.set(chosen_seats)
-        ticket.send_by_email()
+        ticket.send_by_email(self.context["request"])
         ticket.save()
         return ticket
 
@@ -86,6 +86,6 @@ class TicketSerializer(serializers.ModelSerializer):
                 chosen_seat.save()
                 chosen_seats.append(chosen_seat)
             instance.session_seats.set(chosen_seats)
-            instance.send_by_email()
+            instance.send_by_email(self.context["request"])
             instance.save()
             return instance
