@@ -9,7 +9,17 @@ class CinemaNotFoundError(APIException):
 
 class RoomNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
-    default_detail = "Room not found"
+    default_detail = "Room not found on this cinema"
+
+
+class SessionSeatNotFoundError(APIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = "Session seat not found or not available"
+
+
+class SeatNotFoundError(APIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = "Seat not found on this room"
 
 
 class MovieNotFoundError(APIException):
@@ -30,3 +40,8 @@ class TicketNotFoundError(APIException):
 class ImageNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "Image not found"
+
+
+class AccountConfirmationNotFoundError(APIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = "Not found"

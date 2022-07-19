@@ -13,20 +13,25 @@ class ReadOnly(permissions.BasePermission):
 
 
 class OwnerPermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, object):  
+    def has_object_permission(self, request, view, object):
         if request.method in permissions.SAFE_METHODS:
-            return True  
+            return True
         return request.user == object.cinema.owner
-    
-    
+
+
 class OnlySelfManagerPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj: Cinema):
         if request.method in permissions.SAFE_METHODS:
             return True
 
         return obj.owner == request.user
-    
+
 
 class OnlySelfManagerPermissionFinancial(permissions.BasePermission):
     def has_object_permission(self, request, view, obj: Cinema):
-        return obj.owner == request.user    
+        return obj.owner == request.user
+
+
+class IsTicketOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user

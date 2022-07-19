@@ -1,8 +1,9 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
+from utils.exceptions import AccountConfirmationNotFoundError
+from utils.helpers import safe_get_object_or_404
 
 from users.models import AccountConfirmation, User
 from users.serializers import UserSerializer
@@ -29,8 +30,10 @@ class ConfirmAccountView(generics.RetrieveAPIView):
     renderer_classes = [TemplateHTMLRenderer]
 
     def get(self, request, *args, **kwargs):
-        confirmation = get_object_or_404(
-            AccountConfirmation, pk=self.kwargs["confirmation_id"]
+        confirmation = safe_get_object_or_404(
+            AccountConfirmation,
+            AccountConfirmationNotFoundError,
+            pk=self.kwargs["confirmation_id"],
         )
         confirmation.account.is_active = True
         confirmation.account.save()

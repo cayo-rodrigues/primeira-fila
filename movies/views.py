@@ -1,8 +1,7 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from rest_framework import generics
-from utils.exceptions import ImageNotFoundError, MovieNotFoundError
+from utils.exceptions import CinemaNotFoundError, ImageNotFoundError, MovieNotFoundError
 from utils.helpers import safe_get_object_or_404
 from utils.mixins import MovieQueryParamsMixin, SerializerByMethodMixin
 from utils.permissions import IsSuperUser, ReadOnly
@@ -49,7 +48,9 @@ class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
     serializer_class = ListMoviesSerializer
 
     def get_queryset(self):
-        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
+        cinema = safe_get_object_or_404(
+            Cinema, CinemaNotFoundError, pk=self.kwargs["cine_id"]
+        )
         self.queryset = self.queryset.filter(movie_sessions__room__cinema=cinema)
         return self.use_query_params()
 

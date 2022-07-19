@@ -1,9 +1,15 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404
 from movies.models import Movie
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rooms.models import Room
+from utils.exceptions import (
+    CinemaNotFoundError,
+    MovieNotFoundError,
+    MovieSessionNotFoundError,
+    RoomNotFoundError,
+)
+from utils.helpers import safe_get_object_or_404
 from utils.permissions import OwnerPermission
 
 from .models import MovieSession
@@ -17,9 +23,15 @@ class MovieSessionCreateView(generics.CreateAPIView):
     serializer_class = MovieSessionSerializer
 
     def perform_create(self, serializer):
-        cinema = get_object_or_404(Cinema, pk=self.kwargs["cine_id"])
-        room = get_object_or_404(Room, pk=self.kwargs["room_id"], cinema=cinema)
-        movie = get_object_or_404(Movie, pk=self.kwargs["movie_id"])
+        cinema = safe_get_object_or_404(
+            Cinema, CinemaNotFoundError, pk=self.kwargs["cine_id"]
+        )
+        room = safe_get_object_or_404(
+            Room, RoomNotFoundError, pk=self.kwargs["room_id"], cinema=cinema
+        )
+        movie = safe_get_object_or_404(
+            Movie, MovieNotFoundError, pk=self.kwargs["movie_id"]
+        )
 
         return serializer.save(cinema=cinema, room=room, movie=movie)
 
@@ -31,7 +43,7 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
     def get_queryset(self):
         cinema_id = self.kwargs["cine_id"]
 
-        get_object_or_404(Cinema, id=cinema_id)
+        safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
 
         movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id)
 
@@ -47,10 +59,12 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
         cinema_id = self.kwargs["cine_id"]
         movie_id = self.kwargs["movie_id"]
 
-        get_object_or_404(Cinema, id=cinema_id)
-        get_object_or_404(Movie, id=movie_id)
+        safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
+        safe_get_object_or_404(Movie, MovieNotFoundError, id=movie_id)
 
-        movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id).filter(movie_id=movie_id)
+        movie_sessions = MovieSession.objects.filter(cinema_id=cinema_id).filter(
+            movie_id=movie_id
+        )
 
         return movie_sessions
 
@@ -65,8 +79,10 @@ class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
         cinema_id = self.kwargs["cine_id"]
         movie_session_id = self.kwargs["session_id"]
 
-        get_object_or_404(Cinema, id=cinema_id)
-        get_object_or_404(MovieSession, id=movie_session_id)
+        safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
+        safe_get_object_or_404(
+            MovieSession, MovieSessionNotFoundError, id=movie_session_id
+        )
         movie_session = MovieSession.objects.filter(id=movie_session_id)
 
         return movie_session

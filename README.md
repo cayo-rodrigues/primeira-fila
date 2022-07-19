@@ -5,7 +5,8 @@
 - [Documentação da API](#documentação-da-api)
   - [Tabela de Conteúdos](#tabela-de-conteúdos)
   - [ Voltar para o topo ](#-voltar-para-o-topo-)
-- [1 Descriação do projeto](#1-descriação-do-projeto)
+- [1 Descrição do projeto](#1-descrição-do-projeto)
+    - [Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema tem ferramentas para controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.](#imagine-um-site-onde-o-usuário-pode-entrar-para-ver-quais-filmes-estão-passando-nos-cinemas-perto-de-onde-ele-mora-e-poder-ver-facilmente-qual-a-programação-para-os-filmes-em-cada-um-desses-cinemas-além-de-informações-de-cada-filme-como-titulo-sinopse-atores-gênero-etc-além-de-poder-comprar-ingressos-online-cada-cinema-tem-ferramentas-para-controlar-as-sessões-de-filme-as-salas-em-que-vão-passar-o-filme-a-ser-passado-os-assentos-disponíveis-e-saber-quem-vai-assistir)
 - [1.1 Visão Geral](#11-visão-geral)
   - [Visão geral do projeto, tecnologias usadas.](#visão-geral-do-projeto-tecnologias-usadas)
   - [A URL base da aplicação:](#a-url-base-da-aplicação)
@@ -68,7 +69,7 @@
 
 # 2. Diagrama e relações
 
-![DER](././utils/dir.png)
+![DER](der.png)
 
 ## Link para acesso ao Diagrama
 
@@ -142,7 +143,7 @@ pip install -r requirements.txt
   - ### `[GET] - /cinemas/<cine_id>/rooms/<room_id>/`
   - ### `[GET] - /cinemas/<cine_id>/rooms/`
   - ### `[POST] - /cinemas/<cine_id>/rooms/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)** 
+    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
   - ### `[PATCH] - cinemas/<cine_id>/rooms/<room_id>/`
     - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
   - ### `[DELETE] - /cinemas/<cine_id>/rooms/<room_id>/`

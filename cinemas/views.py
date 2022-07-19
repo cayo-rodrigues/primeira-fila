@@ -6,7 +6,7 @@ from .models import Cinema
 from .serializers import CreateCinemaSerializer, ListCinemaSerializer
 
 
-class CreateCinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
+class CinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
 
     queryset = Cinema.objects.all()
     serializers = {"GET": ListCinemaSerializer, "POST": CreateCinemaSerializer}
@@ -19,24 +19,25 @@ class CreateCinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
         country = self.request.GET.get("country")
 
         if street:
-            self.queryset = Cinema.objects.filter(address__street__iexact=street)
+            self.queryset = Cinema.objects.filter(address__street__icontains=street)
 
         if district:
             self.queryset = self.queryset.filter(
-                address__district__name__iexact=district
+                address__district__name__icontains=district
             )
 
         if city:
-            self.queryset = self.queryset.filter(address__city__name__iexact=city)
+            self.queryset = self.queryset.filter(address__city__name__icontains=city)
 
         if state:
-            self.queryset = self.queryset.filter(address__state__name__iexact=state)
+            self.queryset = self.queryset.filter(address__state__name__icontains=state)
 
         if country:
-            self.queryset = self.queryset.filter(address__country__name__iexact=country)
+            self.queryset = self.queryset.filter(
+                address__country__name__icontains=country
+            )
 
         return self.queryset
-        # return super().get_queryset()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

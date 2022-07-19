@@ -1,9 +1,10 @@
-from django.shortcuts import get_object_or_404
 from movie_sessions.models import SessionSeat
 from movie_sessions.serializers import MovieSessionSerializer
 from rest_framework import serializers
 from rooms.models import Seat
 from users.serializers import UserSerializer
+from utils.exceptions import SeatNotFoundError, SessionSeatNotFoundError
+from utils.helpers import safe_get_object_or_404
 
 from .models import Ticket
 
@@ -38,10 +39,12 @@ class TicketSerializer(serializers.ModelSerializer):
         ticket: Ticket = Ticket.objects.create(**validated_data)
         chosen_seats = []
         for session_seat_data in seats:
-            chosen_seat: SessionSeat = get_object_or_404(
+            chosen_seat: SessionSeat = safe_get_object_or_404(
                 SessionSeat,
-                seat=get_object_or_404(
+                SessionSeatNotFoundError,
+                seat=safe_get_object_or_404(
                     Seat,
+                    SeatNotFoundError,
                     name=session_seat_data["seat"]["name"],
                     room=validated_data["movie_session"].room,
                 ),
@@ -72,10 +75,12 @@ class TicketSerializer(serializers.ModelSerializer):
         if len(sessions_seats) == instance.session_seats.count():
             for session_seat_data in sessions_seats:
                 session_seat_data.is_available = True
-                chosen_seat: SessionSeat = get_object_or_404(
+                chosen_seat: SessionSeat = safe_get_object_or_404(
                     SessionSeat,
-                    seat=get_object_or_404(
+                    SessionSeatNotFoundError,
+                    seat=safe_get_object_or_404(
                         Seat,
+                        SeatNotFoundError,
                         name=session_seat_data["seat"]["name"],
                         room=validated_data["movie_session"].room,
                     ),
