@@ -127,9 +127,12 @@ class RoomSerializer(serializers.ModelSerializer):
 
                 for seat in all_sessions_seats:
                     for seat_instance in all_seats_in_instance:
-
-                        if seat["seat"] == seat_instance and not seat["is_avaliable"]:
-                            raise serializers.ValidationError()
+                        if seat.seat == seat_instance and not seat.is_available:
+                            raise serializers.ValidationError(
+                                {
+                                    "message": f"{seat.seat.name} is already with a movie session."
+                                }
+                            )
 
                 for value in all_seats_in_instance:
                     value.delete()
