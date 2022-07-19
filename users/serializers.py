@@ -1,6 +1,7 @@
 from django.conf.global_settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from rest_framework import serializers
+from financial_controls.models import UserFinancialControl
 
 from users.models import AccountConfirmation, User
 
@@ -24,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create(**validated_data)
+        UserFinancialControl.objects.create(user=user)
         confirmation = AccountConfirmation.objects.create(account=user)
 
         current_host = self.context["request"].get_host()

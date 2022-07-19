@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "rooms",
     "movie_sessions",
     "tickets",
+    "financial_controls"
 ]
 
 MIDDLEWARE = [

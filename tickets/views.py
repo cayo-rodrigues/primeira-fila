@@ -18,7 +18,7 @@ class TicketView(generics.ListCreateAPIView):
         session = get_object_or_404(
             MovieSession, id=self.kwargs.get("session_id"), room__cinema=cine
         )
-        serializer.save(movie_session=session, user=self.request.user)
+        return serializer.save(movie_session=session, user=self.request.user)
 
 
 class TicketDetailsView(generics.RetrieveAPIView):
