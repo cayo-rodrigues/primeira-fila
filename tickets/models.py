@@ -1,5 +1,7 @@
 from uuid import uuid4
 
+import qrcode
+import qrcode.image.svg
 from django.conf.global_settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 from django.db import models
@@ -48,7 +50,6 @@ class Ticket(models.Model):
             f"<li>Email do comprador: {user.email}</li>"
             f"<li>Idade do comprador: {user.age}</li>"
             "</ul>"
-            "<p></p>"
             "<p>Atenciosamente, equipe Primeira Fila :)</p>",
             from_email=EMAIL_HOST_USER,
             recipient_list=[user.email],
