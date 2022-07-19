@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "image_optimizer",
+    "qr_code",
     "users",
     "addresses",
     "cinemas",
@@ -55,7 +56,7 @@ INSTALLED_APPS = [
     "rooms",
     "movie_sessions",
     "tickets",
-    "financial_controls"
+    "financial_controls",
 ]
 
 MIDDLEWARE = [
