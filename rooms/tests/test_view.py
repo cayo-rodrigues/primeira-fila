@@ -16,6 +16,14 @@ from users.models import User
 class RoomViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        cls.superuser_data = {
+            "email": "super@super.com",
+            "first_name": "super",
+            "last_name": "super",
+            "age": 22,
+            "password": "abc123456",
+        }
+
         cls.room_data = {
             "name": "Teste meu nobre",
             "seat_rows": [
@@ -41,6 +49,62 @@ class RoomViewTest(APITestCase):
             ],
         }
 
+        cls.movie_data = {
+            "title": "Thor, Amor e Trovão",
+            "duration": 119,
+            "synopsis": "Nunca imaginei que no final eu me Thornaria um pato",
+            "premiere": "2022-07-11",
+            "videos": [
+                {
+                    "title": "Trailer Thor 1",
+                    "url": "https://www.youtube.com/watch?v=sklZyTp_wwY",
+                },
+            ],
+            "genres": [{"name": "Trovão"}, {"name": "Trovoada"}, {"name": "Martelo"}],
+            "age_group": {"minimum_age": 18, "content": "Brutalidade, Steve Magau"},
+            "distributor": {"name": "Wall Thisney"},
+            "director": {"name": "Thiago"},
+            "stars": [
+                {"person": {"name": "Thiago Montserrat"}},
+                {"person": {"name": "Steve Magau"}},
+            ],
+        }
+        cls.cinema_data = {
+            "name": "Cine Asno",
+            "address": {
+                "street": "Rua A",
+                "number": "34",
+                "details": "Perto da coxinharia do thiago",
+                "city": {"name": "Jubileu do sul"},
+                "state": {"name": "MG"},
+                "country": {"name": "Brazil"},
+                "district": {"name": "Guadalupe"},
+            },
+            "rooms": [
+                {
+                    "name": "SALA X",
+                    "seat_rows": [8, 9, 10, 10, 10, 8, 9, 9, 10],
+                    "corridors": [
+                        {"column": 1, "from_row": 4, "to_row": 4},
+                        {"column": 4, "from_row": 2, "to_row": 4},
+                        {"column": 8, "from_row": 2, "to_row": 4},
+                    ],
+                }
+            ],
+        }
+
+        cls.movie_session_data = {
+            "price": 21.50,
+            "session_datetime": "2022-09-12 11:30",
+            "subtitled": True,
+            "is_3d": True,
+            "on_sale": False,
+        }
+
+        cls.ticket_data = {
+            "session_seats": [{"seat": {"name": "A1"}}, {"seat": {"name": "A2"}}]
+        }
+
         cls.manager_user = User.objects.create(
             email="teste2@teste.com",
             first_name="Teste",
@@ -63,31 +127,42 @@ class RoomViewTest(APITestCase):
 
         cls.manager_user.is_active = True
         cls.manager_user.save()
-
-        cls.name_data = DEFAULT_CINEMA_DATA
-        cls.address_data = DEFAULT_ADDRESS_DATA
-        cls.city_data = DEFAULT_CITY_DATA
-        cls.district_data = DEFAULT_DISTRICT_DATA
-        cls.state_data = DEFAULT_STATE_DATA
-        cls.country_data = DEFAULT_COUNTRY_DATA
-
-        cls.city = City.objects.create(**cls.city_data)
-        cls.district = District.objects.create(**cls.district_data)
-        cls.state = State.objects.create(**cls.state_data)
-        cls.country = Country.objects.create(**cls.country_data)
-        cls.address = Address.objects.create(
-            **cls.address_data,
-            city=cls.city,
-            district=cls.district,
-            state=cls.state,
-            country=cls.country,
-        )
-
-        cls.cinema: Cinema = Cinema.objects.create(
-            **cls.name_data, address=cls.address, owner=cls.manager_user
-        )
+        cls.superuser = User.objects.create_superuser(**cls.superuser_data)
 
     def setUp(self):
+        response = self.client.post(
+            "/sessions/token/",
+            {"email": "super@super.com", "password": "abc123456"},
+            "json",
+        )
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
+
+        self.movie = self.client.post("/movies/", self.movie_data, format="json")
+
+        response_manager = self.client.post(
+            "/sessions/token/",
+            {"email": "teste2@teste.com", "password": "1234"},
+            "json",
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response_manager.json()['access']}"
+        )
+
+        self.cinema = self.client.post("/cinemas/", self.cinema_data, format="json")
+        self.room = self.client.post(
+            f'/cinemas/{self.cinema.data["id"]}/rooms/',
+            self.room_data,
+            format="json",
+        )
+        self.movie_session = self.client.post(
+            f'/cinemas/{self.cinema.data["id"]}/rooms/{self.room.data["id"]}/movies/{self.movie.data["id"]}/movie-sessions/',
+            self.movie_session_data,
+            format="json",
+        )
+
         response = self.client.post(
             "/sessions/token/",
             {"email": "teste2@teste.com", "password": "1234"},
@@ -98,17 +173,17 @@ class RoomViewTest(APITestCase):
         )
 
     def test_can_list_all_rooms(self):
-        response = self.client.get(f"/cinemas/{self.cinema.id}/")
+        response = self.client.get(f"/cinemas/{self.cinema.data['id']}/")
 
         self.assertEqual(response.status_code, 200)
 
     def test_list_one_room_from_cinema(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
 
         response = self.client.get(
-            f"/cinemas/{self.cinema.id}/rooms/{response.data['id']}/"
+            f"/cinemas/{self.cinema.data['id']}/rooms/{response.data['id']}/"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -123,17 +198,17 @@ class RoomViewTest(APITestCase):
 
     def test_list_return_values(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
 
-        response = self.client.get(f"/cinemas/{self.cinema.id}/rooms/")
+        response = self.client.get(f"/cinemas/{self.cinema.data['id']}/rooms/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["count"], 2)
 
     def test_manager_user_can_create_room(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
 
         self.assertEqual(response.status_code, 201)
@@ -149,24 +224,24 @@ class RoomViewTest(APITestCase):
         )
 
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
 
         self.assertEqual(response.status_code, 403)
 
     def test_manager_can_delete_room(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
         response = self.client.delete(
-            f"/cinemas/{self.cinema.id}/rooms/{response.data['id']}/"
+            f"/cinemas/{self.cinema.data['id']}/rooms/{response.data['id']}/"
         )
 
         self.assertEqual(response.status_code, 204)
 
     def test_not_manager_user_cant_delete_room(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
 
         room = response.data["id"]
@@ -180,16 +255,18 @@ class RoomViewTest(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
         )
 
-        response = self.client.delete(f"/cinemas/{self.cinema.id}/rooms/{room}/")
+        response = self.client.delete(
+            f"/cinemas/{self.cinema.data['id']}/rooms/{room}/"
+        )
 
         self.assertEqual(response.status_code, 403)
 
     def test_manager_can_update_room(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
         response = self.client.patch(
-            f"/cinemas/{self.cinema.id}/rooms/{response.data['id']}/",
+            f"/cinemas/{self.cinema.data['id']}/rooms/{response.data['id']}/",
             self.room_update,
             "json",
         )
@@ -207,7 +284,7 @@ class RoomViewTest(APITestCase):
 
     def test_normal_user_cant_update_room(self):
         response = self.client.post(
-            f"/cinemas/{self.cinema.id}/rooms/", self.room_data, "json"
+            f"/cinemas/{self.cinema.data['id']}/rooms/", self.room_data, "json"
         )
 
         room = response.data["id"]
@@ -222,9 +299,24 @@ class RoomViewTest(APITestCase):
         )
 
         response = self.client.patch(
-            f"/cinemas/{self.cinema.id}/rooms/{room}/",
+            f"/cinemas/{self.cinema.data['id']}/rooms/{room}/",
             self.room_update,
             "json",
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_can_not_update_room_seats_if_any_seat_is_in_a_movie_session(self):
+        response = self.client.post(
+            f"/cinemas/{self.cinema.data['id']}/movie-sessions/{self.movie_session.data['id']}/tickets/",
+            self.ticket_data,
+            "json",
+        )
+
+        response = self.client.patch(
+            f"/cinemas/{self.cinema.data['id']}/rooms/{self.room.data['id']}/",
+            self.room_update,
+            "json",
+        )
+
+        self.assertEqual(response.status_code, 400)
