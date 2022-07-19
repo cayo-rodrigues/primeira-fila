@@ -2,6 +2,7 @@ from django.urls import path
 from movie_sessions import views
 from movies.views import MovieByCinemaView
 from rooms import views as room_views
+from financial_controls.views import CinemaFinancialControlView
 from tickets.views import (
     TicketSessionMovieDetailsView,
     TicketSessionMovieOneDetailsView,
@@ -51,4 +52,5 @@ urlpatterns = [
         "<cine_id>/movie-sessions/<session_id>/",
         views.MovieSessionDetail.as_view(),
     ),
+    path("<cine_id>/financial_control/", CinemaFinancialControlView.as_view())
 ]
