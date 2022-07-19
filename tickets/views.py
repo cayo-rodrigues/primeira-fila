@@ -96,6 +96,9 @@ class TicketDetailView(generics.RetrieveUpdateAPIView):
             room__cinema=cine,
         )
         safe_get_object_or_404(
-            Ticket, TicketNotFoundError, id=self.kwargs.get("ticket_id")
+            Ticket,
+            TicketNotFoundError,
+            id=self.kwargs.get("ticket_id"),
+            movie_session=session,
         )
         serializer.save(movie_session=session, user=self.request.user)

@@ -27,7 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
         AccountConfirmation.objects.create(account=user)
 
         user.send_confirmation_email(self.context["request"])
-        user.is_active = True
         user.save()
 
         return user
