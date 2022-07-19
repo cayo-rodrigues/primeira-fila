@@ -1,4 +1,7 @@
 from django.db.models import Model
+from django.forms import ValidationError
+from django.http import Http404
+from rest_framework.exceptions import APIException
 
 
 def bulk_get_or_create(
@@ -42,10 +45,10 @@ def normalize_text(
     """
     Normalizes the given string, striping off leading and trailing whitespaces.
     You can pass parameters to specify additional normalization steps.
-    - is_title: Turns The String Into A Title Case String.
-    - join_by: A string to be the separator of words in a sentence.
-    - splt_by: turns the stirng into a list, spliting it by this parameter
-    - is_lower: turns the string into a lower case string.
+    - `is_title`: Turns The String Into A Title Case String.
+    - `join_by`: A string to be the separator of words in a sentence.
+    - `splt_by`: turns the stirng into a list, spliting it by this parameter. (passing only `split_by` without `join_by` will have no effect)
+    - `is_lower`: turns the string into a lower case string.
     """
     text = text.strip()
 
@@ -56,7 +59,21 @@ def normalize_text(
 
     if join_by:
         text = join_by.join(text.split(split_by))
-    if split_by:
-        text = text.split(split_by)
 
     return text
+
+
+def safe_get_object_or_404(
+    klass: Model, error_klass: APIException = Http404, *args, **kwargs
+):
+    try:
+        return klass.objects.get(*args, **kwargs)
+    except (klass.DoesNotExist, ValidationError):
+        raise error_klass
+
+
+def safe_get_list_or_404(queryset, error_klass: APIException = Http404, *args, **kwargs):
+    try:
+        return queryset.filter(*args, **kwargs)
+    except ValidationError:
+        raise error_klass

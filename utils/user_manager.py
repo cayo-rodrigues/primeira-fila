@@ -24,7 +24,7 @@ class CustomUserManager(BaseUserManager):
             last_name=last_name,
             age=age,
             is_staff=is_staff,
-            is_active=True,
+            is_active=False,
             last_login=now,
             created_at=now,
             updated_at=now,
@@ -42,6 +42,7 @@ class CustomUserManager(BaseUserManager):
             email, first_name, last_name, age, password, True, **extra_fields
         )
         user.is_superuser = True
+        user.is_active = True
 
         user.save(using=self._db)
         return user
