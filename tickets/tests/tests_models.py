@@ -1,6 +1,4 @@
-from django.db import IntegrityError
-from django.test import TestCase
-from addresses.models import State, Address, City, Country, District
+from addresses.models import Address, City, Country, District, State
 from cinemas.models import Cinema
 from cinemas.tests.util import (
     DEFAULT_ADDRESS_DATA,
@@ -10,13 +8,12 @@ from cinemas.tests.util import (
     DEFAULT_DISTRICT_DATA,
     DEFAULT_STATE_DATA,
 )
-from movie_sessions.models import MovieSession
-from movies.models import AgeGroup, Distributor, Genre, Media, Movie, Person, Star
-from rooms.models import Room, RoomCorridor, SeatRows
+from django.test import TestCase
 from django.utils import timezone
+from movie_sessions.models import MovieSession
+from movies.models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
+from rooms.models import Room, RoomCorridor, SeatRows
 from tickets.models import Ticket
-
-
 from users.models import User
 
 
@@ -102,18 +99,16 @@ class TicketModelTest(TestCase):
         for value in cls.genres:
             cls.movie.genres.add(value)
 
-        cls.media1 = Media.objects.create(
-            name="Trailer Thor 1",
-            media_url="https://wwww.video.com",
-            is_video=True,
+        cls.media1 = Video.objects.create(
+            title="Trailer Thor 1",
+            url="https://wwww.video.com",
             movie=cls.movie,
         )
 
         cls.media2 = (
-            Media.objects.create(
-                name="Poster Thor 1",
-                media_url="https://wwww.imagem.com",
-                is_video=False,
+            Image.objects.create(
+                title="Poster Thor 1",
+                file="https://wwww.imagem.com",
                 movie=cls.movie,
             ),
         )

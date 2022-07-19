@@ -1,5 +1,4 @@
 from rest_framework.test import APITestCase
-from django.db import IntegrityError
 from users.models import User
 
 
@@ -33,12 +32,11 @@ class TicketViewTest(APITestCase):
             "duration": 119,
             "synopsis": "Nunca imaginei que no final eu me Thornaria um pato",
             "premiere": "2022-07-11",
-            "medias": [
+            "videos": [
                 {
-                    "name": "Poster Telescópio 1",
-                    "media_url": "https://ultimosegundo.ig.com.br/ciencia/2022-07-11/primeira-foto-do-james-webb-mostra-galaxias-pouco-apos-o-big-bang.html",
-                    "is_video": False,
-                }
+                    "title": "Trailer Thor 1",
+                    "url": "https://www.youtube.com/watch?v=sklZyTp_wwY",
+                },
             ],
             "genres": [{"name": "Trovão"}, {"name": "Trovoada"}, {"name": "Martelo"}],
             "age_group": {"minimum_age": 18, "content": "Brutalidade, Steve Magau"},
@@ -112,12 +110,8 @@ class TicketViewTest(APITestCase):
             "json",
         )
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
         self.movie = self.client.post("/movies/", self.movie_data, format="json")
 
         self.manager = User.objects.create(**self.manager_data)
@@ -149,9 +143,7 @@ class TicketViewTest(APITestCase):
             {"email": "user@teste.com", "password": "12345678"},
             "json",
         )
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
 
     def test_can_create_a_ticket(self):
         response = self.client.post(
