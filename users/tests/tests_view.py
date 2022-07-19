@@ -132,17 +132,18 @@ class TestUserLoginView(APITestCase):
         cls.refre_data = {"username": "jd", "password": "1234"}
 
         cls.user = User.objects.create(**cls.valid_data)
+        cls.user.is_active = True
+        cls.user.save()
+
 
     def test_login_sucess(self):
-        res = self.client.post("/sessions/token/", data=self.valid_data, format="json")
+        res = self.client.post("/sessions/token/", data=self.login_data, format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn("access", res.data)
         self.assertIn("refresh", res.data)
 
     def test_login_invalid_credentials(self):
-        res = self.client.post(
-            "/sessions/token/", data=self.invalid_data, format="json"
-        )
+        res = self.client.post("/sessions/token/", data=self.invalid_data, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_refresh_sucess(self):

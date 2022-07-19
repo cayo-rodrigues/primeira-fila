@@ -1,6 +1,10 @@
 from uuid import uuid4
 
 from django.db import models
+from django.utils.timezone import now
+from image_optimizer.fields import OptimizedImageField
+from utils.helpers import normalize_text
+from utils.validators import UploadValidators
 
 # Create your models here.
 
@@ -33,19 +37,47 @@ class Movie(models.Model):
     )
     genres = models.ManyToManyField("movies.Genre", related_name="movies")
 
+    def set_normalized_genres(self, genres_data: list[dict]):
+        genres = []
 
-class Media(models.Model):
+        for genre in genres_data:
+            genre["name"] = normalize_text(genre["name"], is_lower=True)
+            existing_genre = Genre.objects.filter(name=genre["name"]).first()
+            if existing_genre:
+                genres.append(existing_genre)
+            else:
+                genres.append(Genre.objects.create(**genre))
+
+        self.genres.set(genres)
+
+    def save(self, *args, **kwargs) -> None:
+        self.title = normalize_text(self.title, is_title=True)
+        return super().save(*args, **kwargs)
+
+
+class Video(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.CharField(max_length=127)
-    media_url = models.URLField()
-    is_video = models.BooleanField(default=False)
+    title = models.CharField(max_length=127)
+    url = models.URLField()
 
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="medias")
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="videos")
+
+
+class Image(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    title = models.CharField(max_length=127)
+    file = OptimizedImageField(validators=[UploadValidators.validate_file_size])
+
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="images")
 
 
 class Person(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.CharField(max_length=127)
+
+    def save(self, *args, **kwargs) -> None:
+        self.name = normalize_text(self.name, is_lower=True)
+        return super().save(*args, **kwargs)
 
 
 class Star(models.Model):
@@ -58,6 +90,10 @@ class Star(models.Model):
 class Distributor(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.CharField(max_length=127)
+
+    def save(self, *args, **kwargs) -> None:
+        self.name = normalize_text(self.name, is_lower=True)
+        return super().save(*args, **kwargs)
 
 
 class Genre(models.Model):
@@ -80,3 +116,7 @@ class AgeGroup(models.Model):
         choices=AgeGroupChoices.choices, default=AgeGroupChoices.L
     )
     content = models.CharField(max_length=127)
+
+    def save(self, *args, **kwargs) -> None:
+        self.content = normalize_text(self.content, is_lower=True)
+        return super().save(*args, **kwargs)

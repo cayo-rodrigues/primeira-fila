@@ -1,1 +1,5 @@
-# podemos colocar nas requisições que fazem upload de mídia, pra evitar facada do AWS
+from rest_framework.throttling import UserRateThrottle
+
+
+class MovieImgUploadRateThrottle(UserRateThrottle):
+    scope = "img_upload"
