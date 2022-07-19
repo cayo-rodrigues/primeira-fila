@@ -174,13 +174,14 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    # "DEFAULT_THROTTLE_CLASSES": [
-    #     "rest_framework.throttling.ScopedRateThrottle",
-    # ],
-    #  'DEFAULT_THROTTLE_RATES': {
-    #      'anon': '5/day',
-    #      'user': '10/day',
-    #  },
+    "DEFAULT_THROTTLE_CLASSES": [
+        "utils.throttles.MovieImgUploadRateThrottle",
+        "utils.throttles.CinemaImgUploadRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "movie_img_upload": "10/day",
+        "cinema_img_upload": "2/day",
+    },
 }
 
 SIMPLE_JWT = {
@@ -210,7 +211,7 @@ AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = "primeira-fila"
 AWS_S3_REGION_NAME = "sa-east-1"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
-AWS_S3_FILE_OVERWRITE = False
+AWS_S3_FILE_OVERWRITE = True
 AWS_DEFAULT_ACL = None
 AWS_S3_VERIFY = True
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
