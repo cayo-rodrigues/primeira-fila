@@ -35,7 +35,7 @@
 
 # 1 Descrição do projeto
 
-### Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema deverá ter uma forma de controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.
+### Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema tem ferramentas para controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.
 
 # 1.1 Visão Geral
 
@@ -58,7 +58,7 @@
 - [Python](https://www.python.org/)
 - [Docker](https://www.docker.com/)
 - [AWS](https://aws.amazon.com/pt/)
-- [Heroko](https://devcenter.heroku.com/categories/reference)
+- [Heroku](https://devcenter.heroku.com/categories/reference)
 
 ## A URL base da aplicação:
 
@@ -142,6 +142,7 @@ pip install -r requirements.txt
   - ### `[GET] - /cinemas/<cine_id>/rooms/<room_id>/`
   - ### `[GET] - /cinemas/<cine_id>/rooms/`
   - ### `[POST] - /cinemas/<cine_id>/rooms/`
+    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)** 
   - ### `[PATCH] - cinemas/<cine_id>/rooms/<room_id>/`
     - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
   - ### `[DELETE] - /cinemas/<cine_id>/rooms/<room_id>/`
