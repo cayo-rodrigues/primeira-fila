@@ -1,7 +1,7 @@
 from django.conf.global_settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
-from rest_framework import serializers
 from financial_controls.models import UserFinancialControl
+from rest_framework import serializers
 
 from users.models import AccountConfirmation, User
 
@@ -30,16 +30,17 @@ class UserSerializer(serializers.ModelSerializer):
 
         current_host = self.context["request"].get_host()
 
-        #send_mail(
+        # send_mail(
         #    subject="Confirmação de conta no site Primeira Fila",
-        #    message=f"Olá, {user.first_name}! Muito obrigado por usar o Primeira Fila.\n"
-        #    "Clique no seguinte link para ativar sua conta:\n\n"
-        #    f"{current_host}/users/accounts/{confirmation.id}/\n\n"
-        #    "Atenciosamente, equipe Primeira Fila :)",
+        #    message="",
+        #    html_message=f"<h2>Olá, {user.first_name}! Muito obrigado por usar o Primeira Fila.</h2>"
+        #    "<p>Clique no seguinte link para ativar sua conta:</p>"
+        #    f"<p>{current_host}/users/accounts/{confirmation.id}/</p>"
+        #    "<p>Atenciosamente, equipe Primeira Fila :)</p>",
         #    from_email=EMAIL_HOST_USER,
         #    recipient_list=[user.email],
         #    fail_silently=False,
-        #)
+        # )
         user.is_active = True
         user.save()
 
