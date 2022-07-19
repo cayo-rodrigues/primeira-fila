@@ -7,8 +7,7 @@ from rest_framework.response import Response
 from users.models import AccountConfirmation, User
 from users.serializers import UserSerializer
 
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 
 
 @extend_schema(

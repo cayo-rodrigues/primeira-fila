@@ -6,8 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 
@@ -37,7 +36,7 @@ class TicketView(generics.ListCreateAPIView):
     responses=TicketSerializer,
     description = 'Route for list one ticket', 
     summary='Retrieve ticket',
-    tags=['Retrieve ticket of a user']
+    tags=['retrieve ticket of a user']
 )
 class TicketDetailsView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
@@ -87,7 +86,13 @@ class TicketSessionMovieOneDetailsView(generics.ListAPIView):
 
         return ticket
 
-
+@extend_schema(
+    operation_id="ticket_retrieve",
+    request=TicketSerializer,
+    responses=TicketSerializer,
+    description = 'Route for list one ticket',
+    tags=['retrieve ticket of a user']
+)
 class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Ticket.objects.all()

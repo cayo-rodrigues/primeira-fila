@@ -8,8 +8,17 @@ from utils.permissions import OwnerPermission
 
 from .models import MovieSession
 from .serializers import MovieSessionSerializer
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(
+    operation_id="movie_session_post",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for register one ticket', 
+    summary='Create movie session',
+    tags=['create one movie session']
+)
 class MovieSessionCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
@@ -23,7 +32,14 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
         serializer.save(cinema=cinema, room=room, movie=movie)
 
-
+@extend_schema(
+    operation_id="movie_session_get",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for list the movie sessions of a cinema', 
+    summary='List movie sessions of a cinema',
+    tags=['list movie sessions of a cinema']
+)
 class MovieSessionCinemaDetailView(generics.ListAPIView):
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -38,6 +54,14 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
         return movie_sessions
 
 
+@extend_schema(
+    operation_id="movie_session_get",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for list the movie sessions of a movie', 
+    summary='List movie sessions of a movie',
+    tags=['list movie sessions of a movie']
+)
 class MovieSessionMovieDetailView(generics.ListAPIView):
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -56,7 +80,13 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
 
         return movie_sessions
 
-
+@extend_schema(
+    operation_id="movie_session_get_update_delete",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for list/update/delete the movie sessions of a cinema', 
+    tags=['retrieve a movie session']
+)
 class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [OwnerPermission]
     queryset = MovieSession.objects.all()
