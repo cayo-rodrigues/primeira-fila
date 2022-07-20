@@ -45,3 +45,8 @@ class ImageNotFoundError(APIException):
 class AccountConfirmationNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "Not found"
+
+
+class MovieSessionNotAvailableError(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "This room is not available for a movie session at this time"
