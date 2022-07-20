@@ -6,6 +6,7 @@ omit =
     */tests/*
     utils/*
     */util.py
+    */serializers.py
     manage.py
 
 [report]
