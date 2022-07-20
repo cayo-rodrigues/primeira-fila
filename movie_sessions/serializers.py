@@ -34,11 +34,13 @@ class MovieSessionSerializer(serializers.ModelSerializer):
         return movie_session
 
     def update(self, instance, validated_data):
-        validate_session_datetime(
-            validated_data["session_datetime"],
-            room=instance.room,
-            session=instance,
-        )
+        session_datetime = validated_data.get("session_datetime", None)
+        if session_datetime:
+            validate_session_datetime(
+                session_datetime,
+                room=instance.room,
+                session=instance,
+            )
         return super().update(instance, validated_data)
 
     def get_available_seats_count(self, movie_session: MovieSession):
