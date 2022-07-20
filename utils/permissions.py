@@ -29,9 +29,11 @@ class OnlySelfManagerPermission(permissions.BasePermission):
 
 class OnlySelfManagerPermissionFinancial(permissions.BasePermission):
     def has_object_permission(self, request, view, obj: Cinema):
-        return obj.owner == request.user
+        cinema = Cinema.objects.get(id=obj.cinema.id)
+        return cinema.owner == request.user
 
 
 class IsTicketOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        
         return obj.user == request.user
