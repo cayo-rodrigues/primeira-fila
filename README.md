@@ -130,7 +130,7 @@ pip install -r requirements.txt
 ./manage.py migrate
 ```
 
-## [ Voltar para o topo ](#acesso-rápido)
+- ## [ Voltar para o topo ](#acesso-rápido)
 
 ---
 
@@ -240,4 +240,4 @@ pip install -r requirements.txt
 
 - ### https://kenzieacademybrasil.slack.com/files/U02AFBZVCMD/F03QG89EQD7/primeira_fila.json
 
-## [ Voltar para o topo ](#acesso-rápido)
+- ## [ Voltar para o topo ](#acesso-rápido)
