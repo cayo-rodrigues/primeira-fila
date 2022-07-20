@@ -5,6 +5,7 @@ omit =
     primeira_fila/*
     */tests/*
     utils/*
+    */util.py
     manage.py
 
 [report]
