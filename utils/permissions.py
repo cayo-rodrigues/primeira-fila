@@ -16,7 +16,7 @@ class OwnerPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, object):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user == object.cinema.owner
+        return request.user.is_authenticated and request.user == object.cinema.owner
 
 
 class OnlySelfManagerPermission(permissions.BasePermission):
@@ -24,14 +24,14 @@ class OnlySelfManagerPermission(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return obj.owner == request.user
+        return request.user.is_authenticated and obj.owner == request.user
 
 
 class OnlySelfManagerPermissionFinancial(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj: Cinema):
-        return obj.owner == request.user
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_authenticated and obj.cinema.owner == request.user
 
 
 class IsTicketOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return obj.user == request.user
+        return request.user.is_authenticated and obj.user == request.user

@@ -9,9 +9,16 @@ from rooms.models import Room
 from rooms.serializers import RoomSerializer
 from utils.permissions import OnlySelfManagerPermission, ReadOnly
 
+from drf_spectacular.utils import extend_schema
+
 # Create your views here.
 
-
+@extend_schema(
+    operation_id="room_get_post",
+    request=RoomSerializer,
+    responses=RoomSerializer,
+    tags=['create/list rooms']
+)
 class CreateListRoomView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated | ReadOnly]
     queryset = Room.objects.all()
@@ -33,6 +40,12 @@ class CreateListRoomView(generics.ListCreateAPIView):
         serializer.save(cinema=cinema)
 
 
+@extend_schema(
+    operation_id="room_get_update_delete",
+    request=RoomSerializer,
+    responses=RoomSerializer,
+    tags=['retrieve/update/delete a room']
+)
 class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer

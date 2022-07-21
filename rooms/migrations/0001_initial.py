@@ -10,43 +10,105 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('cinemas', '0001_initial'),
+        ("cinemas", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Room',
+            name="Room",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=50)),
-                ('cinema', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rooms', to='cinemas.cinema')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                (
+                    "cinema",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="rooms",
+                        to="cinemas.cinema",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SeatRows',
+            name="SeatRows",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('row', models.CharField(max_length=20)),
-                ('seat_count', models.PositiveIntegerField()),
-                ('room', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='seat_rows', to='rooms.room')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("row", models.CharField(max_length=20)),
+                ("seat_count", models.PositiveIntegerField()),
+                (
+                    "room",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="seat_rows",
+                        to="rooms.room",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Seat',
+            name="Seat",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=5)),
-                ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='seats', to='rooms.room')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=5)),
+                (
+                    "room",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="seats",
+                        to="rooms.room",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='RoomCorridor',
+            name="RoomCorridor",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('column', models.IntegerField()),
-                ('from_row', models.IntegerField()),
-                ('to_row', models.IntegerField()),
-                ('room', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='room_corridors', to='rooms.room')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("column", models.IntegerField()),
+                ("from_row", models.IntegerField()),
+                ("to_row", models.IntegerField()),
+                (
+                    "room",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="room_corridors",
+                        to="rooms.room",
+                    ),
+                ),
             ],
         ),
     ]

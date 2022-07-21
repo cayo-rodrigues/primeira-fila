@@ -1,6 +1,8 @@
 from cinemas.serializers import ListCinemaSerializer
+from django.db import IntegrityError
 from movie_sessions.models import MovieSession
 from rest_framework import serializers
+from utils.exceptions import MovieTitleUnavailableError
 from utils.helpers import bulk_get_or_create
 
 from .models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
@@ -88,12 +90,16 @@ class MovieSerializer(serializers.ModelSerializer):
         stars_data = validated_data.pop("stars")
         videos_data = validated_data.pop("videos")
 
-        movie: Movie = Movie.objects.get_or_create(
-            **validated_data,
-            director=director,
-            distributor=dist,
-            age_group=age_group,
-        )[0]
+        try:
+            movie = Movie.objects.get_or_create(
+                **validated_data,
+                director=director,
+                distributor=dist,
+                age_group=age_group,
+            )[0]
+        except IntegrityError:
+            raise MovieTitleUnavailableError
+
         movie.set_normalized_genres(genres_data)
         movie.save()
 

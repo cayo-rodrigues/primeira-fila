@@ -14,8 +14,15 @@ from utils.permissions import OwnerPermission
 
 from .models import MovieSession
 from .serializers import MovieSessionSerializer
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(
+    operation_id="movie_session_post",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    tags=['create one movie session']
+)
 class MovieSessionCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
@@ -35,7 +42,13 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
         return serializer.save(cinema=cinema, room=room, movie=movie)
 
-
+@extend_schema(
+    operation_id="movie_session_get",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for list the movie sessions of a cinema', 
+    tags=['list movie sessions of a cinema']
+)
 class MovieSessionCinemaDetailView(generics.ListAPIView):
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -50,6 +63,14 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
         return movie_sessions
 
 
+@extend_schema(
+    operation_id="movie_session_get",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for list the movie sessions of a movie', 
+    summary='List movie sessions of a movie',
+    tags=['list movie sessions of a movie']
+)
 class MovieSessionMovieDetailView(generics.ListAPIView):
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
@@ -68,21 +89,28 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
 
         return movie_sessions
 
-
+@extend_schema(
+    operation_id="movie_session_get_update_delete",
+    request=MovieSessionSerializer,
+    responses=MovieSessionSerializer,
+    description = 'Route for list/update/delete the movie sessions of a cinema', 
+    tags=['retrieve a movie session']
+)
 class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [OwnerPermission]
     queryset = MovieSession.objects.all()
     serializer_class = MovieSessionSerializer
     lookup_url_kwarg = "session_id"
 
-    def get_queryset(self):
-        cinema_id = self.kwargs["cine_id"]
-        movie_session_id = self.kwargs["session_id"]
-
-        safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
-        safe_get_object_or_404(
-            MovieSession, MovieSessionNotFoundError, id=movie_session_id
+    def get_object(self):
+        cinema = safe_get_object_or_404(
+            Cinema,
+            CinemaNotFoundError,
+            id=self.kwargs["cine_id"],
         )
-        movie_session = MovieSession.objects.filter(id=movie_session_id)
-
-        return movie_session
+        return safe_get_object_or_404(
+            MovieSession,
+            MovieSessionNotFoundError,
+            id=self.kwargs["session_id"],
+            cinema=cinema,
+        )

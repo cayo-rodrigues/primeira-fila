@@ -11,18 +11,40 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('addresses', '0001_initial'),
+        ("addresses", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Cinema',
+            name="Cinema",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=50)),
-                ('address', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='cinemas', to='addresses.address')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cinemas', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                (
+                    "address",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cinemas",
+                        to="addresses.address",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cinemas",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
