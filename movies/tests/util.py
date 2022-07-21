@@ -5,18 +5,21 @@ DEFAULT_MOVIE_DATA = {
     "premiere": "2022-07-11",
 }
 
-DEFAULT_MEDIAS_DATA = [
+DEFAULT_VIDEOS_DATA = [
     {
-        "name": "Trailer Thor 1",
-        "media_url": "https://www.youtube.com/watch?v=sklZyTp_wwY",
-        "is_video": True,
-    },
-    {
-        "name": "Poster Thor 1",
-        "media_url": "https://www.primevideo.com/detail/Catdog/0PZ0UHHQ1BN7HII88IGN6L7QE9/ref=atv_nb_lcl_fil_PH?language=fil_PH&ie=UTF8",
-        "is_video": False,
+        "title": "Trailer Thor 1",
+        "url": "https://www.youtube.com/watch?v=sklZyTp_wwY",
     },
 ]
+
+DEFAULT_IMAGES_DATA = [
+    {
+        "title": "Poster Thor 1",
+        "file": "https://www.primevideo.com/detail/Catdog/0PZ0UHHQ1BN7HII88IGN6L7QE9/ref=atv_nb_lcl_fil_PH?language=fil_PH&ie=UTF8",
+    },
+]
+
+DEFAULT_MEDIAS_DATA = DEFAULT_VIDEOS_DATA + DEFAULT_IMAGES_DATA
 
 DEFAULT_GENRES_DATA = [{"name": "Ação"}, {"name": "Drama"}, {"name": "Trovão"}]
 

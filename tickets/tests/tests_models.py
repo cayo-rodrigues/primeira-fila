@@ -1,29 +1,63 @@
-from email.headerregistry import Address
-
 from addresses.models import Address, City, Country, District, State
 from cinemas.models import Cinema
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
+from cinemas.tests.util import (
+    DEFAULT_ADDRESS_DATA,
+    DEFAULT_CINEMA_DATA,
+    DEFAULT_CITY_DATA,
+    DEFAULT_COUNTRY_DATA,
+    DEFAULT_DISTRICT_DATA,
+    DEFAULT_STATE_DATA,
+)
 from django.test import TestCase
 from django.utils import timezone
 from movie_sessions.models import MovieSession
 from movies.models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
 from rooms.models import Room, RoomCorridor, SeatRows
+from tickets.models import Ticket
 from users.models import User
 
 
-
-class MovieSessionModelTest(TestCase):
+class TicketModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
-
+    def setUpTestData(cls) -> None:
         cls.user = User.objects.create(
-            email="gerente@email.com",
+            email="teste@teste.com",
+            password="1234",
+            first_name="Teste",
+            last_name="Teste",
+            age=40,
+        )
+
+        cls.room_name = "Sala 1"
+        cls.row = "A"
+        cls.seats_count = 10
+
+        cls.name_data = DEFAULT_CINEMA_DATA
+        cls.address_data = DEFAULT_ADDRESS_DATA
+        cls.city_data = DEFAULT_CITY_DATA
+        cls.district_data = DEFAULT_DISTRICT_DATA
+        cls.state_data = DEFAULT_STATE_DATA
+        cls.country_data = DEFAULT_COUNTRY_DATA
+
+        cls.user_manager = User.objects.create(
+            email="gerente@mail.com",
+            password="1234",
             first_name="Gerente",
             last_name="da Silva",
             age=40,
-            password="abc123456",
             is_staff=True,
+        )
+
+        cls.city = City.objects.create(**cls.city_data)
+        cls.district = District.objects.create(**cls.district_data)
+        cls.state = State.objects.create(**cls.state_data)
+        cls.country = Country.objects.create(**cls.country_data)
+        cls.address = Address.objects.create(
+            **cls.address_data,
+            city=cls.city,
+            district=cls.district,
+            state=cls.state,
+            country=cls.country
         )
 
         cls.superuser = User.objects.create_superuser(
@@ -135,67 +169,24 @@ class MovieSessionModelTest(TestCase):
             movie=cls.movie,
         )
 
-    def test_price_max_digits(self):
-        movie_session = self.movie_session
-        max_digits = movie_session._meta.get_field("price").max_digits
-        self.assertEquals(max_digits, 10)
+    def test_can_create_a_ticket(self):
+        ticket = Ticket.objects.create(user=self.user, movie_session=self.movie_session)
 
-    def test_price_cannot_be_a_negative_value(self):
-        with self.assertRaises(ValidationError):
-            movie_session = MovieSession.objects.create(
-                price=-21.50,
-                session_datetime=timezone.now(),
-                subtitled=True,
-                is_3d=True,
-                on_sale=False,
-                cinema=self.cinema,
-                room=self.room,
-                movie=self.movie,
-            )
+        ticket.save()
+        self.assertIsNotNone(ticket)
 
-            movie_session.full_clean()
+    def test_can_not_create_a_ticket(self):
+        with self.assertRaises(ValueError):
+            ticket = Ticket.objects.create(user="1", movie_session=[])
 
-    def test_cannot_create_a_movie_session_without_a_cinema(self):
-        with self.assertRaises(IntegrityError):
+            ticket.save()
 
-            movie_session = MovieSession.objects.create(
-                price=-21.50,
-                session_datetime=timezone.now(),
-                subtitled=True,
-                is_3d=True,
-                on_sale=False,
-                room=self.room,
-                movie=self.movie,
-            )
+    def test_user_exist_in_ticket(self):
+        ticket = Ticket.objects.create(user=self.user, movie_session=self.movie_session)
 
-            movie_session.save()
+        self.assertIsNotNone(ticket.user)
 
-    def test_movie_session_can_belong_to_only_one_cinema(self):
+    def test_movie_session_exists_in_ticket(self):
+        ticket = Ticket.objects.create(user=self.user, movie_session=self.movie_session)
 
-        district = District.objects.create(name="Bairro nobre")
-        city = City.objects.create(name="Atena do Norte")
-        state = State.objects.create(name="MG")
-        country = Country.objects.create(name="Brazil")
-
-        address = Address.objects.create(
-            street="Rua B",
-            number="34",
-            details="Perto da rua A",
-            district=district,
-            city=city,
-            state=state,
-            country=country,
-        )
-
-        cinema = Cinema.objects.create(
-            name="Cine Asno 2",
-            owner=self.user,
-            address=address,
-        )
-
-        self.movie_session.cinema = cinema
-
-        self.movie_session.save()
-
-        self.assertEqual(self.movie_session.cinema, cinema)
-        self.assertNotEqual(self.movie_session.cinema, self.cinema)
+        self.assertIsNotNone(ticket.movie_session)

@@ -2,7 +2,7 @@ from addresses.models import Address, City, Country, District, State
 from addresses.serializers import AddressSerializer
 from rest_framework import serializers
 from users.serializers import UserSerializer
-
+from financial_controls.models import CinemaFinancialControl
 from cinemas.models import Cinema
 
 
@@ -34,8 +34,11 @@ class CreateCinemaSerializer(serializers.ModelSerializer):
             city=objCity,
         )
 
-        return Cinema.objects.create(**validated_data, address=objAddress)
-
+        cinema =  Cinema.objects.create(**validated_data, address=objAddress)
+        CinemaFinancialControl.objects.create(cinema=cinema)
+        return cinema
+    
+    
     def update(self, instance: Cinema, validated_data: dict):
 
         address = validated_data.pop("address", None)

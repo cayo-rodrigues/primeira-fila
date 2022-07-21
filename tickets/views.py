@@ -1,8 +1,15 @@
 from cinemas.models import Cinema
-from django.shortcuts import get_object_or_404
 from movie_sessions.models import MovieSession
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from utils.exceptions import (
+    CinemaNotFoundError,
+    MovieSessionNotFoundError,
+    TicketNotFoundError,
+)
+from utils.helpers import safe_get_object_or_404
+from utils.permissions import IsTicketOwner
+
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 
@@ -23,86 +30,84 @@ class TicketView(generics.ListCreateAPIView):
     serializer_class = TicketSerializer
 
     def perform_create(self, serializer):
-        cine = get_object_or_404(Cinema, id=self.kwargs.get("cine_id"))
-        session = get_object_or_404(
-            MovieSession, id=self.kwargs.get("session_id"), room__cinema=cine
+        cine = safe_get_object_or_404(
+            Cinema, CinemaNotFoundError, id=self.kwargs.get("cine_id")
         )
-        serializer.save(movie_session=session, user=self.request.user)
+        session = safe_get_object_or_404(
+            MovieSession,
+            MovieSessionNotFoundError,
+            id=self.kwargs.get("session_id"),
+            room__cinema=cine,
+        )
+        return serializer.save(movie_session=session, user=self.request.user)
 
 
-@extend_schema(
-    operation_id="ticket_retrieve",
-    request=TicketSerializer,
-    responses=TicketSerializer,
-    description = 'Route for list one ticket', 
-    summary='Retrieve ticket',
-    tags=['retrieve ticket of a user']
-)
-class TicketDetailsView(generics.RetrieveAPIView):
+class UserTicketDetailsView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     lookup_url_kwarg = "ticket_id"
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        ticket_id = self.kwargs["ticket_id"]
-
-        get_object_or_404(Ticket, id=ticket_id)
-
-        return Ticket.objects.all()
+    permission_classes = [IsAuthenticated, IsTicketOwner]
 
 
-class TicketSessionMovieDetailsView(generics.ListAPIView):
+class TicketSessionMovieView(generics.ListAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    lookup_url_kwarg = "ticket_id"
 
     def get_queryset(self):
         cinema_id = self.kwargs["cine_id"]
         session_id = self.kwargs["session_id"]
-        ticket_id = self.kwargs["ticket_id"]
 
-        get_object_or_404(Cinema, id=cinema_id)
-        get_object_or_404(MovieSession, id=session_id)
+        cinema = safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
+        session = safe_get_object_or_404(
+            MovieSession, MovieSessionNotFoundError, id=session_id
+        )
 
-        ticket = Ticket.objects.filter(session_id=ticket_id)
-        return ticket
+        return Ticket.objects.filter(movie_session=session, cinema=cinema)
 
 
-class TicketSessionMovieOneDetailsView(generics.ListAPIView):
+class TicketSessionMovieDetailView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    lookup_url_kwarg = "ticket_id"
 
-    def get_queryset(self):
+    def get_object(self):
         cinema_id = self.kwargs["cine_id"]
         session_id = self.kwargs["session_id"]
         ticket_id = self.kwargs["ticket_id"]
 
-        get_object_or_404(Cinema, id=cinema_id)
-        get_object_or_404(MovieSession, id=session_id)
+        cinema = safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
+        session = safe_get_object_or_404(
+            MovieSession, MovieSessionNotFoundError, id=session_id
+        )
 
-        ticket = Ticket.objects.filter(id=ticket_id)
+        return safe_get_object_or_404(
+            Ticket,
+            TicketNotFoundError,
+            cinema=cinema,
+            movie_session=session,
+            id=ticket_id,
+        )
 
-        return ticket
 
-@extend_schema(
-    operation_id="ticket_retrieve",
-    request=TicketSerializer,
-    responses=TicketSerializer,
-    description = 'Route for list one ticket',
-    tags=['retrieve ticket of a user']
-)
-class TicketUpdateView(generics.RetrieveUpdateDestroyAPIView):
+class TicketDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     lookup_url_kwarg = "ticket_id"
 
     def perform_update(self, serializer):
-        cine = get_object_or_404(Cinema, id=self.kwargs.get("cine_id"))
-        session = get_object_or_404(
-            MovieSession, id=self.kwargs.get("session_id"), room__cinema=cine
+        cine = safe_get_object_or_404(
+            Cinema, CinemaNotFoundError, id=self.kwargs.get("cine_id")
         )
-        ticket = get_object_or_404(Ticket, id=self.kwargs.get("ticket_id"))
+        session = safe_get_object_or_404(
+            MovieSession,
+            MovieSessionNotFoundError,
+            id=self.kwargs.get("session_id"),
+            room__cinema=cine,
+        )
+        safe_get_object_or_404(
+            Ticket,
+            TicketNotFoundError,
+            id=self.kwargs.get("ticket_id"),
+            movie_session=session,
+        )
         serializer.save(movie_session=session, user=self.request.user)

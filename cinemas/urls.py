@@ -1,18 +1,19 @@
 from django.urls import path
+from financial_controls.views import CinemaFinancialControlView
 from movie_sessions import views
 from movies.views import MovieByCinemaView
 from rooms import views as room_views
 from tickets.views import (
-    TicketSessionMovieDetailsView,
-    TicketSessionMovieOneDetailsView,
-    TicketUpdateView,
+    TicketDetailView,
+    TicketSessionMovieDetailView,
+    TicketSessionMovieView,
     TicketView,
 )
 
-from .views import CinemaDetailView, CreateCinemaView
+from .views import CinemaDetailView, CinemaView
 
 urlpatterns = [
-    path("", CreateCinemaView.as_view()),
+    path("", CinemaView.as_view()),
     path("<cine_id>/", CinemaDetailView.as_view()),
     path("<cine_id>/rooms/", room_views.CreateListRoomView.as_view()),
     path(
@@ -32,15 +33,15 @@ urlpatterns = [
     ),
     path(
         "<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/",
-        TicketUpdateView.as_view(),
+        TicketDetailView.as_view(),
     ),
     path(
         "<cine_id>/movie-sessions/<session_id>/tickets/",
-        TicketSessionMovieDetailsView.as_view(),
+        TicketSessionMovieView.as_view(),
     ),
     path(
         "<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/",
-        TicketSessionMovieOneDetailsView.as_view(),
+        TicketSessionMovieDetailView.as_view(),
     ),
     path("<cine_id>/movies/", MovieByCinemaView.as_view()),
     path(
@@ -51,4 +52,5 @@ urlpatterns = [
         "<cine_id>/movie-sessions/<session_id>/",
         views.MovieSessionDetail.as_view(),
     ),
+    path("<cine_id>/financial_control/", CinemaFinancialControlView.as_view()),
 ]

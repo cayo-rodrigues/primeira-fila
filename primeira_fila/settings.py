@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -20,9 +19,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(
-    DOCKER=(bool, False),
-)
+env = environ.Env(DOCKER=(bool, False), DATABASE_URL=(str, ""))
 
 environ.Env.read_env(BASE_DIR / ".env")
 
@@ -50,6 +47,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_spectacular",
+    "image_optimizer",
+    "qr_code",
     "users",
     "addresses",
     "cinemas",
@@ -57,6 +56,7 @@ INSTALLED_APPS = [
     "rooms",
     "movie_sessions",
     "tickets",
+    "financial_controls",
 ]
 
 MIDDLEWARE = [
@@ -112,7 +112,7 @@ else:
         }
     }
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = env("DATABASE_URL")
 
 if DATABASE_URL:
     db_from_env = dj_database_url.config(
@@ -170,13 +170,9 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    # "DEFAULT_THROTTLE_CLASSES": [
-    #     "rest_framework.throttling.ScopedRateThrottle",
-    # ],
-    #  'DEFAULT_THROTTLE_RATES': {
-    #      'anon': '5/day',
-    #      'user': '10/day',
-    #  },
+    "DEFAULT_THROTTLE_RATES": {
+        "img_upload": "10/day",
+    },
 }
 
 SIMPLE_JWT = {
@@ -198,3 +194,15 @@ EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = env("EMAIL_PORT")
+
+OPTIMIZED_IMAGE_METHOD = "pillow"
+
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = "primeira-fila"
+AWS_S3_REGION_NAME = "sa-east-1"
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_FILE_OVERWRITE = True
+AWS_DEFAULT_ACL = None
+AWS_S3_VERIFY = True
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from movies.models import AgeGroup, Distributor, Genre, Media, Movie, Person, Star
+from movies.models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
 from movies.tests import util
 
 # Create your tests here.
@@ -30,7 +30,8 @@ class MovieModelTests(TestCase):
         )
         cls.movie.genres.add(cls.genre)
 
-        cls.media = Media.objects.create(**cls.media_data[0], movie=cls.movie)
+        cls.video = Video.objects.create(**cls.media_data[0], movie=cls.movie)
+        cls.image = Image.objects.create(**cls.media_data[1], movie=cls.movie)
         cls.star = Star.objects.create(person=cls.person, movie=cls.movie)
 
     def test_can_create_movie(self):
@@ -48,4 +49,5 @@ class MovieModelTests(TestCase):
 
         self.assertIn(self.genre, self.movie.genres.all())
         self.assertIn(self.star, self.movie.stars.all())
-        self.assertIn(self.media, self.movie.medias.all())
+        self.assertIn(self.video, self.movie.videos.all())
+        self.assertIn(self.image, self.movie.images.all())

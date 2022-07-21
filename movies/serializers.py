@@ -3,12 +3,25 @@ from movie_sessions.models import MovieSession
 from rest_framework import serializers
 from utils.helpers import bulk_get_or_create
 
-from .models import AgeGroup, Distributor, Genre, Media, Movie, Person, Star
+from .models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
 
 
-class MediaSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Media
+        model = Image
+        fields = "__all__"
+        read_only_fields = ["movie"]
+
+
+class MovieImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        exclude = ["movie"]
+
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
         exclude = ["movie"]
 
 
@@ -53,13 +66,14 @@ class GeneralMovieSessionsSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    medias = MediaSerializer(many=True)
+    images = MovieImageSerializer(many=True, read_only=True)
+    videos = VideoSerializer(many=True)
     genres = GenreSerializer(many=True)
+    stars = StarSerializer(many=True)
+    movie_sessions = GeneralMovieSessionsSerializer(many=True, read_only=True)
     age_group = AgeGroupSerializer()
     distributor = DistributorSerializer()
     director = PersonSerializer()
-    stars = StarSerializer(many=True)
-    movie_sessions = GeneralMovieSessionsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
@@ -71,8 +85,8 @@ class MovieSerializer(serializers.ModelSerializer):
         age_group, _ = AgeGroup.objects.get_or_create(**validated_data.pop("age_group"))
 
         genres_data = validated_data.pop("genres")
-        medias_data = validated_data.pop("medias")
         stars_data = validated_data.pop("stars")
+        videos_data = validated_data.pop("videos")
 
         movie: Movie = Movie.objects.get_or_create(
             **validated_data,
@@ -83,7 +97,7 @@ class MovieSerializer(serializers.ModelSerializer):
         movie.set_normalized_genres(genres_data)
         movie.save()
 
-        bulk_get_or_create(Media, medias_data, movie=movie)
+        bulk_get_or_create(Video, videos_data, movie=movie)
         bulk_get_or_create(Star, stars_data, [("person", Person)], movie=movie)
 
         return movie
@@ -94,8 +108,8 @@ class MovieSerializer(serializers.ModelSerializer):
         age_group = validated_data.pop("age_group", None)
 
         genres = validated_data.pop("genres", None)
-        medias = validated_data.pop("medias", None)
         stars = validated_data.pop("stars", None)
+        videos = validated_data.pop("videos", None)
 
         for key, value in validated_data.items():
             setattr(instance, key, value)
@@ -107,8 +121,8 @@ class MovieSerializer(serializers.ModelSerializer):
         if age_group:
             instance.age_group = AgeGroup.objects.get_or_create(**age_group)[0]
 
-        if medias:
-            bulk_get_or_create(Media, medias, movie=instance)
+        if videos:
+            bulk_get_or_create(Video, videos, movie=instance)
         if stars:
             bulk_get_or_create(Star, stars, [("person", Person)], movie=instance)
         if genres:
@@ -119,9 +133,10 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class ListMoviesSerializer(serializers.ModelSerializer):
-    medias = MediaSerializer(many=True)
+    images = MovieImageSerializer(many=True)
+    videos = VideoSerializer(many=True)
     movie_sessions = GeneralMovieSessionsSerializer(many=True)
 
     class Meta:
         model = Movie
-        fields = ["id", "title", "medias", "movie_sessions"]
+        fields = ["id", "title", "images", "videos", "movie_sessions"]
