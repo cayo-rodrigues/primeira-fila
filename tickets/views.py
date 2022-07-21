@@ -3,7 +3,7 @@ from movie_sessions.models import MovieSession
 from qr_code.qrcode.maker import make_embedded_qr_code
 from qr_code.qrcode.utils import QRCodeOptions
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from utils.exceptions import (
@@ -23,6 +23,7 @@ from tickets.serializers import TicketSerializer
 class TicketView(generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         cine = safe_get_object_or_404(
