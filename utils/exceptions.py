@@ -55,3 +55,8 @@ class MovieSessionNotAvailableError(APIException):
 class IdenticalAddressError(APIException):
     status_code = status.HTTP_409_CONFLICT
     default_detail = "This exact same address is already in use. If your cinema is located inside the same building as another, please set a different 'details' value"
+
+
+class MovieTitleUnavailableError(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "Movie with this title already exists"
