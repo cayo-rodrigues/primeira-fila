@@ -16,17 +16,10 @@ from pathlib import Path
 import django_on_heroku
 import dotenv
 
-# import dj_database_url
-import environ
-
 dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-env = environ.Env(DOCKER=(bool, False), DEBUG=(bool, True))
-
-environ.Env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -35,11 +28,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = os.getenv("DEBUG") or True
 
 CSRF_TRUSTED_ORIGINS = ["https://primeira-fila.herokuapp.com"]
-
-# ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost", "primeira-fila.herokuapp.com"]
 
 
 # Application definition
@@ -100,7 +91,7 @@ WSGI_APPLICATION = "primeira_fila.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if not env("DOCKER"):
+if not os.getenv("DOCKER"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -111,11 +102,11 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
-            "PASSWORD": env("POSTGRES_PASSWORD"),
-            "PORT": env("POSTGRES_CONTAINER_PORT"),
-            "HOST": env("POSTGRES_HOST"),
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "PORT": os.getenv("POSTGRES_CONTAINER_PORT"),
+            "HOST": os.getenv("POSTGRES_HOST"),
         }
     }
 
@@ -197,15 +188,15 @@ SPECTACULAR_SETTINGS = {
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
 
 OPTIMIZED_IMAGE_METHOD = "pillow"
 
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = "primeira-fila"
 AWS_S3_REGION_NAME = "sa-east-1"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
