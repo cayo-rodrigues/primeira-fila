@@ -8,10 +8,15 @@ from utils.helpers import safe_get_object_or_404
 from users.models import AccountConfirmation, User
 from users.serializers import UserSerializer
 
+from drf_spectacular.utils import extend_schema
+
+
 
 class UserView(generics.CreateAPIView):
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):

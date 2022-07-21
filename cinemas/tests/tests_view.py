@@ -53,15 +53,21 @@ class CinemaViewTest(APITestCase):
         }
 
     def setUp(self) -> None:
-        response = self.client.post("/sessions/token/", self.manager_credentials, "json")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}")
+        response = self.client.post(
+            "/sessions/token/", self.manager_credentials, "json"
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {response.json()['access']}"
+        )
 
     def test_create_cinema_route_success(self):
         response = self.client.post("/cinemas/", self.request_data, "json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        serializer = CreateCinemaSerializer(data={**response.json(), "name": "Cinemark"})
+        serializer = CreateCinemaSerializer(
+            data={**response.json(), "name": "Cinemark"}
+        )
         self.assertTrue(serializer.is_valid())
 
     def test_create_cinema_route_wrong_data(self):

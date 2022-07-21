@@ -1,5 +1,5 @@
+from movie_sessions.models import SessionSeat
 from rest_framework import serializers
-from movie_sessions.models import MovieSession, SessionSeat
 
 from rooms.models import Room, RoomCorridor, Seat, SeatRows
 
@@ -60,65 +60,16 @@ class RoomSerializer(serializers.ModelSerializer):
         rows = validated_data.pop("seat_rows", None)
 
         if corridors:
-            # try:
-            #     corridor_id_map = [corridor["column"] for corridor in corridors]
-            #     all_corridors = RoomCorridor.objects.filter(room=instance)
-            #     corridors_in_instance = {
-            #         corridor.id: corridor for corridor in all_corridors
-            #     }
-
-            #     for corridor_id, corridor in corridors_in_instance.items():
-            #         if corridor_id not in corridor_id_map:
-            #             corridor.delete()
-            # except:
-            #     pass
-
             new_corridors = []
             for value in corridors:
-                # try:
-                #     old_corridor = RoomCorridor.objects.get(pk=value["column"])
-                # except:
-                #     old_corridor = None
-
-                # if old_corridor is not None:
-                #     old_corridor.column = value["column"]
-                #     old_corridor.from_row = value["from_row"]
-                #     old_corridor.to_row = value["to_row"]
-                #     old_corridor.save()
-                # else:
                 new_corridors.append(RoomCorridor(**value))
 
             instance.room_corridors.set(RoomCorridor.objects.bulk_create(new_corridors))
 
         if rows:
-            # try:
-            #     seat_row_id_map = [row["row"] for row in rows]
-            #     all_seats_rows = SeatRows.objects.filter(room=instance)
-            #     seats_row_in_instance = {row.id: row for row in all_seats_rows}
-
-            #     for row_id, row in seats_row_in_instance.items():
-            #         if row_id not in seat_row_id_map:
-            #             row.delete()
-
-            # except:
-            #     pass
-
             new_rows = []
             new_seats = []
             for value in rows:
-                # try:
-                #     old_row = SeatRows.objects.get(row=value["row"], room=instance)
-                #     print(old_row)
-                # except:
-                #     old_row = None
-
-                # if old_row is not None:
-                #     all_seats = Seat.objects.filter(room=instance)
-                #     print("chegou aqui senhor?")
-                #     old_row[0].row = value["row"]
-                #     old_row[0].seat_count = value["seat_count"]
-                #     old_row[0].save()
-                # else:
                 seat_rows = SeatRows(**value)
                 new_rows.append(seat_rows)
                 all_seats_in_instance = Seat.objects.filter(room=instance)

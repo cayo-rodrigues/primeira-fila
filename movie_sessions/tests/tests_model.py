@@ -12,6 +12,7 @@ from rooms.models import Room, RoomCorridor, SeatRows
 from users.models import User
 
 
+
 class MovieSessionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):

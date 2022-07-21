@@ -60,14 +60,18 @@ class TestUserView(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_can_show_self_user(self):
-        user = {
+        user_data = {
             "email": "aaa@mail.com",
             "first_name": "A",
             "last_name": "Da Silva",
             "password": "123456",
             "age": 14,
         }
-        self.client.post("/users/", user, format="json")
+
+        user = User.objects.create(**user_data)
+        user.is_active = True
+        user.save()
+
         token = self.client.post(
             "/sessions/token/",
             {"email": "aaa@mail.com", "password": "123456"},
@@ -79,15 +83,20 @@ class TestUserView(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_can_update_self_user(self):
-        user = {
+        user_data = {
             "email": "aaa@mail.com",
             "first_name": "A",
             "last_name": "Da Silva",
             "password": "123456",
             "age": 14,
         }
+
+        user = User.objects.create(**user_data)
+        user.is_active = True
+        user.save()
+
         data = {"first_name": "Anderson"}
-        self.client.post("/users/", user, format="json")
+
         token = self.client.post(
             "/sessions/token/",
             {"email": "aaa@mail.com", "password": "123456"},
@@ -99,14 +108,17 @@ class TestUserView(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_can_delete_self_user(self):
-        user = {
+        user_data = {
             "email": "aaa@mail.com",
             "first_name": "A",
             "last_name": "Da Silva",
             "password": "123456",
             "age": 14,
         }
-        self.client.post("/users/", user, format="json")
+        user = User.objects.create(**user_data)
+        user.is_active = True
+        user.save()
+
         token = self.client.post(
             "/sessions/token/",
             {"email": "aaa@mail.com", "password": "123456"},
@@ -135,7 +147,6 @@ class TestUserLoginView(APITestCase):
         cls.user.is_active = True
         cls.user.save()
 
-
     def test_login_sucess(self):
         res = self.client.post("/sessions/token/", data=self.login_data, format="json")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -143,7 +154,9 @@ class TestUserLoginView(APITestCase):
         self.assertIn("refresh", res.data)
 
     def test_login_invalid_credentials(self):
-        res = self.client.post("/sessions/token/", data=self.invalid_data, format="json")
+        res = self.client.post(
+            "/sessions/token/", data=self.invalid_data, format="json"
+        )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_refresh_sucess(self):

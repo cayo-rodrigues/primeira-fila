@@ -9,81 +9,191 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AgeGroup',
+            name="AgeGroup",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('minimum_age', models.IntegerField(choices=[(0, 'L'), (10, 'Ten'), (12, 'Twelve'), (14, 'Fourteen'), (16, 'Sixteen'), (18, 'Eighteen')], default=0)),
-                ('content', models.CharField(max_length=127)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "minimum_age",
+                    models.IntegerField(
+                        choices=[
+                            (0, "L"),
+                            (10, "Ten"),
+                            (12, "Twelve"),
+                            (14, "Fourteen"),
+                            (16, "Sixteen"),
+                            (18, "Eighteen"),
+                        ],
+                        default=0,
+                    ),
+                ),
+                ("content", models.CharField(max_length=127)),
             ],
         ),
         migrations.CreateModel(
-            name='Distributor',
+            name="Distributor",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=127)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=127)),
             ],
         ),
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=127)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=127)),
             ],
         ),
         migrations.CreateModel(
-            name='Movie',
+            name="Movie",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=127, unique=True)),
-                ('duration', models.PositiveIntegerField()),
-                ('synopsis', models.TextField()),
-                ('premiere', models.DateField()),
-                ('age_group', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movies.agegroup')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("title", models.CharField(max_length=127, unique=True)),
+                ("duration", models.PositiveIntegerField()),
+                ("synopsis", models.TextField()),
+                ("premiere", models.DateField()),
+                (
+                    "age_group",
+                    models.ForeignKey(
+                        blank=True,
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="movies",
+                        to="movies.agegroup",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=127)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=127)),
             ],
         ),
         migrations.CreateModel(
-            name='Star',
+            name="Star",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='stars', to='movies.movie')),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='stars', to='movies.person')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "movie",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="stars",
+                        to="movies.movie",
+                    ),
+                ),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="stars",
+                        to="movies.person",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='movie',
-            name='director',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movies.person'),
+            model_name="movie",
+            name="director",
+            field=models.ForeignKey(
+                blank=True,
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="movies",
+                to="movies.person",
+            ),
         ),
         migrations.AddField(
-            model_name='movie',
-            name='distributor',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='movies', to='movies.distributor'),
+            model_name="movie",
+            name="distributor",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="movies",
+                to="movies.distributor",
+            ),
         ),
         migrations.AddField(
-            model_name='movie',
-            name='genres',
-            field=models.ManyToManyField(related_name='movies', to='movies.genre'),
+            model_name="movie",
+            name="genres",
+            field=models.ManyToManyField(related_name="movies", to="movies.genre"),
         ),
         migrations.CreateModel(
-            name='Media',
+            name="Media",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=127)),
-                ('media_url', models.URLField()),
-                ('is_video', models.BooleanField(default=False)),
-                ('movie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='medias', to='movies.movie')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.CharField(max_length=127)),
+                ("media_url", models.URLField()),
+                ("is_video", models.BooleanField(default=False)),
+                (
+                    "movie",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="medias",
+                        to="movies.movie",
+                    ),
+                ),
             ],
         ),
     ]

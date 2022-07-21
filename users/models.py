@@ -34,7 +34,7 @@ class User(AbstractUser):
             message="",
             html_message=f"<h2>Olá, {self.first_name}! Muito obrigado por usar o Primeira Fila.</h2>"
             "<h3>Clique no link a seguir para ativar sua conta:</h3>"
-            f"<p>{current_host}/users/accounts/{self.account_confirmation.id}/</p>"
+            f"<code>{current_host}/users/accounts/{self.account_confirmation.id}/</code>"
             "<p>Atenciosamente, equipe Primeira Fila :)</p>",
             from_email=EMAIL_HOST_USER,
             recipient_list=[self.email],
