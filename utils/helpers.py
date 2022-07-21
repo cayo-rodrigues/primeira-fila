@@ -72,7 +72,9 @@ def safe_get_object_or_404(
         raise error_klass
 
 
-def safe_get_list_or_404(queryset, error_klass: APIException = Http404, *args, **kwargs):
+def safe_get_list_or_404(
+    queryset, error_klass: APIException = Http404, *args, **kwargs
+):
     try:
         return queryset.filter(*args, **kwargs)
     except ValidationError:

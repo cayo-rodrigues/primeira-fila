@@ -154,7 +154,9 @@ class TestUserLoginView(APITestCase):
         self.assertIn("refresh", res.data)
 
     def test_login_invalid_credentials(self):
-        res = self.client.post("/sessions/token/", data=self.invalid_data, format="json")
+        res = self.client.post(
+            "/sessions/token/", data=self.invalid_data, format="json"
+        )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_refresh_sucess(self):
