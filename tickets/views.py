@@ -1,4 +1,5 @@
 from cinemas.models import Cinema
+from drf_spectacular.utils import extend_schema
 from movie_sessions.models import MovieSession
 from qr_code.qrcode.maker import make_embedded_qr_code
 from qr_code.qrcode.utils import QRCodeOptions
@@ -17,15 +18,14 @@ from utils.permissions import IsTicketOwner
 from tickets.models import Ticket
 from tickets.serializers import TicketSerializer
 
-from drf_spectacular.utils import extend_schema
-
 # Create your views here.
+
 
 @extend_schema(
     operation_id="ticket_post_get",
     request=TicketSerializer,
     responses=TicketSerializer,
-    tags=['create/list tickets']
+    tags=["Buy / List Tickets"],
 )
 class TicketView(generics.ListCreateAPIView):
     queryset = Ticket.objects.all()
@@ -44,20 +44,16 @@ class TicketView(generics.ListCreateAPIView):
         )
         return serializer.save(movie_session=session, user=self.request.user)
 
-@extend_schema(
-    operation_id="retrieve_ticket",
-    tags=['retrieve a ticket for a user']
-)
+
+@extend_schema(operation_id="retrieve_ticket", tags=["Retrieve a Ticket for a User"])
 class UserTicketDetailsView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
     lookup_url_kwarg = "ticket_id"
     permission_classes = [IsAuthenticated, IsTicketOwner]
 
-@extend_schema(
-    operation_id="list_tickets",
-    tags=['list tickets of a movie session']
-)
+
+@extend_schema(operation_id="list_tickets", tags=["List Tickets of a Movie Session"])
 class TicketSessionMovieView(generics.ListAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
@@ -73,9 +69,9 @@ class TicketSessionMovieView(generics.ListAPIView):
 
         return Ticket.objects.filter(movie_session=session, cinema=cinema)
 
+
 @extend_schema(
-    operation_id="retrieve_ticket",
-    tags=['retrieve a ticket of a movie session']
+    operation_id="retrieve_ticket", tags=["Retrieve a Ticket of a Movie Session"]
 )
 class TicketSessionMovieDetailView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
@@ -99,9 +95,9 @@ class TicketSessionMovieDetailView(generics.RetrieveAPIView):
             id=ticket_id,
         )
 
+
 @extend_schema(
-    operation_id="retrieve_update_ticket",
-    tags=['retrieve/update a ticket']
+    operation_id="retrieve_update_ticket", tags=["Retrieve / Update a Ticket"]
 )
 class TicketDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
@@ -128,10 +124,7 @@ class TicketDetailView(generics.RetrieveUpdateAPIView):
         serializer.save(movie_session=session, user=self.request.user)
 
 
-@extend_schema(
-    operation_id="send_qrcode",
-    tags=['send_qrcode']
-)
+@extend_schema(operation_id="send_qrcode", tags=["Get a Ticket's QRCode"])
 class TicketQRCodeView(generics.RetrieveAPIView):
     queryset = Ticket.objects.all()
     renderer_classes = [TemplateHTMLRenderer]

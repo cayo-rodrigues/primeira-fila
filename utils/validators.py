@@ -15,7 +15,7 @@ class DateValidators:
     def session_day_cannot_be_before_today(value):
         if value < timezone.now():
             raise ValidationError(
-                ("%(value)s is a invalid date"),
+                ("%(value)s is an invalid date"),
                 params={"value": value},
             )
 

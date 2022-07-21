@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from utils.mixins import SerializerByMethodMixin
 from utils.permissions import OnlySelfManagerPermission
@@ -5,12 +6,8 @@ from utils.permissions import OnlySelfManagerPermission
 from .models import Cinema
 from .serializers import CreateCinemaSerializer, ListCinemaSerializer
 
-from drf_spectacular.utils import extend_schema
 
-@extend_schema(
-    operation_id="create_list_cinema",
-    tags=['create/list cinema']
-)
+@extend_schema(operation_id="create_list_cinema", tags=["Register / List cinemas"])
 class CinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
 
     queryset = Cinema.objects.all()
@@ -47,9 +44,10 @@ class CinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
 @extend_schema(
     operation_id="retrieve_update_delete_cienma",
-    tags=['retrieve/update/delete cinema']
+    tags=["Retrieve / Update / Delete a Cinema"],
 )
 class CinemaDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cinema.objects.all()
