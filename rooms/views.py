@@ -17,9 +17,7 @@ from drf_spectacular.utils import extend_schema
     operation_id="room_get_post",
     request=RoomSerializer,
     responses=RoomSerializer,
-    description = 'Route for creation/list rooms for a cinema', 
-    summary='Creation/list rooms of a cinema',
-    tags=['create/list rooms of a cinema']
+    tags=['create/list rooms']
 )
 class CreateListRoomView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated | ReadOnly]
@@ -46,8 +44,7 @@ class CreateListRoomView(generics.ListCreateAPIView):
     operation_id="room_get_update_delete",
     request=RoomSerializer,
     responses=RoomSerializer,
-    description = 'Route for retrieve/update/delete a room of a cinema', 
-    tags=['retrieve a room of a cinema']
+    tags=['retrieve/update/delete a room']
 )
 class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Room.objects.all()

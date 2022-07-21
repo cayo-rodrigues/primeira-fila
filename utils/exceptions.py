@@ -45,3 +45,13 @@ class ImageNotFoundError(APIException):
 class AccountConfirmationNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "Not found"
+
+
+class MovieSessionNotAvailableError(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "This room is not available for a movie session at this time"
+
+
+class IdenticalAddressError(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "This exact same address is already in use. If your cinema is located inside the same building as another, please set a different 'details' value"

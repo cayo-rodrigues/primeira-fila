@@ -4,6 +4,9 @@ omit =
     venv/*
     primeira_fila/*
     */tests/*
+    utils/*
+    */util.py
+    */serializers.py
     manage.py
 
 [report]

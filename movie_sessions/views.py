@@ -21,8 +21,6 @@ from drf_spectacular.utils import extend_schema
     operation_id="movie_session_post",
     request=MovieSessionSerializer,
     responses=MovieSessionSerializer,
-    description = 'Route for register one ticket', 
-    summary='Create movie session',
     tags=['create one movie session']
 )
 class MovieSessionCreateView(generics.CreateAPIView):
@@ -49,7 +47,6 @@ class MovieSessionCreateView(generics.CreateAPIView):
     request=MovieSessionSerializer,
     responses=MovieSessionSerializer,
     description = 'Route for list the movie sessions of a cinema', 
-    summary='List movie sessions of a cinema',
     tags=['list movie sessions of a cinema']
 )
 class MovieSessionCinemaDetailView(generics.ListAPIView):
@@ -105,14 +102,15 @@ class MovieSessionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MovieSessionSerializer
     lookup_url_kwarg = "session_id"
 
-    def get_queryset(self):
-        cinema_id = self.kwargs["cine_id"]
-        movie_session_id = self.kwargs["session_id"]
-
-        safe_get_object_or_404(Cinema, CinemaNotFoundError, id=cinema_id)
-        safe_get_object_or_404(
-            MovieSession, MovieSessionNotFoundError, id=movie_session_id
+    def get_object(self):
+        cinema = safe_get_object_or_404(
+            Cinema,
+            CinemaNotFoundError,
+            id=self.kwargs["cine_id"],
         )
-        movie_session = MovieSession.objects.filter(id=movie_session_id)
-
-        return movie_session
+        return safe_get_object_or_404(
+            MovieSession,
+            MovieSessionNotFoundError,
+            id=self.kwargs["session_id"],
+            cinema=cinema,
+        )

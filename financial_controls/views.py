@@ -3,6 +3,10 @@ from financial_controls.models import CinemaFinancialControl, UserFinancialContr
 from financial_controls.serializers import CinemaFinancialControlSerializer, UserFinancialControlSerializer
 from utils.permissions import OwnerPermission, OnlySelfManagerPermissionFinancial
 
+from drf_spectacular.utils import extend_schema
+
+
+
 class UserFinancialControlView(generics.RetrieveAPIView):
     permission_classes = [OwnerPermission]
     
@@ -12,7 +16,11 @@ class UserFinancialControlView(generics.RetrieveAPIView):
     def get_object(self):
         obj = UserFinancialControl.objects.get(user=self.request.user)
         return obj
-    
+
+@extend_schema(
+    operation_id="list_finances",
+    tags=["list finances of a cinema"]
+)    
 class CinemaFinancialControlView(generics.RetrieveAPIView):
     permission_classes = [OnlySelfManagerPermissionFinancial]
     

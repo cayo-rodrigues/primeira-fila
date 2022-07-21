@@ -165,6 +165,7 @@ class MovieSessionViewsTest(APITestCase):
             self.movie_session_data,
             format="json",
         )
+
         data = {"on_sale": True}
         response = self.client.patch(
             f'/cinemas/{self.cinema.data["id"]}/movie-sessions/{movie_session.data["id"]}/',

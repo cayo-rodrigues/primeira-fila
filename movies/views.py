@@ -10,7 +10,12 @@ from utils.throttles import MovieImgUploadRateThrottle
 from .models import Image, Movie
 from .serializers import ImageSerializer, ListMoviesSerializer, MovieSerializer
 
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(
+    operation_id="list_movies",
+    tags=['list all movies']
+)
 class ListAllMoviesView(MovieQueryParamsMixin, generics.ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = ListMoviesSerializer
@@ -18,7 +23,10 @@ class ListAllMoviesView(MovieQueryParamsMixin, generics.ListAPIView):
     def get_queryset(self):
         return self.use_query_params()
 
-
+@extend_schema(
+    operation_id="list_create_movies",
+    tags=['create/list movies in sessions']
+)
 class MovieView(
     MovieQueryParamsMixin, SerializerByMethodMixin, generics.ListCreateAPIView
 ):
@@ -32,14 +40,20 @@ class MovieView(
     def get_queryset(self):
         return self.use_query_params()
 
-
+@extend_schema(
+    operation_id="retrieve_update_delete_movie",
+    tags=['retrieve/update/delete a movie']
+)
 class MovieDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     permission_classes = [IsSuperUser | ReadOnly]
     lookup_url_kwarg = "movie_id"
 
-
+@extend_schema(
+    operation_id="list_movies",
+    tags=['list movies in session by cinema']
+)
 class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
     queryset = Movie.objects.filter(
         movie_sessions__session_datetime__gte=now(),
@@ -54,7 +68,10 @@ class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
         self.queryset = self.queryset.filter(movie_sessions__room__cinema=cinema)
         return self.use_query_params()
 
-
+@extend_schema(
+    operation_id="create_image_movie",
+    tags=['upload a image of a movie']
+)
 class MovieImageUploadView(generics.CreateAPIView):
     queryset = Image.objects.all()
     permission_classes = [IsSuperUser]
@@ -67,7 +84,10 @@ class MovieImageUploadView(generics.CreateAPIView):
         )
         serializer.save(movie=movie)
 
-
+@extend_schema(
+    operation_id="retrieve_update_delete_image_movie",
+    tags=['retrieve/update/delete a image of a movie']
+)
 class MovieImageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Image.objects.all()
     permission_classes = [IsSuperUser]

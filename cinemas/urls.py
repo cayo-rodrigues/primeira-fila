@@ -52,5 +52,5 @@ urlpatterns = [
         "<cine_id>/movie-sessions/<session_id>/",
         views.MovieSessionDetail.as_view(),
     ),
-    path("<cine_id>/financial_control/", CinemaFinancialControlView.as_view()),
+    path("<cine_id>/financial-control/", CinemaFinancialControlView.as_view()),
 ]
