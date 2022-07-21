@@ -28,8 +28,8 @@ class OnlySelfManagerPermission(permissions.BasePermission):
 
 
 class OnlySelfManagerPermissionFinancial(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj: Cinema):
-        return request.user.is_authenticated and obj.owner == request.user
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_authenticated and obj.cinema.owner == request.user
 
 
 class IsTicketOwner(permissions.BasePermission):
