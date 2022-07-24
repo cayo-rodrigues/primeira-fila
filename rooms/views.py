@@ -1,25 +1,24 @@
 from cinemas.models import Cinema
+from docs.rooms import CreateListRoomDocs, UpdateRetrieveDeleteRoomDocs
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from utils.exceptions import CinemaNotFoundError, RoomNotFoundError
 from utils.helpers import safe_get_list_or_404, safe_get_object_or_404
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
+from utils.permissions import OnlySelfManagerPermission, ReadOnly
 
 from rooms.models import Room
 from rooms.serializers import RoomSerializer
-from utils.permissions import OnlySelfManagerPermission, ReadOnly
-
-from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 
+
 @extend_schema(
     operation_id="room_get_post",
-    request=RoomSerializer,
-    responses=RoomSerializer,
-    tags=['create/list rooms']
+    tags=["rooms"],
 )
-class CreateListRoomView(generics.ListCreateAPIView):
+class CreateListRoomView(CreateListRoomDocs, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated | ReadOnly]
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
@@ -42,11 +41,12 @@ class CreateListRoomView(generics.ListCreateAPIView):
 
 @extend_schema(
     operation_id="room_get_update_delete",
-    request=RoomSerializer,
-    responses=RoomSerializer,
-    tags=['retrieve/update/delete a room']
+    tags=["rooms"],
 )
-class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
+class UpdateRetrieveDeleteRoomView(
+    UpdateRetrieveDeleteRoomDocs,
+    generics.RetrieveUpdateDestroyAPIView,
+):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = [OnlySelfManagerPermission]

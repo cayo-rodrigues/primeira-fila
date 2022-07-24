@@ -176,7 +176,7 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Primeira Fila",
-    "DESCRIPTION": "Um grande centro para filmes cinemas, onde um usuário pode facilmente ver que filmes estão passando, além de onde e quando eles vão passar e comprar ingressos online para assistir a um filme no local de sua preferência. Os gerentes de cinema também podem cadastrar e gerenciar seus cinemas, as salas dos seus cinemas e também as sessões de filme que pretendem exibir.",
+    "DESCRIPTION": "Um grande centro para filmes e cinemas, onde um usuário pode facilmente ver que filmes estão passando, além de onde e quando eles vão passar e comprar ingressos online para assistir a um filme no local de sua preferência. Os gerentes de cinema também podem cadastrar e gerenciar cinemas, registrar suas salas e configurar suas estruturas e administrar as sessões de filme que pretendem exibir.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
