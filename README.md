@@ -1,71 +1,53 @@
 # PRIMEIRA FILA
 
----
 
-# Descrição do projeto
+## Descrição do projeto
 
----
 
-- ### Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema tem ferramentas para controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.
+Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema tem ferramentas para controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.
 
----
 
 ## Acesso rápido
 
----
 
-- [PRIMEIRA FILA](#primeira-fila)
-- [Descrição do projeto](#descrição-do-projeto)
-  - [Acesso rápido](#acesso-rápido)
 - [1.0 Visão Geral](#10-visão-geral)
   - [Tecnologias usadas.](#tecnologias-usadas)
   - [1.1 URL base da aplicação:](#11-url-base-da-aplicação)
     - [http://primeira-fila.herokuapp.com/](#httpprimeira-filaherokuappcom)
-  - [ Voltar para o topo ](#-voltar-para-o-topo-)
 - [2.0 Diagrama e relações](#20-diagrama-e-relações)
   - [Link para acesso ao Diagrama](#link-para-acesso-ao-diagrama)
 - [3.0 Início Rápido](#30-início-rápido)
-    - [Clone o projeto em sua máquina e instale as dependências com o comando:](#clone-o-projeto-em-sua-máquina-e-instale-as-dependências-com-o-comando)
-- [3.1 Variáveis de Ambiente](#31-variáveis-de-ambiente)
-    - [Em seguida, crie um arquivo **.env**, copiando o formato do arquivo **.env.example**:](#em-seguida-crie-um-arquivo-env-copiando-o-formato-do-arquivo-envexample)
-    - [Configure suas variáveis de ambiente com suas credenciais](#configure-suas-variáveis-de-ambiente-com-suas-credenciais)
-- [3.2 Migrations](#32-migrations)
-    - [Execute as migrations com o comando:](#execute-as-migrations-com-o-comando)
-  - [ Voltar para o topo ](#-voltar-para-o-topo--1)
 - [4.0 Autenticação e rotas](#40-autenticação-e-rotas)
 - [5.0 Links:](#50-links)
   - [Documentação detalhada das rotas com swagger:](#documentação-detalhada-das-rotas-com-swagger)
   - [Download do arquivo JSON para usar no Insomnia:](#download-do-arquivo-json-para-usar-no-insomnia)
-  - [ Voltar para o topo ](#-voltar-para-o-topo--2)
 
----
 
-# 1.0 Visão Geral
+## 1.0 Visão Geral
 
-## Tecnologias usadas.
+### Tecnologias usadas
 
----
 
-- ### Dependências instaladas na aplicação:
-
----
+#### Principais dependências instaladas na aplicação:
 
 - [Django](https://www.djangoproject.com/)
-- [Djangorestframework](https://www.django-rest-framework.org/)
-- [Djangorestframework-simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)
-- [Black](https://pypi.org/project/black/)
-- [Psycopg2-binary](https://pypi.org/project/psycopg2-binary/)
-- [Drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/)
-- [Ipdb](https://pypi.org/project/ipdb/)
-- [Django-environ](https://django-environ.readthedocs.io/en/latest/)
-- [Dj-database-url](https://pypi.org/project/dj-database-url/)
-- [Coverage](https://coverage.readthedocs.io/en/6.4.2/)
+- [djangorestframework](https://www.django-rest-framework.org/)
+- [djangorestframework-simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)
+- [black](https://pypi.org/project/black/)
+- [psycopg2-binary](https://pypi.org/project/psycopg2-binary/)
+- [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/)
+- [ipdb](https://pypi.org/project/ipdb/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+- [django-on-heroku](https://pypi.org/project/django-on-heroku/)
+- [coverage](https://coverage.readthedocs.io/en/6.4.2/)
+- [boto3](https://pypi.org/project/boto3/)
+- [django-storages](https://pypi.org/project/django-storages/)
+- [django-qr-code](https://pypi.org/project/django-qr-code/)
 
 ---
 
-- ### Ferramentas para a aplicação:
+#### Principais ferramentas para a aplicação:
 
----
 
 - [Sqlite3](https://www.sqlite.org/index.html)
 - [Postgres](https://www.postgresql.org/)
@@ -78,166 +60,224 @@
 
 ## 1.1 URL base da aplicação:
 
----
 
 ### http://primeira-fila.herokuapp.com/
 
 ---
 
-## [ Voltar para o topo ](#acesso-rápido)
+#### [ Voltar para o topo ](#acesso-rápido)
 
----
 
-# 2.0 Diagrama e relações
+## 2.0 Diagrama e relações
 
 ![DER](der.png)
 
-## Link para acesso ao Diagrama
+### Link para acesso ao Diagrama
+
+
+- #### https://dbdiagram.io/d/62c6c926cc1bc14cc572f7ea
 
 ---
 
-- ## https://dbdiagram.io/d/62c6c926cc1bc14cc572f7ea
+## 3.0 Início Rápido
 
----
-
-# 3.0 Início Rápido
-
-### Clone o projeto em sua máquina e instale as dependências com o comando:
+Após clonar o projeto em sua máquina, instale as dependências em um ambiente virtual e rode as migrações com o comando:
 
 ```shell
-pip install -r requirements.txt
+python -m venv venv --upgrade-deps && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate
 ```
 
----
-
-# 3.1 Variáveis de Ambiente
-
-### Em seguida, crie um arquivo **.env**, copiando o formato do arquivo **.env.example**:
-
-```
-.env.example .env
-```
-
-### Configure suas variáveis de ambiente com suas credenciais
+Em seguida, crie um arquivo **.env**, copiando o formato do arquivo **.env.example** e configure as variáveis de ambiente com suas credenciais.
 
 ---
 
-# 3.2 Migrations
+#### [ Voltar para o topo ](#acesso-rápido)
 
-### Execute as migrations com o comando:
 
-```
-./manage.py migrate
-```
+## 4.0 Autenticação e rotas
 
-- ## [ Voltar para o topo ](#acesso-rápido)
+O sistema de autenticação é baseado em _Json Web Token_(JWT). Sendo assim, tome o cuidado de enviar o header de _Authorization_ de acordo com o padrão `Bearer {token}` (note o espaço entre a palavra _Bearer_ e o _token_).
 
----
+Esta sessão dá uma visão geral dos endpoints da aplicação e resume brevemente o que eles fazem. Para uma explicação mais detalhada sobre os corpos de requisição, query params e retornos esperados, veja a [documentação com swagger](https://primeira-fila.herokuapp.com/docs/).
 
-# 4.0 Autenticação e rotas
+- ### User:
 
----
-
-- ## User:
-
-  - ### `[GET] - /users/self/`
-    - ### **(Autenticação de token do(a) usuario/cinefelo("is_staff": False))**
-  - ### `[POST] - /users/`
-  - ### `[PATCH] - /users/self/`
-    - ### **(Autenticação de token do(a) usuario/cinefelo("is_staff": False))**
-  - ### `[DELETE] - /users/self/`
-    - ### **(Autenticação de token do(a) usuario/cinefelo("is_staff": False))**
-
----
-
-- ## Login:
-
-  - ### `[POST] - /sessions/token/`
-  - ### `[POST] - /sessions/token/refresh/`
+  - #### `GET - /users/self/`
+    - Lista as informações do próprio usuário
+    - **Autenticação**:
+      - Token do usuario
+      
+  - #### `POST - /users/`
+    - Registra um novo usuário. **É necessário confirmar a conta por email**. Caso deseje se cadastrar como um gerente de cinema, basta passar a chave `is_staff` com o valor `true` no corpo da requisição.
+    
+  - #### `PATCH - /users/self/`
+    - Atualiza informações do próprio usuário
+    - **Autenticação**:
+      - Token do usuario
+      
+  - #### `DELETE - /users/self/`
+    - Apaga o registro do próprio usuário
+    - **Autenticação**:
+      - Token do usuario
 
 ---
 
-- ## Cinema:
+- ### Login:
 
-  - ### `[GET] - /cinemas/`
-  - ### `[GET] - /cinemas/<cine_id>/movies/<movie_id>/movie-sessions/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[POST] - /cinemas/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[PATCH] - /cinemas/<cine_id>/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[DELETE] - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
+  - #### `POST - /sessions/token/`
+    - Faz login na aplicação. Retorna um par de `access` e `refresh` tokens.
+    
+  - #### `POST - /sessions/token/refresh/`
+    - Quando o `access token` tiver expirado, você pode usar essa rota para ganhar _um novo par de tokens_.
 
 ---
 
-- ## Room:
+- ### Cinema:
 
-  - ### `[GET] - /cinemas/<cine_id>/rooms/<room_id>/`
-  - ### `[GET] - /cinemas/<cine_id>/rooms/`
-  - ### `[POST] - /cinemas/<cine_id>/rooms/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[PATCH] - cinemas/<cine_id>/rooms/<room_id>/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[DELETE] - /cinemas/<cine_id>/rooms/<room_id>/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
+  - #### `GET - /cinemas/`
+    - Lista todos os cinemas
 
----
-
-- ## Movie:
-
-  - ### `[GET] - /movies/<movie_id>/`
-  - ### `[GET] - /movies/`
-  - ### `[GET] - /movies/all/`
-  - ### `[GET] - /cinemas/<cine_id>/movies/`
-  - ### `[POST] - /movies/`
-    - ### **(Autenticação de token do(a) superuser(ADM))**
-  - ### `[PATCH] - /movies/<movie_id>/`
-    - ### **(Autenticação de token do(a) superuser(ADM))**
-  - ### `[DELETE] - /movies/<movie_id>/`
-    - ### **(Autenticação de token do(a) superuser(ADM))**
-
----
-
-- ## Movie Session:
-
-  - ### `[GET] - /cinemas/<cine_id>/movie-sessions/<session_id>/`
-  - ### `[GET] - /cinemas/<cine_id>/movies/<movie_id>/movie-sessions/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[GET] - /cinemas/<cine_id>/movie-sessions/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[POST] - /cinemas/<cine_id>/rooms/<room_id>/movies/<movie_id>/movie-sessions/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[PATCH] - /cinemas/<cine_id>/movie-sessions/<session_id>/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
-  - ### `[DELETE] - /cinemas/<cine_id>/movie-sessions/<session_id>/`
-    - ### **(Autenticação de token do(a) gerente/responsável("is_staff": true) do cinema)**
+  - #### `GET - /cinemas/<cine_id>/movies/<movie_id>/movie-sessions/`
+    - Lista todas as sessões de filme de um filme específico em um cinema específico
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+      
+  - #### `POST - /cinemas/`
+    - Registra um novo cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+      
+  - #### `PATCH - /cinemas/<cine_id>/`
+    - Atualiza informações de um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+      
+  - #### `DELETE - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/`
+    - Apaga o registro de um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
 
 ---
 
-- ## Ticket:
-
-  - ### `[GET] - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/`
-    - ### **(Autenticação de token do(a)usuario/cinefelo("is_staff": False)**
-  - ### `[GET] - /users/tickets/<ticket_id>/`
-    - ### **(Autenticação de token do(a)usuario/cinefelo("is_staff": False)**
-  - ### `[GET] - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/`
-    - ### **(Autenticação de token do(a)usuario/cinefelo("is_staff": False)**
-  - ### `[POST] - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/`
-    - ### **(Autenticação de token do(a)usuario/cinefelo("is_staff": False)**
-  - ### `PATCH - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/`
-    - ### **Autenticação de token do(a)usuario/cinefelo("is_staff": False)**
+- ### Room:
+  
+  - #### `GET - /cinemas/<cine_id>/rooms/`
+    - Lista todas as salas de um cinema
+    
+  - #### `GET - /cinemas/<cine_id>/rooms/<room_id>/`
+    - Retorna informações detalhadas sobre uma sala de um cinema
+    
+  - #### `POST - /cinemas/<cine_id>/rooms/`
+    - Registra uma nova sala para um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+      
+  - #### `PATCH - cinemas/<cine_id>/rooms/<room_id>/`
+    - Atualiza informações de uma sala em um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+      
+  - #### `DELETE - /cinemas/<cine_id>/rooms/<room_id>/`
+    - Apaga o registro de uma sala em um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
 
 ---
 
-# 5.0 Links:
+- ### Movie:
+  
+  - #### `GET - /movies/all/`
+    - Lista todos os filmes cadastrados na aplicação
+  
+  - #### `GET - /movies/`
+    - Lista todos os filmes que estão em cartaz (ou seja, que possuem alguma sessão de filme marcada)
+  
+  - #### `GET - /movies/<movie_id>/`
+    - Retorna informações detalhadas sobre um filme
+  
+  - #### `GET - /cinemas/<cine_id>/movies/`
+    - Lista todos os filmes que estão em cartaz (ou seja, que possuem alguma sessão de filme marcada) em um cinema específico
+  
+  - #### `POST - /movies/`
+    - Registra um novo filme
+    - **Autenticação**:
+      - Token do(a) **superuser** (ADM)
+    
+  - #### `PATCH - /movies/<movie_id>/`
+    - Atualiza informações de um filme
+    - **Autenticação**:
+      - Token do(a) **superuser** (ADM)
+    
+  - #### `DELETE - /movies/<movie_id>/`
+    - Apaga o registro de um filme
+    - **Autenticação**:
+      - Token do(a) **superuser** (ADM)
 
-## Documentação detalhada das rotas com swagger:
+---
 
-- ### https://primeira-fila.herokuapp.com/docs/
+- ### Movie Session:
 
-## Download do arquivo JSON para usar no Insomnia:
+  - #### `GET - /cinemas/<cine_id>/movie-sessions/<session_id>/`
+    - Retorna informações detalhadas sobre uma sessão de filme em um cinema
+  
+  - #### `GET - /cinemas/<cine_id>/movies/<movie_id>/movie-sessions/`
+    - Lista todas as sessões de filme de um filme específico em um cinema específico
+    
+  - #### `GET - /cinemas/<cine_id>/movie-sessions/`
+    - Lista todas as sessões de filme em um cinema
+    
+  - #### `POST - /cinemas/<cine_id>/rooms/<room_id>/movies/<movie_id>/movie-sessions/`
+    - Registra uma nova sessão de filme para o filme `movie_id`, na sala `room_id` do cinema `cine_id`
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+    
+  - #### `PATCH - /cinemas/<cine_id>/movie-sessions/<session_id>/`
+    - Atualiza informações de uma sessão de filme em um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+    
+  - #### `DELETE - /cinemas/<cine_id>/movie-sessions/<session_id>/`
+    - Apaga o registro de uma sessão de filme em um cinema
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
 
-- ### https://kenzieacademybrasil.slack.com/files/U02AFBZVCMD/F03QG89EQD7/primeira_fila.json
+---
 
-- ## [ Voltar para o topo ](#acesso-rápido)
+- ### Ticket:
+
+  - #### `GET - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/`
+    - Retorna informações detalhadas sobre o ticket `ticket_id`, para a sessão de filme `session_id`, no cinema `cine_id`
+  
+  - #### `GET - /users/tickets/<ticket_id>/`
+    - Retorna informações detalhadas sobre um ticket comprado por um usuário
+    - **Autenticação**:
+      - Token do usuario **dono do ticket**
+    
+  - #### `GET - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/`
+    - Lista todos os tickets de uma sessão
+    - **Autenticação**:
+      - Token do(a) gerente/responsável(`"is_staff": true`) do cinema
+    
+  - #### `POST - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/`
+    - Compra um novo ticket, para a sessão de filme `session_id` no cinema `cine_id`
+    - **Autenticação**:
+      - Token do usuario
+    
+  - #### `PATCH - /cinemas/<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/`
+    - Atualiza os assentos escolhidos na compra do ticket `ticket_id`, para a sessão `session_id` no cinema `cine_id`
+    - **Autenticação**:
+      - Token do usuario **dono do ticket**
+
+---
+
+## 5.0 Links:
+
+### Documentação detalhada das rotas com swagger:
+
+- #### https://primeira-fila.herokuapp.com/docs/
+
+### Download do arquivo JSON para usar no Insomnia:
+
+- #### https://kenzieacademybrasil.slack.com/files/U02AFBZVCMD/F03QG89EQD7/primeira_fila.json
+
+##### [ Voltar para o topo ](#acesso-rápido)
