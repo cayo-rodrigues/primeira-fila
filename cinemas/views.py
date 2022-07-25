@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+from docs.cinemas import CinemaDetailDocs, CinemaDocs
+>>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from utils.mixins import SerializerByMethodMixin
@@ -7,8 +11,16 @@ from .models import Cinema
 from .serializers import CreateCinemaSerializer, ListCinemaSerializer
 
 
+<<<<<<< HEAD
 @extend_schema(operation_id="create_list_cinema", tags=["Register / List cinemas"])
 class CinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
+=======
+@extend_schema(
+    operation_id="create_list_cinema",
+    tags=["cinemas"],
+)
+class CinemaView(CinemaDocs, SerializerByMethodMixin, generics.ListCreateAPIView):
+>>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 
     queryset = Cinema.objects.all()
     serializers = {"GET": ListCinemaSerializer, "POST": CreateCinemaSerializer}
@@ -46,10 +58,15 @@ class CinemaView(SerializerByMethodMixin, generics.ListCreateAPIView):
 
 
 @extend_schema(
+<<<<<<< HEAD
     operation_id="retrieve_update_delete_cienma",
     tags=["Retrieve / Update / Delete a Cinema"],
+=======
+    operation_id="retrieve_update_delete_cinema",
+    tags=["cinemas"],
+>>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 )
-class CinemaDetailView(generics.RetrieveUpdateDestroyAPIView):
+class CinemaDetailView(CinemaDetailDocs, generics.RetrieveUpdateDestroyAPIView):
     queryset = Cinema.objects.all()
     serializer_class = CreateCinemaSerializer
     lookup_url_kwarg = "cine_id"

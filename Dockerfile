@@ -10,3 +10,5 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 WORKDIR /code
 
 COPY . /code/
+
+RUN python ./manage.py collectstatic

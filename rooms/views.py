@@ -1,4 +1,5 @@
 from cinemas.models import Cinema
+from docs.rooms import CreateListRoomDocs, UpdateRetrieveDeleteRoomDocs
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied
@@ -15,11 +16,9 @@ from rooms.serializers import RoomSerializer
 
 @extend_schema(
     operation_id="room_get_post",
-    request=RoomSerializer,
-    responses=RoomSerializer,
-    tags=["Create / List Rooms of a Cinema"],
+    tags=["rooms"],
 )
-class CreateListRoomView(generics.ListCreateAPIView):
+class CreateListRoomView(CreateListRoomDocs, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated | ReadOnly]
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
@@ -42,11 +41,12 @@ class CreateListRoomView(generics.ListCreateAPIView):
 
 @extend_schema(
     operation_id="room_get_update_delete",
-    request=RoomSerializer,
-    responses=RoomSerializer,
-    tags=["Retrieve / Update / Delete a Room"],
+    tags=["rooms"],
 )
-class UpdateRetrieveDeleteRoomView(generics.RetrieveUpdateDestroyAPIView):
+class UpdateRetrieveDeleteRoomView(
+    UpdateRetrieveDeleteRoomDocs,
+    generics.RetrieveUpdateDestroyAPIView,
+):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = [OnlySelfManagerPermission]

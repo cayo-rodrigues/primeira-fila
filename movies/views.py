@@ -1,5 +1,13 @@
 from cinemas.models import Cinema
 from django.utils.timezone import now
+from docs.movies import (
+    MOVIE_IMG_UPLOAD_DESCRIPTION,
+    MOVIE_LIST_ALL_DESCRIPTION,
+    MOVIE_QUERY_PARAMS,
+    MovieDetailDocs,
+    MovieDocs,
+    MovieImageDetailDocs,
+)
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from utils.exceptions import CinemaNotFoundError, ImageNotFoundError, MovieNotFoundError
@@ -12,7 +20,13 @@ from .models import Image, Movie
 from .serializers import ImageSerializer, ListMoviesSerializer, MovieSerializer
 
 
-@extend_schema(operation_id="list_movies", tags=["List all movies"])
+@extend_schema(
+    operation_id="list_movies",
+    tags=["movies"],
+    summary="List all movies",
+    parameters=MOVIE_QUERY_PARAMS,
+    description=MOVIE_LIST_ALL_DESCRIPTION,
+)
 class ListAllMoviesView(MovieQueryParamsMixin, generics.ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = ListMoviesSerializer
@@ -22,10 +36,11 @@ class ListAllMoviesView(MovieQueryParamsMixin, generics.ListAPIView):
 
 
 @extend_schema(
-    operation_id="list_create_movies", tags=["Register movies / List movies now playing"]
+    operation_id="list_create_movies",
+    tags=["movies"],
 )
 class MovieView(
-    MovieQueryParamsMixin, SerializerByMethodMixin, generics.ListCreateAPIView
+    MovieDocs, MovieQueryParamsMixin, SerializerByMethodMixin, generics.ListCreateAPIView
 ):
     queryset = Movie.objects.filter(
         movie_sessions__session_datetime__gte=now(),
@@ -40,16 +55,21 @@ class MovieView(
 
 @extend_schema(
     operation_id="retrieve_update_delete_movie",
-    tags=["Retrieve / Update / Delete a Movie"],
+    tags=["movies"],
 )
-class MovieDetailView(generics.RetrieveUpdateDestroyAPIView):
+class MovieDetailView(MovieDetailDocs, generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     permission_classes = [IsSuperUser | ReadOnly]
     lookup_url_kwarg = "movie_id"
 
 
-@extend_schema(operation_id="list_movies", tags=["List movies now playing in a Cinema"])
+@extend_schema(
+    operation_id="list_movies",
+    tags=["movies"],
+    parameters=MOVIE_QUERY_PARAMS,
+    summary="List playing movies by cinema",
+)
 class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
     queryset = Movie.objects.filter(
         movie_sessions__session_datetime__gte=now(),
@@ -65,7 +85,12 @@ class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
         return self.use_query_params()
 
 
-@extend_schema(operation_id="create_image_movie", tags=["Upload an image of a Movie"])
+@extend_schema(
+    operation_id="create_image_movie",
+    tags=["movies"],
+    summary="Upload an image for a movie",
+    description=MOVIE_IMG_UPLOAD_DESCRIPTION,
+)
 class MovieImageUploadView(generics.CreateAPIView):
     queryset = Image.objects.all()
     permission_classes = [IsSuperUser]
@@ -81,9 +106,9 @@ class MovieImageUploadView(generics.CreateAPIView):
 
 @extend_schema(
     operation_id="retrieve_update_delete_image_movie",
-    tags=["Retrieve / Update / Delete an image of a Movie"],
+    tags=["movies"],
 )
-class MovieImageDetailView(generics.RetrieveUpdateDestroyAPIView):
+class MovieImageDetailView(MovieImageDetailDocs, generics.RetrieveUpdateDestroyAPIView):
     queryset = Image.objects.all()
     permission_classes = [IsSuperUser]
     serializer_class = ImageSerializer

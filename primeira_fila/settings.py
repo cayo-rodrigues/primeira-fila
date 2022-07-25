@@ -9,32 +9,28 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from datetime import timedelta
 from pathlib import Path
 
-# import dj_database_url
-import environ
+import django_on_heroku
+import dotenv
+
+dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-env = environ.Env(DOCKER=(bool, False), DATABASE_URL=(str, ""))
-
-environ.Env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = ["https://primeira-fila.herokuapp.com"]
-
-# ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost", "primeira-fila.herokuapp.com"]
 
 
 # Application definition
@@ -95,7 +91,7 @@ WSGI_APPLICATION = "primeira_fila.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if not env("DOCKER"):
+if not os.getenv("DOCKER"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -106,22 +102,17 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
-            "PASSWORD": env("POSTGRES_PASSWORD"),
-            "PORT": env("POSTGRES_CONTAINER_PORT"),
-            "HOST": env("POSTGRES_HOST"),
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "PORT": os.getenv("POSTGRES_CONTAINER_PORT"),
+            "HOST": os.getenv("POSTGRES_HOST"),
         }
     }
 
-# DATABASE_URL = env("DATABASE_URL")
 
-# if DATABASE_URL:
-#     db_from_env = dj_database_url.config(
-#         default=DATABASE_URL, conn_max_age=500, ssl_require=True
-#     )
-#     DATABASES["default"].update(db_from_env)
-#     DEBUG = False
+if os.getenv("DATABASE_URL"):
+    DEBUG = False
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -173,7 +164,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_RATES": {
-        "img_upload": "10/day",
+        "img_upload": "3/day",
     },
 }
 
@@ -185,22 +176,22 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Primeira Fila",
-    "DESCRIPTION": "Um grande centro para filmes cinemas, onde um usuário pode facilmente ver que filmes estão passando, além de onde e quando eles vão passar e comprar ingressos online para assistir a um filme no local de sua preferência. Os gerentes de cinema também podem cadastrar e gerenciar seus cinemas, as salas dos seus cinemas e também as sessões de filme que pretendem exibir.",
+    "DESCRIPTION": "Um grande centro para filmes e cinemas, onde um usuário pode facilmente ver que filmes estão passando, além de onde e quando eles vão passar e comprar ingressos online para assistir a um filme no local de sua preferência. Os gerentes de cinema também podem cadastrar e gerenciar cinemas, registrar suas salas e configurar suas estruturas e administrar as sessões de filme que pretendem exibir.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
 
 OPTIMIZED_IMAGE_METHOD = "pillow"
 
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = "primeira-fila"
 AWS_S3_REGION_NAME = "sa-east-1"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
@@ -209,6 +200,5 @@ AWS_DEFAULT_ACL = None
 AWS_S3_VERIFY = True
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-import django_on_heroku
 
 django_on_heroku.settings(locals())

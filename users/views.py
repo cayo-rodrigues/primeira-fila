@@ -1,3 +1,5 @@
+from docs.users import USER_REGISTER_DESCRIPTION, UserDetailDocs
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -8,18 +10,15 @@ from utils.helpers import safe_get_object_or_404
 from users.models import AccountConfirmation, User
 from users.serializers import UserSerializer
 
-from drf_spectacular.utils import extend_schema
 
-
-
+@extend_schema(summary="Register a user", description=USER_REGISTER_DESCRIPTION)
 class UserView(generics.CreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+class UserDetailView(UserDetailDocs, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     queryset = User.objects.all()
@@ -30,6 +29,11 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         return obj
 
 
+@extend_schema(
+    summary="Confirm a user's account",
+    description="The url for this route is sent through email upon registration",
+    tags=["users"],
+)
 class ConfirmAccountView(generics.RetrieveAPIView):
     queryset = AccountConfirmation.objects.all()
     renderer_classes = [TemplateHTMLRenderer]
