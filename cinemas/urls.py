@@ -3,12 +3,7 @@ from financial_controls.views import CinemaFinancialControlView
 from movie_sessions import views
 from movies.views import MovieByCinemaView
 from rooms import views as room_views
-from tickets.views import (
-    TicketDetailView,
-    TicketSessionMovieDetailView,
-    TicketSessionMovieView,
-    TicketView,
-)
+from tickets.views import TicketDetailView, TicketSessionMovieView, TicketView
 
 from .views import CinemaDetailView, CinemaView
 
@@ -38,10 +33,6 @@ urlpatterns = [
     path(
         "<cine_id>/movie-sessions/<session_id>/tickets/",
         TicketSessionMovieView.as_view(),
-    ),
-    path(
-        "<cine_id>/movie-sessions/<session_id>/tickets/<ticket_id>/",
-        TicketSessionMovieDetailView.as_view(),
     ),
     path("<cine_id>/movies/", MovieByCinemaView.as_view()),
     path(

@@ -1,3 +1,5 @@
+from docs.cinemas import CINEMA_FINANCIAL_DESCRIPTION
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from utils.permissions import OnlySelfManagerPermissionFinancial, OwnerPermission
@@ -9,10 +11,9 @@ from financial_controls.serializers import (
 )
 
 
-from drf_spectacular.utils import extend_schema
-
-
-
+@extend_schema(
+    operation_id="list_finances", tags=["users"], summary="Show total expenses of a user"
+)
 class UserFinancialControlView(generics.RetrieveAPIView):
     permission_classes = [OwnerPermission]
 
@@ -23,9 +24,12 @@ class UserFinancialControlView(generics.RetrieveAPIView):
         obj = UserFinancialControl.objects.get(user=self.request.user)
         return obj
 
+
 @extend_schema(
     operation_id="list_finances",
-    tags=["list finances of a cinema"]
+    tags=["cinemas"],
+    summary="Show total income of a cinema",
+    description=CINEMA_FINANCIAL_DESCRIPTION,
 )
 class CinemaFinancialControlView(generics.RetrieveAPIView):
     permission_classes = [OnlySelfManagerPermissionFinancial, IsAuthenticated]

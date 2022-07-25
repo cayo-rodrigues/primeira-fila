@@ -82,10 +82,10 @@ class TicketSerializer(serializers.ModelSerializer):
                         Seat,
                         SeatNotFoundError,
                         name=session_seat_data["seat"]["name"],
-                        room=validated_data["movie_session"].room,
+                        room=instance.movie_session.room,
                     ),
                     is_available=True,
-                    movie_session=validated_data["movie_session"],
+                    movie_session=instance.movie_session,
                 )
                 chosen_seat.is_available = False
                 chosen_seat.save()
