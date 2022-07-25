@@ -1,5 +1,5 @@
 from cinemas.models import Cinema
-from docs.movie_sessions import MovieSessionDetailDocs
+from docs.movie_sessions import SESSION_CREATE_DESCRIPTION, MovieSessionDetailDocs
 from drf_spectacular.utils import extend_schema
 from movies.models import Movie
 from rest_framework import generics
@@ -22,6 +22,7 @@ from .serializers import MovieSessionSerializer
     operation_id="movie_session_post",
     tags=["movie sessions"],
     summary="Schedule a movie session",
+    description=SESSION_CREATE_DESCRIPTION,
 )
 class MovieSessionCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]

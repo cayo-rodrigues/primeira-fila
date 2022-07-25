@@ -164,7 +164,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_RATES": {
-        "img_upload": "10/day",
+        "img_upload": "3/day",
     },
 }
 

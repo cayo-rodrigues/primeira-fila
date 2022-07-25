@@ -1,3 +1,4 @@
+from docs.cinemas import CINEMA_FINANCIAL_DESCRIPTION
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -28,6 +29,7 @@ class UserFinancialControlView(generics.RetrieveAPIView):
     operation_id="list_finances",
     tags=["cinemas"],
     summary="Show total income of a cinema",
+    description=CINEMA_FINANCIAL_DESCRIPTION,
 )
 class CinemaFinancialControlView(generics.RetrieveAPIView):
     permission_classes = [OnlySelfManagerPermissionFinancial, IsAuthenticated]

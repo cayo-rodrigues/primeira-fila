@@ -1,6 +1,8 @@
 from cinemas.models import Cinema
 from django.utils.timezone import now
 from docs.movies import (
+    MOVIE_IMG_UPLOAD_DESCRIPTION,
+    MOVIE_LIST_ALL_DESCRIPTION,
     MOVIE_QUERY_PARAMS,
     MovieDetailDocs,
     MovieDocs,
@@ -23,6 +25,7 @@ from .serializers import ImageSerializer, ListMoviesSerializer, MovieSerializer
     tags=["movies"],
     summary="List all movies",
     parameters=MOVIE_QUERY_PARAMS,
+    description=MOVIE_LIST_ALL_DESCRIPTION,
 )
 class ListAllMoviesView(MovieQueryParamsMixin, generics.ListAPIView):
     queryset = Movie.objects.all()
@@ -86,6 +89,7 @@ class MovieByCinemaView(MovieQueryParamsMixin, generics.ListAPIView):
     operation_id="create_image_movie",
     tags=["movies"],
     summary="Upload an image for a movie",
+    description=MOVIE_IMG_UPLOAD_DESCRIPTION,
 )
 class MovieImageUploadView(generics.CreateAPIView):
     queryset = Image.objects.all()
