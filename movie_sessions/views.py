@@ -1,8 +1,5 @@
 from cinemas.models import Cinema
-<<<<<<< HEAD
-=======
 from docs.movie_sessions import SESSION_CREATE_DESCRIPTION, MovieSessionDetailDocs
->>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 from drf_spectacular.utils import extend_schema
 from movies.models import Movie
 from rest_framework import generics
@@ -23,15 +20,9 @@ from .serializers import MovieSessionSerializer
 
 @extend_schema(
     operation_id="movie_session_post",
-<<<<<<< HEAD
-    request=MovieSessionSerializer,
-    responses=MovieSessionSerializer,
-    tags=["Create a Movie Session"],
-=======
     tags=["movie sessions"],
     summary="Schedule a movie session",
     description=SESSION_CREATE_DESCRIPTION,
->>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 )
 class MovieSessionCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -55,15 +46,8 @@ class MovieSessionCreateView(generics.CreateAPIView):
 
 @extend_schema(
     operation_id="movie_session_get",
-<<<<<<< HEAD
-    request=MovieSessionSerializer,
-    responses=MovieSessionSerializer,
-    description="Route for list the movie sessions of a cinema",
-    tags=["List Movie Sessions of a Cinema"],
-=======
     tags=["movie sessions"],
     summary="List movie sessions of a cinema",
->>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 )
 class MovieSessionCinemaDetailView(generics.ListAPIView):
     queryset = MovieSession.objects.all()
@@ -81,16 +65,8 @@ class MovieSessionCinemaDetailView(generics.ListAPIView):
 
 @extend_schema(
     operation_id="movie_session_get",
-<<<<<<< HEAD
-    request=MovieSessionSerializer,
-    responses=MovieSessionSerializer,
-    description="Route for list the movie sessions of a movie",
-    summary="List movie sessions of a movie in all cinemas",
-    tags=["List Movie Sessions of a Movie"],
-=======
     tags=["movie sessions"],
     summary="List movie sessions of a movie",
->>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 )
 class MovieSessionMovieDetailView(generics.ListAPIView):
     queryset = MovieSession.objects.all()
@@ -113,14 +89,7 @@ class MovieSessionMovieDetailView(generics.ListAPIView):
 
 @extend_schema(
     operation_id="movie_session_get_update_delete",
-<<<<<<< HEAD
-    request=MovieSessionSerializer,
-    responses=MovieSessionSerializer,
-    description="Route for list/update/delete the movie sessions of a cinema",
-    tags=["Retrieve / Updade / Delete a Movie Session"],
-=======
     tags=["movie sessions"],
->>>>>>> 0074b4ec7d594ffb608db203cf1c00366dc9fd18
 )
 class MovieSessionDetail(MovieSessionDetailDocs, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [OwnerPermission]
