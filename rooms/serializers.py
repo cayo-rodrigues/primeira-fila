@@ -1,5 +1,6 @@
 from movie_sessions.models import SessionSeat
 from rest_framework import serializers
+from utils.helpers import bulk_get_or_create, set_and_destroy
 
 from rooms.models import Room, RoomCorridor, Seat, SeatRow
 
@@ -59,42 +60,48 @@ class RoomSerializer(serializers.ModelSerializer):
         corridors = validated_data.pop("room_corridors", None)
         rows = validated_data.pop("seat_rows", None)
 
-        if corridors:
-            new_corridors = []
-            for value in corridors:
-                new_corridors.append(RoomCorridor(**value))
+        if instance.movie_sessions.filter(on_sale=True).exists():
+            raise serializers.ValidationError(
+                {"detail": "Can't update room when it has movie sessions on sale"}
+            )
 
-            instance.room_corridors.set(RoomCorridor.objects.bulk_create(new_corridors))
+        if corridors:
+            set_and_destroy(
+                klass=instance,
+                attr="room_corridors",
+                value=bulk_get_or_create(RoomCorridor, corridors, room=instance),
+                related_klass=RoomCorridor,
+                room=None,
+            )
 
         if rows:
-            new_rows = []
-            new_seats = []
+            seats_to_create = []
+            existing_seats = []
+
             for value in rows:
-                seat_rows = SeatRow(**value)
-                new_rows.append(seat_rows)
-                all_seats_in_instance = Seat.objects.filter(room=instance)
-
-                all_sessions_seats = SessionSeat.objects.all()
-
-                for seat in all_sessions_seats:
-                    for seat_instance in all_seats_in_instance:
-                        if seat.seat == seat_instance and not seat.is_available:
-                            raise serializers.ValidationError(
-                                {
-                                    "message": f"{seat.seat.name} is already with a movie session."
-                                }
-                            )
-
-                for value in all_seats_in_instance:
-                    value.delete()
-
-                for i in range(seat_rows.seat_count):
-                    name = f"{seat_rows.row}{i+1}"
+                for i in range(value["seat_count"]):
+                    name = f"{value['row']}{i+1}"
                     new_seat = {"name": name, "room": instance}
-                    new_seats.append(Seat(**new_seat))
+                    seats_found = Seat.objects.filter(**new_seat)
+                    if seats_found:
+                        existing_seats.extend(seats_found)
+                    else:
+                        seats_to_create.append(Seat(**new_seat))
 
-            instance.seat_rows.set(SeatRow.objects.bulk_create(new_rows))
-            Seat.objects.bulk_create(new_seats)
+            set_and_destroy(
+                klass=instance,
+                attr="seat_rows",
+                value=bulk_get_or_create(SeatRow, rows, room=instance),
+                related_klass=SeatRow,
+                room=None,
+            )
+            set_and_destroy(
+                klass=instance,
+                attr="seats",
+                value=Seat.objects.bulk_create(seats_to_create) + existing_seats,
+                related_klass=Seat,
+                room=None,
+            )
 
         instance.save()
         return instance

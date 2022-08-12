@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from movie_sessions.models import MovieSession
 from rest_framework import serializers
 from utils.exceptions import MovieTitleUnavailableError
-from utils.helpers import bulk_get_or_create
+from utils.helpers import bulk_get_or_create, set_and_destroy
 
 from .models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
 
@@ -128,7 +128,13 @@ class MovieSerializer(serializers.ModelSerializer):
             instance.age_group = AgeGroup.objects.get_or_create(**age_group)[0]
 
         if videos:
-            bulk_get_or_create(Video, videos, movie=instance)
+            set_and_destroy(
+                klass=instance,
+                attr="videos",
+                value=bulk_get_or_create(Video, videos, movie=instance),
+                related_klass=Video,
+                movie=None,
+            )
         if stars:
             bulk_get_or_create(Star, stars, [("person", Person)], movie=instance)
         if genres:
