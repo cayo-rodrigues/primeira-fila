@@ -60,7 +60,9 @@ class Video(models.Model):
     title = models.CharField(max_length=127)
     url = models.URLField()
 
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="videos")
+    movie = models.ForeignKey(
+        Movie, on_delete=models.CASCADE, related_name="videos", null=True
+    )
 
 
 class Image(models.Model):
