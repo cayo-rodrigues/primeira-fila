@@ -1,4 +1,3 @@
-from django.test import TestCase
 from addresses.models import Address, City, Country, District, State
 from cinemas.models import Cinema
 from cinemas.tests.util import (
@@ -9,8 +8,8 @@ from cinemas.tests.util import (
     DEFAULT_DISTRICT_DATA,
     DEFAULT_STATE_DATA,
 )
-
-from rooms.models import Room, RoomCorridor, SeatRows
+from django.test import TestCase
+from rooms.models import Room, RoomCorridor, SeatRow
 from users.models import User
 
 
@@ -57,7 +56,7 @@ class RoomModelTest(TestCase):
 
         cls.room = Room.objects.create(name=cls.name, cinema=cls.cinema)
 
-        cls.seat_rows = SeatRows.objects.create(row="A", seat_count=5, room=cls.room)
+        cls.seat_rows = SeatRow.objects.create(row="A", seat_count=5, room=cls.room)
 
         cls.corridors = RoomCorridor.objects.create(
             column=cls.column, from_row=cls.from_row, to_row=cls.to_row, room=cls.room
@@ -78,12 +77,12 @@ class RoomModelTest(TestCase):
         self.assertIsNotNone(room.name)
 
     def test_seat_rows_exist(self):
-        seat_rows = SeatRows.objects.get(id=self.seat_rows_id)
+        seat_rows = SeatRow.objects.get(id=self.seat_rows_id)
 
         self.assertIsNotNone(seat_rows)
 
     def test_seat_rows_correct_fields(self):
-        seat_rows = SeatRows.objects.get(id=self.seat_rows_id)
+        seat_rows = SeatRow.objects.get(id=self.seat_rows_id)
         room = Room.objects.get(id=self.room_id)
 
         self.assertEquals(seat_rows.row, "A")

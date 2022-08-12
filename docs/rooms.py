@@ -30,12 +30,12 @@ class UpdateRetrieveDeleteRoomDocs:
 
     @extend_schema(summary="Update a room", description=ROOM_UPDATE_DESCRIPTION)
     def put(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     @extend_schema(summary="Update a room", description=ROOM_UPDATE_DESCRIPTION)
     def patch(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
     @extend_schema(summary="Delete a room", description=ROOM_DELETE_DESCRIPTION)
     def delete(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
