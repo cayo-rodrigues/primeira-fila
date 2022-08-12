@@ -25,18 +25,18 @@ class MovieSessionDetailDocs:
         description=SESSION_UPDATE_DESCRIPTION,
     )
     def put(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     @extend_schema(
         summary="Update a movie session of a cinema",
         description=SESSION_UPDATE_DESCRIPTION,
     )
     def patch(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
     @extend_schema(
         summary="Delete a movie session of a cinema",
         description=SESSION_DELETE_DESCRIPTION,
     )
     def delete(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)

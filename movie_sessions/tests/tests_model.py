@@ -8,9 +8,8 @@ from django.test import TestCase
 from django.utils import timezone
 from movie_sessions.models import MovieSession
 from movies.models import AgeGroup, Distributor, Genre, Image, Movie, Person, Star, Video
-from rooms.models import Room, RoomCorridor, SeatRows
+from rooms.models import Room, RoomCorridor, SeatRow
 from users.models import User
-
 
 
 class MovieSessionModelTest(TestCase):
@@ -98,9 +97,9 @@ class MovieSessionModelTest(TestCase):
             country=country,
         )
 
-        seat_row1 = SeatRows.objects.create(row="A", seat_count=10)
-        seat_row2 = SeatRows.objects.create(row="B", seat_count=8)
-        seat_row3 = SeatRows.objects.create(row="C", seat_count=8)
+        seat_row1 = SeatRow.objects.create(row="A", seat_count=10)
+        seat_row2 = SeatRow.objects.create(row="B", seat_count=8)
+        seat_row3 = SeatRow.objects.create(row="C", seat_count=8)
 
         room_corridor1 = RoomCorridor.objects.create(column=1, from_row=2, to_row=7)
         room_corridor2 = RoomCorridor.objects.create(column=8, from_row=2, to_row=7)

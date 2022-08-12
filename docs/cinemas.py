@@ -56,12 +56,12 @@ class CinemaDetailDocs:
 
     @extend_schema(summary="Update a cinema", description=CINEMA_UPDATE_DESCRIPTION)
     def put(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     @extend_schema(summary="Update a cinema", description=CINEMA_UPDATE_DESCRIPTION)
     def patch(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
     @extend_schema(summary="Delete a cinema", description=CINEMA_DELETE_DESCRIPTION)
     def delete(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)

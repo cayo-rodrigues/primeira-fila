@@ -66,15 +66,15 @@ class MovieDetailDocs:
 
     @extend_schema(summary="Update a movie", description=MOVIE_UPDATE_DESCRIPTION)
     def put(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     @extend_schema(summary="Retrieve a movie", description=MOVIE_UPDATE_DESCRIPTION)
     def patch(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
     @extend_schema(summary="Delete a movie", description=MOVIE_DELETE_DESCRIPTION)
     def delete(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
 
 
 class MovieImageDetailDocs:
@@ -86,16 +86,16 @@ class MovieImageDetailDocs:
         summary="Update an image of a movie", description=MOVIE_IMG_UPDATE_DESCRIPTION
     )
     def put(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().put(request, *args, **kwargs)
 
     @extend_schema(
         summary="Update an image of a movie", description=MOVIE_IMG_UPDATE_DESCRIPTION
     )
     def patch(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().patch(request, *args, **kwargs)
 
     @extend_schema(
         summary="Delete an image of a movie", description=MOVIE_IMG_DELETE_DESCRIPTION
     )
     def delete(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)

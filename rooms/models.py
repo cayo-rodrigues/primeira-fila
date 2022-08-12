@@ -13,7 +13,7 @@ class Room(models.Model):
     )
 
 
-class SeatRows(models.Model):
+class SeatRow(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     row = models.CharField(max_length=20)
     seat_count = models.PositiveIntegerField()
