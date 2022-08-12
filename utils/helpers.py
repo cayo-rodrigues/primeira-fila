@@ -72,10 +72,15 @@ def safe_get_object_or_404(
         raise error_klass
 
 
-def safe_get_list_or_404(
-    queryset, error_klass: APIException = Http404, *args, **kwargs
-):
+def safe_get_list_or_404(queryset, error_klass: APIException = Http404, *args, **kwargs):
     try:
         return queryset.filter(*args, **kwargs)
     except ValidationError:
         raise error_klass
+
+
+def set_and_destroy(
+    klass: Model, attr: str, value: list, related_klass: Model, **kwargs
+):
+    getattr(klass, attr).set(value)
+    related_klass.objects.filter(**kwargs).delete()
