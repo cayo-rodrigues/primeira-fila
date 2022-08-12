@@ -1,12 +1,12 @@
 from movie_sessions.models import SessionSeat
 from rest_framework import serializers
 
-from rooms.models import Room, RoomCorridor, Seat, SeatRows
+from rooms.models import Room, RoomCorridor, Seat, SeatRow
 
 
-class SeatRowsSerializer(serializers.ModelSerializer):
+class SeatRowSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SeatRows
+        model = SeatRow
         exclude = ["room"]
 
 
@@ -17,7 +17,7 @@ class RoomCorridorsSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    seat_rows = SeatRowsSerializer(many=True)
+    seat_rows = SeatRowSerializer(many=True)
     room_corridors = RoomCorridorsSerializer(many=True)
 
     class Meta:
@@ -34,7 +34,7 @@ class RoomSerializer(serializers.ModelSerializer):
         seat_rows = []
         seat_instances = []
         for value in seats:
-            seat = SeatRows(**value, room=room)
+            seat = SeatRow(**value, room=room)
             seat_rows.append(seat)
 
             for i in range(seat.seat_count):
@@ -42,7 +42,7 @@ class RoomSerializer(serializers.ModelSerializer):
                 new_seat = {"name": name, "room": room}
                 seat_instances.append(Seat(**new_seat))
 
-        SeatRows.objects.bulk_create(seat_rows)
+        SeatRow.objects.bulk_create(seat_rows)
         Seat.objects.bulk_create(seat_instances)
 
         RoomCorridor.objects.bulk_create(
@@ -70,7 +70,7 @@ class RoomSerializer(serializers.ModelSerializer):
             new_rows = []
             new_seats = []
             for value in rows:
-                seat_rows = SeatRows(**value)
+                seat_rows = SeatRow(**value)
                 new_rows.append(seat_rows)
                 all_seats_in_instance = Seat.objects.filter(room=instance)
 
@@ -93,7 +93,7 @@ class RoomSerializer(serializers.ModelSerializer):
                     new_seat = {"name": name, "room": instance}
                     new_seats.append(Seat(**new_seat))
 
-            instance.seat_rows.set(SeatRows.objects.bulk_create(new_rows))
+            instance.seat_rows.set(SeatRow.objects.bulk_create(new_rows))
             Seat.objects.bulk_create(new_seats)
 
         instance.save()
