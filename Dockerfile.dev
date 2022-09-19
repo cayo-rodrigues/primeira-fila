@@ -10,6 +10,3 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 WORKDIR /code
 
 COPY . /code/
-
-RUN python ./code/manage.py migrate
-RUN python ./code/manage.py collectstatic
