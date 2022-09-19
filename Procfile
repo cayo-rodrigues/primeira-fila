@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic && gunicorn cmb_motores.wsgi
+web: python manage.py migrate && python manage.py collectstatic && gunicorn primeira_fila.wsgi
