@@ -11,5 +11,4 @@ WORKDIR /code
 
 COPY . /code/
 
-RUN python ./manage.py migrate
 RUN python ./manage.py collectstatic
