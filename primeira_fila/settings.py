@@ -13,7 +13,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-import django_on_heroku
+import dj_database_url
 import dotenv
 
 dotenv.load_dotenv()
@@ -28,13 +28,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = "RAILWAY" not in os.environ
 
-CSRF_TRUSTED_ORIGINS = ["https://primeira-fila.herokuapp.com"]
+ALLOWED_HOSTS = []
+
+RAILWAY_STATIC_URL = os.getenv("RAILWAY_STATIC_URL")
+if RAILWAY_STATIC_URL:
+    ALLOWED_HOSTS.append(RAILWAY_STATIC_URL)
+    CSRF_TRUSTED_ORIGINS = ["https://" + RAILWAY_STATIC_URL]
 
 
 # Application definition
-
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -58,6 +62,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -91,7 +96,7 @@ WSGI_APPLICATION = "primeira_fila.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if not os.getenv("DOCKER"):
+if "DOCKER" not in os.environ:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -110,9 +115,6 @@ else:
         }
     }
 
-
-if os.getenv("DATABASE_URL"):
-    DEBUG = False
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -149,6 +151,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+if not DEBUG:
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    DISABLE_COLLECTSTATIC = 0
+
+    DATABASES.update(
+        {
+            "default": dj_database_url.config(
+                default=os.getenv("DATABASE_URL"),
+                conn_max_age=600,
+            )
+        }
+    )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -199,6 +215,3 @@ AWS_S3_FILE_OVERWRITE = True
 AWS_DEFAULT_ACL = None
 AWS_S3_VERIFY = True
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-
-django_on_heroku.settings(locals())
