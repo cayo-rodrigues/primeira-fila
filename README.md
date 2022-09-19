@@ -4,16 +4,15 @@
 ## Descrição do projeto
 
 
-Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema tem ferramentas para controlar as sessões de filme, as salas em que vão passar, o filme a ser passado, os assentos disponíveis e saber quem vai assistir.
+Imagine um site onde o usuário pode entrar para ver quais filmes estão passando nos cinemas perto de onde ele mora, e poder ver facilmente qual a programação para os filmes em cada um desses cinemas, além de informações de cada filme, como titulo, sinopse, atores, gênero, etc, além de poder comprar ingressos online. Cada cinema tem ferramentas para controlar as sessões de filme, as salas em que vão passar, o filme a ser passado e a disposição de assentos de suas salas.
 
 
 ## Acesso rápido
 
 
 - [1.0 Visão Geral](#10-visão-geral)
-  - [Tecnologias usadas.](#tecnologias-usadas)
-  - [1.1 URL base da aplicação:](#11-url-base-da-aplicação)
-    - [http://primeira-fila.herokuapp.com/](#httpprimeira-filaherokuappcom)
+  - [Tecnologias usadas](#tecnologias-usadas)
+  - [1.1 URL base da aplicação](#11-url-base-da-aplicação)
 - [2.0 Diagrama e relações](#20-diagrama-e-relações)
   - [Link para acesso ao Diagrama](#link-para-acesso-ao-diagrama)
 - [3.0 Início Rápido](#30-início-rápido)
@@ -38,11 +37,12 @@ Imagine um site onde o usuário pode entrar para ver quais filmes estão passand
 - [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/)
 - [ipdb](https://pypi.org/project/ipdb/)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
-- [django-on-heroku](https://pypi.org/project/django-on-heroku/)
+- [gunicorn](https://gunicorn.org/)
 - [coverage](https://coverage.readthedocs.io/en/6.4.2/)
 - [boto3](https://pypi.org/project/boto3/)
 - [django-storages](https://pypi.org/project/django-storages/)
 - [django-qr-code](https://pypi.org/project/django-qr-code/)
+- [whitenoise](http://whitenoise.evans.io/en/stable/)
 
 ---
 
@@ -54,14 +54,14 @@ Imagine um site onde o usuário pode entrar para ver quais filmes estão passand
 - [Python](https://www.python.org/)
 - [Docker](https://www.docker.com/)
 - [AWS](https://aws.amazon.com/pt/)
-- [Heroku](https://devcenter.heroku.com/categories/reference)
+- [Railway](https://railway.app/)
 
 ---
 
 ## 1.1 URL base da aplicação:
 
 
-### http://primeira-fila.herokuapp.com/
+### https://primeira-fila-api.up.railway.app/
 
 ---
 
@@ -274,7 +274,7 @@ Esta sessão dá uma visão geral dos endpoints da aplicação e resume brevemen
 
 ### Documentação detalhada das rotas com swagger:
 
-- #### https://primeira-fila.herokuapp.com/docs/
+- #### https://primeira-fila-api.up.railway.app/docs/
 
 ### Download do arquivo JSON para usar no Insomnia:
 
