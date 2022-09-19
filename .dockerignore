@@ -3,3 +3,4 @@ htmlcov
 .coverage
 .vscode
 db.sqlite3
+staticfiles
